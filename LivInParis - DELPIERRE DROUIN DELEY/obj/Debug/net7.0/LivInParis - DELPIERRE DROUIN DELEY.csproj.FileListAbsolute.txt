@@ -1,0 +1,29 @@
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.exe
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.deps.json
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.runtimeconfig.json
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.pdb
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\ClosedXML.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\ClosedXML.Parser.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\ExcelNumberFormat.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\RBush.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\SixLabors.Fonts.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\SkiaSharp.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\System.IO.Packaging.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\runtimes\osx\native\libSkiaSharp.dylib
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\runtimes\win-arm64\native\libSkiaSharp.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\runtimes\win-x64\native\libSkiaSharp.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\runtimes\win-x86\native\libSkiaSharp.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.csproj.AssemblyReference.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.AssemblyInfoInputs.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.AssemblyInfo.cs
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.csproj.CoreCompileInputs.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.csproj.CopyComplete
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\refint\LivInParis - DELPIERRE DROUIN DELEY.dll
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.pdb
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.genruntimeconfig.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\ref\LivInParis - DELPIERRE DROUIN DELEY.dll

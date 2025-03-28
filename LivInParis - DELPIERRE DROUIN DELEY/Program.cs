@@ -38,24 +38,23 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     var suivantObj = row.Cell(4).Value; // Colonne Suivant
 
                     // Si la valeur du précédent est valide, on crée un lien
-                    if (!row.Cell(3).IsEmpty())
+                    // Vérifie si la cellule contient un nombre avant la conversion
+                    if (!row.Cell(3).IsEmpty() && row.Cell(3).TryGetValue(out int precedentId))
                     {
-                        int precedentId = Convert.ToInt32(precedentObj);
                         if (noeuds.ContainsKey(precedentId) && noeuds.ContainsKey(id))
                         {
-                            metro.AjouterLien(noeuds[precedentId], noeuds[id], 2.0); // Distance arbitraire
+                            metro.AjouterLien(noeuds[precedentId], noeuds[id], 2.0);
                         }
                     }
 
-                    // Si la valeur du suivant est valide, on crée un lien
-                    if (!row.Cell(4).IsEmpty())
+                    if (!row.Cell(4).IsEmpty() && row.Cell(4).TryGetValue(out int suivantId))
                     {
-                        int suivantId = Convert.ToInt32(suivantObj);
                         if (noeuds.ContainsKey(suivantId) && noeuds.ContainsKey(id))
                         {
-                            metro.AjouterLien(noeuds[id], noeuds[suivantId], 2.0); // Distance arbitraire
+                            metro.AjouterLien(noeuds[id], noeuds[suivantId], 2.0);
                         }
                     }
+
                 }
             }
 

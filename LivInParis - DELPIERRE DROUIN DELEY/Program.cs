@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using SkiaSharp;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
@@ -60,10 +61,18 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 Console.WriteLine($"{noeud.Valeur} :");
                 foreach (var lien in noeud.Voisins)
                 {
-                    Console.WriteLine($"  - Connecté à {lien.Noeud1.Valeur} avec poids {lien.Poids}");
-                    Console.WriteLine($"  - Connecté à {lien.Noeud2.Valeur} avec poids {lien.Poids}");
+                    Console.WriteLine($" Lien entre {lien.Noeud1.Valeur} et {lien.Noeud2.Valeur} est de poids {lien.Poids}");
                 }
             }
+
+            Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
+            
+            
+            foreach (var kvp in plus_petit_cheminS)
+            {
+                Console.WriteLine($"Clé: {kvp.Key}, Valeur: {kvp.Value}");
+            }
+            
 
             // Dessiner le graphe et sauvegarder l'image
             metro.DessinerGraphe("graphe.png");

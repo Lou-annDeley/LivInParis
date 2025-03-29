@@ -31,31 +31,26 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
 
                 // Lecture des connexions en utilisant les colonnes "Précédent" et "Suivant"
-                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
-                {
-                    int id = row.Cell(1).GetValue<int>();
-                    var precedentObj = row.Cell(3).Value; // Colonne Précédent
-                    var suivsantObj = row.Cell(4).Value; // Colonne Suivant
+                var rows = sheetNoeuds.RowsUsed().ToList(); // Convertir en liste pour un accès par index
 
-                    // Si la valeur du précédent est valide, on crée un lien
-                    // Vérifie si la cellule contient un nombre avant la conversion
-                    if (!row.Cell(3).IsEmpty() && row.Cell(3).TryGetValue(out int precedentId))
-                    {
-                        if (noeuds.ContainsKey(precedentId) && noeuds.ContainsKey(id))
-                        {
-                            metro.AjouterLien(noeuds[precedentId], noeuds[id], 2.0);
-                        }
-                    }
+                for (int i = 1; i < rows.Count - 1; i++) // -1 pour éviter d'accéder hors limites
+                {
+                    var row = rows[i];
+                    var nextRow = rows[i + 1]; // Récupérer la ligne suivante
+
+                    int id = row.Cell(1).GetValue<int>();
+                    int poids = nextRow.Cell(5).GetValue<int>(); // Poids de la ligne suivante
+                    var suivantObj = row.Cell(4).Value;
 
                     if (!row.Cell(4).IsEmpty() && row.Cell(4).TryGetValue(out int suivantId))
                     {
                         if (noeuds.ContainsKey(suivantId) && noeuds.ContainsKey(id))
                         {
-                            metro.AjouterLien(noeuds[id], noeuds[suivantId], 2.0);
+                            metro.AjouterLien(noeuds[id], noeuds[suivantId], poids);
                         }
                     }
-
                 }
+
             }
 
             // Afficher les stations et connexions
@@ -65,6 +60,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 Console.WriteLine($"{noeud.Valeur} :");
                 foreach (var lien in noeud.Voisins)
                 {
+                    Console.WriteLine($"  - Connecté à {lien.Noeud1.Valeur} avec poids {lien.Poids}");
                     Console.WriteLine($"  - Connecté à {lien.Noeud2.Valeur} avec poids {lien.Poids}");
                 }
             }

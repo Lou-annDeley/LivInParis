@@ -35,7 +35,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 {
                     int id = row.Cell(1).GetValue<int>();
                     var precedentObj = row.Cell(3).Value; // Colonne Précédent
-                    var suivantObj = row.Cell(4).Value; // Colonne Suivant
+                    var suivsantObj = row.Cell(4).Value; // Colonne Suivant
 
                     // Si la valeur du précédent est valide, on crée un lien
                     // Vérifie si la cellule contient un nombre avant la conversion

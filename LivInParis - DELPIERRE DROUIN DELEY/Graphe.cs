@@ -183,6 +183,84 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return distances;
         }
 
+        public double[,] FloydWarshall()
+        {
+            int n = Sommets.Count;
+            if (n == 0) return new double[0, 0];
+
+            Dictionary<Noeud<T>, int> indexMap = new Dictionary<Noeud<T>, int>();
+            Noeud<T>[] noeuds = Sommets.ToArray();
+
+            // Associer chaque nœud à un index unique
+            for (int i = 0; i < n; i++)
+            {
+                indexMap[noeuds[i]] = i;
+            }
+
+            // Initialisation de la matrice des distances
+            double[,] distances = new double[n, n];
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == j)
+                        distances[i, j] = 0; // Distance à soi-même = 0
+                    else
+                        distances[i, j] = double.PositiveInfinity; // Initialisation à l'infini
+                }
+            }
+
+            // Remplir la matrice avec les poids des arêtes existantes
+            foreach (var noeud in Sommets)
+            {
+                int i = indexMap[noeud];
+                foreach (var lien in noeud.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
+                    int j = indexMap[voisin];
+                    distances[i, j] = lien.Poids;
+                }
+            }
+
+            // Algorithme de Floyd-Warshall
+            for (int k = 0; k < n; k++)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        if (distances[i, k] != double.PositiveInfinity &&
+                            distances[k, j] != double.PositiveInfinity)
+                        {
+                            distances[i, j] = Math.Min(distances[i, j], distances[i, k] + distances[k, j]);
+                        }
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+        public void AfficherMatriceDistances(double[,] distances)
+        {
+            int n = distances.GetLength(0);
+            Console.WriteLine("Matrice des plus courts chemins (Floyd-Warshall) :");
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (distances[i, j] == double.PositiveInfinity)
+                        Console.Write("INF\t");
+                    else
+                        Console.Write($"{distances[i, j]}\t");
+                }
+                Console.WriteLine();
+            }
+        }
+
+
 
     }
 }

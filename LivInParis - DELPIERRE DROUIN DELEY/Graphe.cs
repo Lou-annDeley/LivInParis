@@ -95,5 +95,94 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        public Dictionary<Noeud<T>, double> Dijkstra(Noeud<T> source)
+        {
+            // Dictionnaire des distances depuis la source
+            Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
+            Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+            HashSet<Noeud<T>> nonVisites = new HashSet<Noeud<T>>(Sommets);
+
+            // Initialisation : toutes les distances à l'infini sauf la source
+            foreach (var noeud in Sommets)
+            {
+                distances[noeud] = double.PositiveInfinity;
+            }
+            distances[source] = 0;
+
+            while (nonVisites.Count > 0)
+            {
+                // Sélectionner le nœud avec la plus petite distance
+                Noeud<T> noeudActuel = nonVisites.OrderBy(n => distances[n]).First();
+                nonVisites.Remove(noeudActuel);
+
+                // Parcourir ses voisins
+                foreach (var lien in noeudActuel.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
+                    if (!nonVisites.Contains(voisin)) continue;
+
+                    double nouvelleDistance = distances[noeudActuel] + lien.Poids;
+                    if (nouvelleDistance < distances[voisin])
+                    {
+                        distances[voisin] = nouvelleDistance;
+                        predecesseurs[voisin] = noeudActuel;
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+        public Dictionary<Noeud<T>, double> BellmanFord(Noeud<T> source)
+        {
+            // Dictionnaire des distances depuis la source
+            Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
+            Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+
+            // Initialisation : toutes les distances à l'infini sauf la source
+            foreach (var noeud in Sommets)
+            {
+                distances[noeud] = double.PositiveInfinity;
+                predecesseurs[noeud] = null;
+            }
+            distances[source] = 0;
+
+            // Boucle principale de Bellman-Ford
+            int n = Sommets.Count;
+            for (int i = 0; i < n - 1; i++)
+            {
+                foreach (var noeud in Sommets)
+                {
+                    foreach (var lien in noeud.Voisins)
+                    {
+                        Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
+                        double nouvelleDistance = distances[noeud] + lien.Poids;
+
+                        if (nouvelleDistance < distances[voisin])
+                        {
+                            distances[voisin] = nouvelleDistance;
+                            predecesseurs[voisin] = noeud;
+                        }
+                    }
+                }
+            }
+
+            // Vérification des cycles de poids négatif
+            foreach (var noeud in Sommets)
+            {
+                foreach (var lien in noeud.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
+                    if (distances[noeud] + lien.Poids < distances[voisin])
+                    {
+                        throw new Exception("Il y a un circuit/cycle de poids négatif");
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+
     }
 }

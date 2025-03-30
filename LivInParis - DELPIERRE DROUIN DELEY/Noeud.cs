@@ -18,6 +18,17 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             Voisins = new List<Lien<T>>();
         }
 
+        public bool ExisteLien(Noeud<T> autreNoeud)
+        {
+            foreach (var lien in Voisins)
+            {
+                if (lien.Noeud1.Equals(autreNoeud) || lien.Noeud2.Equals(autreNoeud))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 
     }

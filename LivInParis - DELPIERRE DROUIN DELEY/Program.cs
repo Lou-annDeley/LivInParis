@@ -51,7 +51,26 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         }
                     }
                 }
-
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
+                {
+                    if(!row.Cell(6).IsEmpty())
+                    {
+                        int id = row.Cell(1).GetValue<int>();
+                        string nom_station = row.Cell(2).GetValue<string>();
+                        int poids_correspondance = row.Cell(6).GetValue<int>();
+                        foreach (var noeud in noeuds)
+                        {
+                            if(noeud.Value.Valeur == nom_station)
+                            {
+                                int id_correspodance = noeud.Key;
+                                if (noeuds[id].ExisteLien(noeuds[id_correspodance]) == false)
+                                {
+                                    metro.AjouterLien(noeuds[id], noeuds[id_correspodance], poids_correspondance);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Afficher les stations et connexions
@@ -66,13 +85,13 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
 
             Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
-            
-            
+
+
             foreach (var kvp in plus_petit_cheminS)
             {
                 Console.WriteLine($"Clé: {kvp.Key}, Valeur: {kvp.Value}");
             }
-            
+
 
             // Dessiner le graphe et sauvegarder l'image
             metro.DessinerGraphe("graphe.png");

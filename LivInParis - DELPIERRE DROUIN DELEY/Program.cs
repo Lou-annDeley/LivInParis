@@ -84,14 +84,21 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
+            //Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
 
 
-            foreach (var kvp in plus_petit_cheminS)
+            //foreach (var kvp in plus_petit_cheminS)
+            //{
+            //    Console.WriteLine($"Clé: {kvp.Key.Valeur}, Valeur: {kvp.Value}");
+            //}
+
+            Dictionary<Noeud<string>, double> plus_petit_cheminS_bellman = metro.BellmanFord(metro.Sommets[0]);
+
+
+            foreach (var bell in plus_petit_cheminS_bellman)
             {
-                Console.WriteLine($"Clé: {kvp.Key}, Valeur: {kvp.Value}");
+                Console.WriteLine($"Clé: {bell.Key.Valeur}, Valeur: {bell.Value}");
             }
-
 
             // Dessiner le graphe et sauvegarder l'image
             metro.DessinerGraphe("graphe.png");

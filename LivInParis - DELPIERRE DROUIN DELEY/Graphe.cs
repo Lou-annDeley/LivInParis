@@ -152,6 +152,68 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return distances;
         }
 
+        public List<Noeud<T>> Dijkstra2(Noeud<T> depart, Noeud<T> arrivee)
+        {
+            Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
+            Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+
+            foreach (var noeud in Sommets)
+            {
+                distances[noeud] = double.PositiveInfinity;
+                predecesseurs[noeud] = null;
+            }
+            distances[depart] = 0;
+
+            var filePriorite = new SortedSet<Noeud<T>>(Comparer<Noeud<T>>.Create((a, b) =>
+            {
+                return distances[a].CompareTo(distances[b]);
+            }));
+
+            foreach (var noeud in Sommets)
+            {
+                filePriorite.Add(noeud);
+            }
+
+            while (filePriorite.Count > 0)
+            {
+                Noeud<T> noeudActuel = filePriorite.Min;
+                filePriorite.Remove(noeudActuel);
+
+                if (noeudActuel.Equals(arrivee))
+                {
+                    break;
+                }
+
+                foreach (var lien in noeudActuel.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
+                    double nouvelleDistance = distances[noeudActuel] + lien.Poids;
+
+                    if (nouvelleDistance < distances[voisin])
+                    {
+                        distances[voisin] = nouvelleDistance;
+                        predecesseurs[voisin] = noeudActuel;
+                        filePriorite.Remove(voisin);
+                        filePriorite.Add(voisin);
+                    }
+                }
+            }
+
+            List<Noeud<T>> chemin = new List<Noeud<T>>();
+            Noeud<T> noeudCourant = arrivee;
+            while (noeudCourant != null)
+            {
+                chemin.Insert(0, noeudCourant);
+                noeudCourant = predecesseurs[noeudCourant];
+            }
+
+            return chemin; // Retourne uniquement la liste des nœuds empruntés
+        }
+    
+
+
+
+
         /// <summary>
         /// Algo du plus petit chemin : BellmanFord
         /// </summary>

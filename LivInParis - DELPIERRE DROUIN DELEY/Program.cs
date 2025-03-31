@@ -84,24 +84,32 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            //Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
+            Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
 
 
-            //foreach (var kvp in plus_petit_cheminS)
-            //{
-            //    Console.WriteLine($"Clé: {kvp.Key.Valeur}, Valeur: {kvp.Value}");
-            //}
-
-            Dictionary<Noeud<string>, double> plus_petit_cheminS_bellman = metro.BellmanFord(metro.Sommets[0]);
-
-
-            foreach (var bell in plus_petit_cheminS_bellman)
+            foreach (var kvp in plus_petit_cheminS)
             {
-                Console.WriteLine($"Clé: {bell.Key.Valeur}, Valeur: {bell.Value}");
+                Console.WriteLine($"Clé: {kvp.Key.Valeur}, Valeur: {kvp.Value}");
             }
+
+            List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra2(metro.Sommets[0], metro.Sommets[3]);
+            Console.WriteLine("Nouveau djikstra, le chemin est ");
+            foreach (Noeud<string> noeud1 in plus_petit_cheminS2)
+            {
+                Console.Write(noeud1.Valeur+ " ");
+            }
+
+            //Dictionary<Noeud<string>, double> plus_petit_cheminS_bellman = metro.BellmanFord(metro.Sommets[0]);
+
+
+            //foreach (var bell in plus_petit_cheminS_bellman)
+            //{
+            //    Console.WriteLine($"Clé: {bell.Key.Valeur}, Valeur: {bell.Value}");
+            //}
 
             // Dessiner le graphe et sauvegarder l'image
             metro.DessinerGraphe("graphe.png");
+
         }
     }
 }

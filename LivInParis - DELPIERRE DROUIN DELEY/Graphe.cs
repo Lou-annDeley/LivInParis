@@ -109,48 +109,159 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        public void DessinerGraphe2(string outputPath)
+        {
+            int width = 3000, height = 2000; // Image encore plus grande
+            var bitmap = new SKBitmap(width, height);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.White);
+
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
+            var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 50, IsAntialias = true }; // Texte en blanc pour contraster avec les cercles
+
+            int nodeRadius = 50;  // Nœuds légèrement plus grands
+            int minSpacing = 250; // Espacement minimum augmenté pour éviter les chevauchements
+            Random rand = new Random();
+
+            // Liste de couleurs pour les nœuds
+            SKColor[] nodeColors = { SKColors.Red, SKColors.Blue, SKColors.Green, SKColors.Orange, SKColors.Purple, SKColors.Brown };
+
+            Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
+            List<SKPoint> placedPositions = new List<SKPoint>();
+
+            foreach (var noeud in Sommets)
+            {
+                SKPoint pos;
+                bool overlapping;
+                int attempts = 0;
+
+                // Générer une position aléatoire bien espacée
+                do
+                {
+                    float x = rand.Next(nodeRadius, width - nodeRadius);
+                    float y = rand.Next(nodeRadius, height - nodeRadius);
+                    pos = new SKPoint(x, y);
+
+                    overlapping = placedPositions.Any(p => Math.Sqrt(Math.Pow(p.X - x, 2) + Math.Pow(p.Y - y, 2)) < minSpacing);
+                    attempts++;
+                } while (overlapping && attempts < 100); // Éviter une boucle infinie
+
+                placedPositions.Add(pos);
+                positions[noeud] = pos;
+            }
+
+            // Dessiner les arêtes (liens)
+            foreach (var noeud in Sommets)
+            {
+                foreach (var lien in noeud.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud2;
+                    if (positions.ContainsKey(voisin))
+                    {
+                        SKPoint point1 = positions[noeud];
+                        SKPoint point2 = positions[voisin];
+                        canvas.DrawLine(point1, point2, paintEdge);
+                    }
+                }
+            }
+
+            // Dessiner les nœuds avec couleurs et textes
+            int colorIndex = 0;
+            foreach (var noeud in Sommets)
+            {
+                SKPoint pos = positions[noeud];
+
+                // Choisir une couleur pour le nœud (rotation sur la liste)
+                var paintNode = new SKPaint { Color = nodeColors[colorIndex % nodeColors.Length], Style = SKPaintStyle.Fill };
+                colorIndex++;
+
+                // Dessiner le cercle du nœud
+                canvas.DrawCircle(pos, nodeRadius, paintNode);
+
+                // Ajuster la taille du texte pour qu'il rentre bien dans le nœud
+                var text = noeud.Valeur.ToString();
+                float textSize = 50;
+                fontPaint.TextSize = textSize;
+
+                while (fontPaint.MeasureText(text) > 2 * nodeRadius - 10)
+                {
+                    fontPaint.TextSize -= 1;
+                }
+
+                // Centrer le texte dans le nœud
+                float textWidth = fontPaint.MeasureText(text);
+                float textX = pos.X - textWidth / 2;
+                float textY = pos.Y + fontPaint.TextSize / 3;
+
+                canvas.DrawText(text, textX, textY, fontPaint);
+            }
+
+            // Sauvegarde de l'image
+            using (var image = SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+            using (var stream = System.IO.File.OpenWrite(outputPath))
+            {
+                data.SaveTo(stream);
+            }
+        }
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Algo du plus petit chemin : Dijkstra
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public Dictionary<Noeud<T>, double> Dijkstra(Noeud<T> source)
-        {
-            // Dictionnaire des distances depuis la source
-            Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
-            Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
-            HashSet<Noeud<T>> nonVisites = new HashSet<Noeud<T>>(Sommets);
+        //public Dictionary<Noeud<T>, double> Dijkstra(Noeud<T> source)
+        //{
+        //    // Dictionnaire des distances depuis la source
+        //    Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
+        //    Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+        //    HashSet<Noeud<T>> nonVisites = new HashSet<Noeud<T>>(Sommets);
 
-            // Initialisation : toutes les distances à l'infini sauf la source
-            foreach (var noeud in Sommets)
-            {
-                distances[noeud] = double.PositiveInfinity;
-            }
-            distances[source] = 0;
+        //    // Initialisation : toutes les distances à l'infini sauf la source
+        //    foreach (var noeud in Sommets)
+        //    {
+        //        distances[noeud] = double.PositiveInfinity;
+        //    }
+        //    distances[source] = 0;
 
-            while (nonVisites.Count > 0)
-            {
-                // Sélectionner le nœud avec la plus petite distance
-                Noeud<T> noeudActuel = nonVisites.OrderBy(n => distances[n]).First();
-                nonVisites.Remove(noeudActuel);
+        //    while (nonVisites.Count > 0)
+        //    {
+        //        // Sélectionner le nœud avec la plus petite distance
+        //        Noeud<T> noeudActuel = nonVisites.OrderBy(n => distances[n]).First();
+        //        nonVisites.Remove(noeudActuel);
 
-                // Parcourir ses voisins
-                foreach (var lien in noeudActuel.Voisins)
-                {
-                    Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
-                    if (!nonVisites.Contains(voisin)) continue;
+        //        // Parcourir ses voisins
+        //        foreach (var lien in noeudActuel.Voisins)
+        //        {
+        //            Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
+        //            if (!nonVisites.Contains(voisin)) continue;
 
-                    double nouvelleDistance = distances[noeudActuel] + lien.Poids;
-                    if (nouvelleDistance < distances[voisin])
-                    {
-                        distances[voisin] = nouvelleDistance;
-                        predecesseurs[voisin] = noeudActuel;
-                    }
-                }
-            }
+        //            double nouvelleDistance = distances[noeudActuel] + lien.Poids;
+        //            if (nouvelleDistance < distances[voisin])
+        //            {
+        //                distances[voisin] = nouvelleDistance;
+        //                predecesseurs[voisin] = noeudActuel;
+        //            }
+        //        }
+        //    }
 
-            return distances;
-        }
+        //    return distances;
+        //}
 
         public List<Noeud<T>> Dijkstra2(Noeud<T> depart, Noeud<T> arrivee)
         {
@@ -220,13 +331,62 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// <param name="source"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public Dictionary<Noeud<T>, double> BellmanFord(Noeud<T> source)
+        //public Dictionary<Noeud<T>, double> BellmanFord(Noeud<T> source)
+        //{
+        //    // Dictionnaire des distances depuis la source
+        //    Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
+        //    Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+
+        //    // Initialisation : toutes les distances à l'infini sauf la source
+        //    foreach (var noeud in Sommets)
+        //    {
+        //        distances[noeud] = double.PositiveInfinity;
+        //        predecesseurs[noeud] = null;
+        //    }
+        //    distances[source] = 0;
+
+        //    // Boucle principale de Bellman-Ford
+        //    int n = Sommets.Count;
+        //    for (int i = 0; i < n - 1; i++)
+        //    {
+        //        foreach (var noeud in Sommets)
+        //        {
+        //            foreach (var lien in noeud.Voisins)
+        //            {
+        //                Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
+        //                double nouvelleDistance = distances[noeud] + lien.Poids;
+
+        //                if (nouvelleDistance < distances[voisin])
+        //                {
+        //                    distances[voisin] = nouvelleDistance;
+        //                    predecesseurs[voisin] = noeud;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // Vérification des cycles de poids négatif
+        //    foreach (var noeud in Sommets)
+        //    {
+        //        foreach (var lien in noeud.Voisins)
+        //        {
+        //            Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
+        //            if (distances[noeud] + lien.Poids < distances[voisin])
+        //            {
+        //                throw new Exception("Il y a un circuit/cycle de poids négatif");
+        //            }
+        //        }
+        //    }
+
+        //    return distances;
+        //}
+
+        public List<Noeud<T>> BellmanFord2(Noeud<T> source, Noeud<T> destination)
         {
-            // Dictionnaire des distances depuis la source
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
             Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
 
-            // Initialisation : toutes les distances à l'infini sauf la source
+            // Initialisation des distances à l'infini sauf la source
             foreach (var noeud in Sommets)
             {
                 distances[noeud] = double.PositiveInfinity;
@@ -267,7 +427,22 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            return distances;
+            // Construction du chemin le plus court jusqu'à la destination
+            List<Noeud<T>> chemin = new List<Noeud<T>>();
+            Noeud<T> courant = destination;
+
+            if (distances[destination] == double.PositiveInfinity)
+            {
+                return chemin; // Aucun chemin trouvé
+            }
+
+            while (courant != null)
+            {
+                chemin.Insert(0, courant);
+                courant = predecesseurs[courant];
+            }
+
+            return chemin;
         }
 
         /// <summary>

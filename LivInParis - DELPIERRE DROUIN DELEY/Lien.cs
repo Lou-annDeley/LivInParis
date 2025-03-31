@@ -12,6 +12,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         public Noeud<T> Noeud2 { get; }  // Second nœud (station connectée)
         public double Poids { get; }  // Distance ou temps entre les deux nœuds
 
+        /// <summary>
+        /// Constructeur Lien
+        /// </summary>
+        /// <param name="noeud1"></param>
+        /// <param name="noeud2"></param>
+        /// <param name="poids"></param>
         public Lien(Noeud<T> noeud1, Noeud<T> noeud2, double poids)
         {
             Noeud1 = noeud1;

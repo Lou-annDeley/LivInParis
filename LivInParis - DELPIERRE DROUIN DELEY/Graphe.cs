@@ -13,11 +13,19 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
     {
         public List<Noeud<T>> Sommets { get; }  // Liste des nœuds du graphe
 
+        /// <summary>
+        /// Constructeur Graphe
+        /// </summary>
         public Graphe()
         {
             Sommets = new List<Noeud<T>>();
         }
 
+        /// <summary>
+        /// Fonction qui ajoute un sommet au graphe
+        /// </summary>
+        /// <param name="valeur"></param>
+        /// <returns></returns>
         public Noeud<T> AjouterSommet(T valeur)
         {
             Noeud<T> noeud = new Noeud<T>(valeur);
@@ -25,6 +33,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return noeud;
         }
 
+        /// <summary>
+        /// Fonction qui ajoute un lien entre deux noeuds
+        /// </summary>
+        /// <param name="noeud1"></param>
+        /// <param name="noeud2"></param>
+        /// <param name="poids"></param>
         public void AjouterLien(Noeud<T> noeud1, Noeud<T> noeud2, double poids)
         {
             Lien<T> lien = new Lien<T>(noeud1, noeud2, poids);
@@ -95,6 +109,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        /// <summary>
+        /// Algo du plus petit chemin : Dijkstra
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public Dictionary<Noeud<T>, double> Dijkstra(Noeud<T> source)
         {
             // Dictionnaire des distances depuis la source
@@ -133,6 +152,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return distances;
         }
 
+        /// <summary>
+        /// Algo du plus petit chemin : BellmanFord
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public Dictionary<Noeud<T>, double> BellmanFord(Noeud<T> source)
         {
             // Dictionnaire des distances depuis la source
@@ -183,6 +208,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return distances;
         }
 
+        /// <summary>
+        /// Algo du plus petit chemin : FloydWarshall
+        /// </summary>
+        /// <returns></returns>
         public double[,] FloydWarshall()
         {
             int n = Sommets.Count;
@@ -242,6 +271,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return distances;
         }
 
+        /// <summary>
+        /// Sous fonction de FloydWarshall pour la matrice de distances
+        /// </summary>
+        /// <param name="distances"></param>
         public void AfficherMatriceDistances(double[,] distances)
         {
             int n = distances.GetLength(0);

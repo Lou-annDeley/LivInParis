@@ -112,3 +112,5 @@ C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\L
 C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.pdb
 C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\LivInParis - DELPIERRE DROUIN DELEY.genruntimeconfig.cache
 C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0\ref\LivInParis - DELPIERRE DROUIN DELEY.dll
+C:\Users\alixd\OneDrive\Bureau\Pb scientifique info\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\System.Reactive.dll
+C:\Users\alixd\OneDrive\Bureau\Pb scientifique info\LivInParis\LivInParis - DELPIERRE DROUIN DELEY\bin\Debug\net7.0\System.Reactive.Windows.Forms.dll

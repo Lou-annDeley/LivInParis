@@ -11,6 +11,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
     {
         public T Valeur { get; set; }  // Stocke la valeur du nœud (ex: une station de métro)
         public List<Lien<T>> Voisins { get; }  // Liste des liens (connexions) vers d'autres nœuds
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         /// <summary>
         /// Constructeur Noeud

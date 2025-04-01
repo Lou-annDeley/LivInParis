@@ -14,19 +14,19 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         static void Main(string[] args)
         {
 
-            MySqlConnection maConnexion = null;
-            try
-            {
-                string connexionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
-                maConnexion = new MySqlConnection(connexionString);
-                maConnexion.Open();
+            //MySqlConnection maConnexion = null;
+            //try
+            //{
+            //    string connexionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
+            //    maConnexion = new MySqlConnection(connexionString);
+            //    maConnexion.Open();
                 
-            }
-            catch(MySqlException e )
-            {
-                Console.WriteLine("ErreurConnexion :"+e.ToString());
-                return;
-            }
+            //}
+            //catch(MySqlException e )
+            //{
+            //    Console.WriteLine("ErreurConnexion :"+e.ToString());
+            //    return;
+            //}
 
 
 
@@ -49,8 +49,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 {
                     int id = row.Cell(1).GetValue<int>(); // ID de la station
                     string station = row.Cell(2).GetString(); // Nom de la station
+                    
 
                     Noeud<string> noeud = metro.AjouterSommet(station);
+                       
                     noeuds[id] = noeud;
                 }
 
@@ -139,7 +141,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             //}
 
             // Dessiner le graphe et sauvegarder l'image
-            metro.DessinerGraphe2("graphe.png");
+            metro.DessinerGraphe("graphe.png");
 
         }
     }

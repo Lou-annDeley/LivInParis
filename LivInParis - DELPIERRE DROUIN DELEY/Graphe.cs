@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using SkiaSharp;
-
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Runtime.CompilerServices;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -54,33 +56,66 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// 
         public void DessinerGraphe(string outputPath)
         {
-            int width = 600, height = 600;
+            int width = 3000, height = 2000; // Taille de l'image
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
 
-            var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 2 };
-            var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 14 };
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
+            var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 50, IsAntialias = true };
 
-            int rayon = 250; // Rayon du cercle
-            SKPoint centre = new SKPoint(width / 2, height / 2);
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            int totalNoeuds = Sommets.Count;
-            int index = 0;
-
-            // Calculer les positions des nœuds sur un cercle
-            foreach (var noeud in Sommets)
+            // Charger les données depuis le fichier Excel
+            int k = 0;
+            using (var workbook = new XLWorkbook("MetroParis.xlsx"))
             {
-                double angle = 2 * Math.PI * index / totalNoeuds;
-                float x = centre.X + (float)(rayon * Math.Cos(angle));
-                float y = centre.Y + (float)(rayon * Math.Sin(angle));
-                positions[noeud] = new SKPoint(x, y);
-                index++;
+                var sheetNoeuds = workbook.Worksheet("Noeuds");
+
+                // Lecture des stations (Noeuds) à partir de la feuille Excel
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
+                {
+                    double latitude = 0;
+                    double longitude = 0;
+
+                    // Essayer de récupérer la latitude
+                    if (!row.Cell(5).TryGetValue<double>(out latitude))
+                    {
+                        Console.WriteLine($"Erreur de conversion de la latitude pour la station {row.Cell(2).GetString()}");
+                        continue; // Si la conversion échoue, passer à la ligne suivante
+                    }
+
+                    // Essayer de récupérer la longitude
+                    if (!row.Cell(4).TryGetValue<double>(out longitude))
+                    {
+                        Console.WriteLine($"Erreur de conversion de la longitude pour la station {row.Cell(2).GetString()}");
+                        continue; // Si la conversion échoue, passer à la ligne suivante
+                    }
+
+                    Console.WriteLine($"Latitude: {latitude}, Longitude: {longitude}");
+
+                    // Assigner la latitude et la longitude aux nœuds
+                    Sommets[k].Latitude = latitude;
+                    Console.WriteLine("ATTENTION" + latitude);
+                    Sommets[k].Longitude = longitude;
+                    k++;
+                }
             }
 
-            // Dessiner les arêtes (lien entre les nœuds)
+            double minLat = 48.819106595610265;
+            double maxLat = 48.897802691407826;
+            double minLong = 2.2570461929221497;
+            double maxLong = 2.4405400954061127;
+
+            // Calculer les positions des nœuds (les convertir en pixels en fonction des latitudes et longitudes)
+            foreach (var noeud in Sommets)
+            {
+                float x = (float)((noeud.Longitude - minLong) / (maxLong - minLong) * width);
+                float y = (float)((noeud.Latitude - minLat) / (maxLat - minLat) * height);
+                positions[noeud] = new SKPoint(x, y);
+            }
+
+            // Dessiner les arêtes (liens entre les nœuds)
             foreach (var noeud in Sommets)
             {
                 foreach (var lien in noeud.Voisins)
@@ -88,135 +123,27 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     Noeud<T> voisin = lien.Noeud2;
                     SKPoint point1 = positions[noeud];
                     SKPoint point2 = positions[voisin];
-                    canvas.DrawLine(point1, point2, paintEdge); // Lien entre les nœuds
+                    canvas.DrawLine(point1, point2, paintEdge); // Dessiner le lien entre les nœuds
                 }
             }
 
-            // Dessiner les nœuds (cercles)
+            // Dessiner les nœuds (stations)
             foreach (var noeud in Sommets)
             {
                 SKPoint pos = positions[noeud];
-                canvas.DrawCircle(pos, 15, paintNode); // Cercle représentant le nœud
+                var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
+                canvas.DrawCircle(pos, 15, paintNode); // Dessiner le cercle représentant le nœud
                 canvas.DrawText(noeud.Valeur.ToString(), pos.X - 5, pos.Y + 5, fontPaint); // Texte du nœud
             }
 
-            // Sauvegarder l'image dans le fichier de sortie
+            // Sauvegarder l'image
             using (var image = SKImage.FromBitmap(bitmap))
             using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
-            using (var stream = System.IO.File.OpenWrite(outputPath))
+            using (var stream = File.OpenWrite(outputPath))
             {
                 data.SaveTo(stream);
             }
         }
-
-        public void DessinerGraphe2(string outputPath)
-        {
-            int width = 3000, height = 2000; // Image encore plus grande
-            var bitmap = new SKBitmap(width, height);
-            var canvas = new SKCanvas(bitmap);
-            canvas.Clear(SKColors.White);
-
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
-            var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 50, IsAntialias = true }; // Texte en blanc pour contraster avec les cercles
-
-            int nodeRadius = 50;  // Nœuds légèrement plus grands
-            int minSpacing = 250; // Espacement minimum augmenté pour éviter les chevauchements
-            Random rand = new Random();
-
-            // Liste de couleurs pour les nœuds
-            SKColor[] nodeColors = { SKColors.Red, SKColors.Blue, SKColors.Green, SKColors.Orange, SKColors.Purple, SKColors.Brown };
-
-            Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
-            List<SKPoint> placedPositions = new List<SKPoint>();
-
-            foreach (var noeud in Sommets)
-            {
-                SKPoint pos;
-                bool overlapping;
-                int attempts = 0;
-
-                // Générer une position aléatoire bien espacée
-                do
-                {
-                    float x = rand.Next(nodeRadius, width - nodeRadius);
-                    float y = rand.Next(nodeRadius, height - nodeRadius);
-                    pos = new SKPoint(x, y);
-
-                    overlapping = placedPositions.Any(p => Math.Sqrt(Math.Pow(p.X - x, 2) + Math.Pow(p.Y - y, 2)) < minSpacing);
-                    attempts++;
-                } while (overlapping && attempts < 100); // Éviter une boucle infinie
-
-                placedPositions.Add(pos);
-                positions[noeud] = pos;
-            }
-
-            // Dessiner les arêtes (liens)
-            foreach (var noeud in Sommets)
-            {
-                foreach (var lien in noeud.Voisins)
-                {
-                    Noeud<T> voisin = lien.Noeud2;
-                    if (positions.ContainsKey(voisin))
-                    {
-                        SKPoint point1 = positions[noeud];
-                        SKPoint point2 = positions[voisin];
-                        canvas.DrawLine(point1, point2, paintEdge);
-                    }
-                }
-            }
-
-            // Dessiner les nœuds avec couleurs et textes
-            int colorIndex = 0;
-            foreach (var noeud in Sommets)
-            {
-                SKPoint pos = positions[noeud];
-
-                // Choisir une couleur pour le nœud (rotation sur la liste)
-                var paintNode = new SKPaint { Color = nodeColors[colorIndex % nodeColors.Length], Style = SKPaintStyle.Fill };
-                colorIndex++;
-
-                // Dessiner le cercle du nœud
-                canvas.DrawCircle(pos, nodeRadius, paintNode);
-
-                // Ajuster la taille du texte pour qu'il rentre bien dans le nœud
-                var text = noeud.Valeur.ToString();
-                float textSize = 50;
-                fontPaint.TextSize = textSize;
-
-                while (fontPaint.MeasureText(text) > 2 * nodeRadius - 10)
-                {
-                    fontPaint.TextSize -= 1;
-                }
-
-                // Centrer le texte dans le nœud
-                float textWidth = fontPaint.MeasureText(text);
-                float textX = pos.X - textWidth / 2;
-                float textY = pos.Y + fontPaint.TextSize / 3;
-
-                canvas.DrawText(text, textX, textY, fontPaint);
-            }
-
-            // Sauvegarde de l'image
-            using (var image = SKImage.FromBitmap(bitmap))
-            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
-            using (var stream = System.IO.File.OpenWrite(outputPath))
-            {
-                data.SaveTo(stream);
-            }
-        }
-
-        
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -320,7 +247,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             return chemin; // Retourne uniquement la liste des nœuds empruntés
         }
-    
+
 
 
 
@@ -529,8 +456,5 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 Console.WriteLine();
             }
         }
-
-
-
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LivInParis - DELPIERRE DROU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "..\TestProject1\TestProject1.csproj", "{11FDBBDD-207D-450E-91FA-A660BC3CF2D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface LivInParis - DELPIERRE DROUIN DELEY", "..\Interface LivInParis - DELPIERRE DROUIN DELEY\Interface LivInParis - DELPIERRE DROUIN DELEY.csproj", "{1AB673C6-A2CD-4958-9044-5A3B5A6CE94B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface LivInParis", "..\Interface LivInParis\Interface LivInParis.csproj", "{1485BD3D-4EC7-457B-8604-8A79D67A252B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{11FDBBDD-207D-450E-91FA-A660BC3CF2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11FDBBDD-207D-450E-91FA-A660BC3CF2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11FDBBDD-207D-450E-91FA-A660BC3CF2D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AB673C6-A2CD-4958-9044-5A3B5A6CE94B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AB673C6-A2CD-4958-9044-5A3B5A6CE94B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AB673C6-A2CD-4958-9044-5A3B5A6CE94B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AB673C6-A2CD-4958-9044-5A3B5A6CE94B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1485BD3D-4EC7-457B-8604-8A79D67A252B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1485BD3D-4EC7-457B-8604-8A79D67A252B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1485BD3D-4EC7-457B-8604-8A79D67A252B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1485BD3D-4EC7-457B-8604-8A79D67A252B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

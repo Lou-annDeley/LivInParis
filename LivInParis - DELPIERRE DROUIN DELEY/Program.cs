@@ -4,6 +4,8 @@ using System.IO;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Bibliography;
 using SkiaSharp;
+using MySql.Data.MySqlClient;
+
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -11,6 +13,27 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
     {
         static void Main(string[] args)
         {
+
+            MySqlConnection maConnexion = null;
+            try
+            {
+                string connexionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
+                maConnexion = new MySqlConnection(connexionString);
+                maConnexion.Open();
+                
+            }
+            catch(MySqlException e )
+            {
+                Console.WriteLine("ErreurConnexion :"+e.ToString());
+                return;
+            }
+
+
+
+
+
+
+
             string filePath = "MetroParis.xlsx"; // Nom du fichier Excel
 
             Graphe<string> metro = new Graphe<string>();

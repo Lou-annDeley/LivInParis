@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/r/6zkDj+5FoayGjEg+aJSFa3t1w+VvibPXIoyseTKvnPYYSgn1r/9Tepj7e3/u++AXzhy6qIt2wqO6O9mjyMQ==",
+  "dgSpecHash": "u22+zXLw9L8dqLEvQ0PXx8S3Iswhf/bQLR54PoYskUJ6hvHGPoycqIwnT+Nm8Ips3UlwW20jRqVtdjcKzRtynw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj",
+  "projectFilePath": "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\Interface LivInParis - DELPIERRE DROUIN DELEY\\Interface LivInParis - DELPIERRE DROUIN DELEY.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\warfy\\.nuget\\packages\\closedxml\\0.104.2\\closedxml.0.104.2.nupkg.sha512",
     "C:\\Users\\warfy\\.nuget\\packages\\closedxml.parser\\1.2.0\\closedxml.parser.1.2.0.nupkg.sha512",

@@ -1,0 +1,6 @@
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface_LivInParis___DELPIERRE_DROUIN_DELEY.MyForm.resources
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface LivInParis - DELPIERRE DROUIN DELEY.csproj.GenerateResource.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface LivInParis - DELPIERRE DROUIN DELEY.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface LivInParis - DELPIERRE DROUIN DELEY.AssemblyInfoInputs.cache
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface LivInParis - DELPIERRE DROUIN DELEY.AssemblyInfo.cs
+C:\Users\warfy\Desktop\ESILV\A2\S2\Info\Pb scientifique info\GitHub\LivInParis\Interface LivInParis - DELPIERRE DROUIN DELEY\obj\Debug\net7.0-windows\Interface LivInParis - DELPIERRE DROUIN DELEY.csproj.CoreCompileInputs.cache

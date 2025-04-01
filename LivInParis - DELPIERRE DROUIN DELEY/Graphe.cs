@@ -79,14 +79,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     double longitude = 0;
 
                     // Essayer de récupérer la latitude
-                    if (!row.Cell(5).TryGetValue<double>(out latitude))
+                    if (!double.TryParse(row.Cell(5).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out latitude))
                     {
                         Console.WriteLine($"Erreur de conversion de la latitude pour la station {row.Cell(2).GetString()}");
                         continue; // Si la conversion échoue, passer à la ligne suivante
                     }
 
                     // Essayer de récupérer la longitude
-                    if (!row.Cell(4).TryGetValue<double>(out longitude))
+                    if (!double.TryParse(row.Cell(4).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out longitude))
                     {
                         Console.WriteLine($"Erreur de conversion de la longitude pour la station {row.Cell(2).GetString()}");
                         continue; // Si la conversion échoue, passer à la ligne suivante
@@ -96,7 +96,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                     // Assigner la latitude et la longitude aux nœuds
                     Sommets[k].Latitude = latitude;
-                    Console.WriteLine("ATTENTION" + latitude);
                     Sommets[k].Longitude = longitude;
                     k++;
                 }

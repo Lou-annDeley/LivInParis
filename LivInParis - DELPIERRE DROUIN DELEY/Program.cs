@@ -98,7 +98,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             {
                 Console.Write(noeud1.Valeur+ " ");
             }
-
+            Console.WriteLine();
             List<Noeud<string>> plus_petit_cheminS3 = metro.BellmanFord2(metro.Sommets[0], metro.Sommets[3]);
             Console.WriteLine("Nouveau bellman, le chemin est ");
             foreach (Noeud<string> noeud1 in plus_petit_cheminS3)

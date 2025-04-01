@@ -14,19 +14,19 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         static void Main(string[] args)
         {
 
-            //MySqlConnection maConnexion = null;
-            //try
-            //{
-            //    string connexionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
-            //    maConnexion = new MySqlConnection(connexionString);
-            //    maConnexion.Open();
-                
-            //}
-            //catch(MySqlException e )
-            //{
-            //    Console.WriteLine("ErreurConnexion :"+e.ToString());
-            //    return;
-            //}
+            MySqlConnection maConnexion = null;
+            try
+            {
+                string connexionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
+                maConnexion = new MySqlConnection(connexionString);
+                maConnexion.Open();
+
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("ErreurConnexion :" + e.ToString());
+                return;
+            }
 
 
 

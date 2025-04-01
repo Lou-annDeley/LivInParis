@@ -92,8 +92,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         continue; // Si la conversion échoue, passer à la ligne suivante
                     }
 
-                    Console.WriteLine($"Latitude: {latitude}, Longitude: {longitude}");
-
                     // Assigner la latitude et la longitude aux nœuds
                     Sommets[k].Latitude = latitude;
                     Sommets[k].Longitude = longitude;
@@ -144,52 +142,89 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        /// <summary>
+        /// Fonction qui met en évidence le plus court chemin à emprunter
+        /// </summary>
+        /// <param name="chemin"></param>
+        /// <param name="outputPath"></param>
+        public void MettreEnEvidenceChemin(List<Noeud<T>> chemin, string outputPath)
+        {
+            int width = 3000, height = 2000; // Taille de l'image
+            var bitmap = new SKBitmap(width, height);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.White);
+
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 2 }; // Liens normaux
+            var paintEdgeHighlighted = new SKPaint { Color = SKColors.Blue, StrokeWidth = 8 }; // Liens en gras pour le chemin
+            var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 50, IsAntialias = true };
+
+            Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
+
+            // Calcul des positions des nœuds
+            double minLat = 48.819106595610265;
+            double maxLat = 48.897802691407826;
+            double minLong = 2.2570461929221497;
+            double maxLong = 2.4405400954061127;
+
+            foreach (var noeud in Sommets)
+            {
+                float x = (float)((noeud.Longitude - minLong) / (maxLong - minLong) * width);
+                float y = (float)((noeud.Latitude - minLat) / (maxLat - minLat) * height);
+                positions[noeud] = new SKPoint(x, y);
+            }
+
+            // Dessiner tous les liens normaux
+            foreach (var noeud in Sommets)
+            {
+                foreach (var lien in noeud.Voisins)
+                {
+                    Noeud<T> voisin = lien.Noeud2;
+                    SKPoint point1 = positions[noeud];
+                    SKPoint point2 = positions[voisin];
+
+                    canvas.DrawLine(point1, point2, paintEdge); // Dessiner tous les liens en noir fin
+                }
+            }
+
+            // Mettre en évidence les liens du plus court chemin
+            for (int i = 0; i < chemin.Count - 1; i++)
+            {
+                Noeud<T> noeud1 = chemin[i];
+                Noeud<T> noeud2 = chemin[i + 1];
+
+                SKPoint point1 = positions[noeud1];
+                SKPoint point2 = positions[noeud2];
+
+                canvas.DrawLine(point1, point2, paintEdgeHighlighted); // Dessiner les liens du chemin en bleu épais
+            }
+
+            // Dessiner les nœuds (stations)
+            foreach (var noeud in Sommets)
+            {
+                SKPoint pos = positions[noeud];
+                var paintNode = new SKPaint { Color = chemin.Contains(noeud) ? SKColors.Blue : SKColors.Red, Style = SKPaintStyle.Fill };
+                canvas.DrawCircle(pos, 15, paintNode); // Cercle représentant la station
+                canvas.DrawText(noeud.Valeur.ToString(), pos.X - 5, pos.Y + 5, fontPaint); // Nom de la station
+            }
+
+            // Sauvegarder l'image
+            using (var image = SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+            using (var stream = File.OpenWrite(outputPath))
+            {
+                data.SaveTo(stream);
+            }
+        }
+
 
 
         /// <summary>
-        /// Algo du plus petit chemin : Dijkstra
+        /// Fonction du plus court chemin : Dijkstra
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="depart"></param>
+        /// <param name="arrivee"></param>
         /// <returns></returns>
-        //public Dictionary<Noeud<T>, double> Dijkstra(Noeud<T> source)
-        //{
-        //    // Dictionnaire des distances depuis la source
-        //    Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
-        //    Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
-        //    HashSet<Noeud<T>> nonVisites = new HashSet<Noeud<T>>(Sommets);
-
-        //    // Initialisation : toutes les distances à l'infini sauf la source
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        distances[noeud] = double.PositiveInfinity;
-        //    }
-        //    distances[source] = 0;
-
-        //    while (nonVisites.Count > 0)
-        //    {
-        //        // Sélectionner le nœud avec la plus petite distance
-        //        Noeud<T> noeudActuel = nonVisites.OrderBy(n => distances[n]).First();
-        //        nonVisites.Remove(noeudActuel);
-
-        //        // Parcourir ses voisins
-        //        foreach (var lien in noeudActuel.Voisins)
-        //        {
-        //            Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
-        //            if (!nonVisites.Contains(voisin)) continue;
-
-        //            double nouvelleDistance = distances[noeudActuel] + lien.Poids;
-        //            if (nouvelleDistance < distances[voisin])
-        //            {
-        //                distances[voisin] = nouvelleDistance;
-        //                predecesseurs[voisin] = noeudActuel;
-        //            }
-        //        }
-        //    }
-
-        //    return distances;
-        //}
-
-        public List<Noeud<T>> Dijkstra2(Noeud<T> depart, Noeud<T> arrivee)
+        public List<Noeud<T>> Dijkstra(Noeud<T> depart, Noeud<T> arrivee)
         {
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
             Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
@@ -252,62 +287,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
         /// <summary>
-        /// Algo du plus petit chemin : BellmanFord
+        /// Fonction du plus court chemin : BellmanFord
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        //public Dictionary<Noeud<T>, double> BellmanFord(Noeud<T> source)
-        //{
-        //    // Dictionnaire des distances depuis la source
-        //    Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
-        //    Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
-
-        //    // Initialisation : toutes les distances à l'infini sauf la source
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        distances[noeud] = double.PositiveInfinity;
-        //        predecesseurs[noeud] = null;
-        //    }
-        //    distances[source] = 0;
-
-        //    // Boucle principale de Bellman-Ford
-        //    int n = Sommets.Count;
-        //    for (int i = 0; i < n - 1; i++)
-        //    {
-        //        foreach (var noeud in Sommets)
-        //        {
-        //            foreach (var lien in noeud.Voisins)
-        //            {
-        //                Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
-        //                double nouvelleDistance = distances[noeud] + lien.Poids;
-
-        //                if (nouvelleDistance < distances[voisin])
-        //                {
-        //                    distances[voisin] = nouvelleDistance;
-        //                    predecesseurs[voisin] = noeud;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // Vérification des cycles de poids négatif
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        foreach (var lien in noeud.Voisins)
-        //        {
-        //            Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
-        //            if (distances[noeud] + lien.Poids < distances[voisin])
-        //            {
-        //                throw new Exception("Il y a un circuit/cycle de poids négatif");
-        //            }
-        //        }
-        //    }
-
-        //    return distances;
-        //}
-
-        public List<Noeud<T>> BellmanFord2(Noeud<T> source, Noeud<T> destination)
+        public List<Noeud<T>> BellmanFord(Noeud<T> source, Noeud<T> destination)
         {
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
             Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();

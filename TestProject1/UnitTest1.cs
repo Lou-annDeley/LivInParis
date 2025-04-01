@@ -16,7 +16,7 @@ namespace TestProject1
             Noeud<string> noeud = metro.AjouterSommet(station);
             Noeud<string> noeud2 = metro.AjouterSommet(station2);
             metro.AjouterLien(noeud, noeud2,2);
-            List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra2(noeud, noeud2);
+            List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra(noeud, noeud2);
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_cheminS2)
             {
@@ -44,7 +44,7 @@ namespace TestProject1
             metro.AjouterLien(D, E, 4);
 
             
-            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra2(A, E);
+            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra(A, E);
 
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_chemin)
@@ -61,7 +61,7 @@ namespace TestProject1
 
             Noeud<string> A = metro.AjouterSommet("Chatelet");
 
-            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra2(A, A);
+            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra(A, A);
 
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_chemin)
@@ -81,7 +81,7 @@ namespace TestProject1
             Noeud<string> noeud = metro.AjouterSommet(station);
             Noeud<string> noeud2 = metro.AjouterSommet(station2);
             metro.AjouterLien(noeud, noeud2, 2);
-            List<Noeud<string>> plus_petit_cheminS2 = metro.BellmanFord2(noeud, noeud2);
+            List<Noeud<string>> plus_petit_cheminS2 = metro.BellmanFord(noeud, noeud2);
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_cheminS2)
             {
@@ -109,7 +109,7 @@ namespace TestProject1
             metro.AjouterLien(D, E, 4);
 
 
-            List<Noeud<string>> plus_petit_chemin = metro.BellmanFord2(A, E);
+            List<Noeud<string>> plus_petit_chemin = metro.BellmanFord(A, E);
 
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_chemin)
@@ -126,7 +126,7 @@ namespace TestProject1
 
             Noeud<string> A = metro.AjouterSommet("Chatelet");
 
-            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra2(A, A);
+            List<Noeud<string>> plus_petit_chemin = metro.Dijkstra(A, A);
 
             string chemin = "";
             foreach (Noeud<string> c in plus_petit_chemin)

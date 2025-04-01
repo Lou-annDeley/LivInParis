@@ -28,11 +28,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             //}
 
 
-
-
-
-
-
             string filePath = "MetroParis.xlsx"; // Nom du fichier Excel
 
             Graphe<string> metro = new Graphe<string>();
@@ -98,49 +93,47 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
 
             // Afficher les stations et connexions
-            Console.WriteLine("Stations et connexions :");
-            foreach (var noeud in metro.Sommets)
-            {
-                Console.WriteLine($"{noeud.Valeur} :");
-                foreach (var lien in noeud.Voisins)
-                {
-                    Console.WriteLine($" Lien entre {lien.Noeud1.Valeur} et {lien.Noeud2.Valeur} est de poids {lien.Poids}");
-                }
-            }
 
-            //Dictionary<Noeud<string>, double> plus_petit_cheminS = metro.Dijkstra(metro.Sommets[0]);
-
-
-            //foreach (var kvp in plus_petit_cheminS)
+            //Console.WriteLine("Stations et connexions :");
+            //foreach (var noeud in metro.Sommets)
             //{
-            //    Console.WriteLine($"Clé: {kvp.Key.Valeur}, Valeur: {kvp.Value}");
+            //    Console.WriteLine($"{noeud.Valeur} :");
+            //    foreach (var lien in noeud.Voisins)
+            //    {
+            //        Console.WriteLine($" Lien entre {lien.Noeud1.Valeur} et {lien.Noeud2.Valeur} est de poids {lien.Poids}");
+            //    }
             //}
 
-            List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra2(metro.Sommets[0], metro.Sommets[3]);
+            //Afficher les chemins les plus courts
+
+            List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra(metro.Sommets[0], metro.Sommets[38]);
             Console.WriteLine("Nouveau djikstra, le chemin est ");
             foreach (Noeud<string> noeud1 in plus_petit_cheminS2)
             {
-                Console.Write(noeud1.Valeur+ " ");
-            }
-            Console.WriteLine();
-            List<Noeud<string>> plus_petit_cheminS3 = metro.BellmanFord2(metro.Sommets[0], metro.Sommets[3]);
-            Console.WriteLine("Nouveau bellman, le chemin est ");
-            foreach (Noeud<string> noeud1 in plus_petit_cheminS3)
-            {
                 Console.Write(noeud1.Valeur + " ");
             }
+            Console.WriteLine();
+
+            //List<Noeud<string>> plus_petit_cheminS3 = metro.BellmanFord(metro.Sommets[0], metro.Sommets[3]);
+            //Console.WriteLine("Nouveau bellman, le chemin est ");
+            //foreach (Noeud<string> noeud1 in plus_petit_cheminS3)
+            //{
+            //    Console.Write(noeud1.Valeur + " ");
+            //}
 
 
             //Dictionary<Noeud<string>, double> plus_petit_cheminS_bellman = metro.BellmanFord(metro.Sommets[0]);
-
-
             //foreach (var bell in plus_petit_cheminS_bellman)
             //{
             //    Console.WriteLine($"Clé: {bell.Key.Valeur}, Valeur: {bell.Value}");
             //}
 
+
             // Dessiner le graphe et sauvegarder l'image
             metro.DessinerGraphe("graphe.png");
+            Console.WriteLine("Graphe généré");
+            metro.MettreEnEvidenceChemin(plus_petit_cheminS2, "court_chemin.png");
+            Console.WriteLine("Graphe avec plus court chemin généré");
 
         }
     }

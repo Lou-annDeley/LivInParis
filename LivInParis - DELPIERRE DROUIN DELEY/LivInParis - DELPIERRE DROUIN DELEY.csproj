@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="MySql.Data" Version="9.2.0" />
     <PackageReference Include="SkiaSharp" Version="3.116.1" />
   </ItemGroup>
 

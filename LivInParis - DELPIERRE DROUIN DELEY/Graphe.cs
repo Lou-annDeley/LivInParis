@@ -224,157 +224,136 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// <param name="depart"></param>
         /// <param name="arrivee"></param>
         /// <returns></returns>
-        public List<Noeud<T>> Dijkstra(Noeud<T> depart, Noeud<T> arrivee)
+        /// 
+        public List<Noeud<T>> Dijkstra(Noeud<T> source, Noeud<T> destination)
         {
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
             Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
+            Dictionary<Noeud<T>, bool> visited = new Dictionary<Noeud<T>, bool>();
 
-            foreach (var noeud in Sommets)
+            foreach (Noeud<T> noeud in Sommets)
             {
-                distances[noeud] = double.PositiveInfinity;
+                distances[noeud] = double.MaxValue;
+                visited[noeud] = false;
                 predecesseurs[noeud] = null;
             }
-            distances[depart] = 0;
+            distances[source] = 0;
 
-            var filePriorite = new SortedSet<Noeud<T>>(Comparer<Noeud<T>>.Create((a, b) =>
+            for (int i = 0; i < Sommets.Count; i++)
             {
-                return distances[a].CompareTo(distances[b]);
-            }));
-
-            foreach (var noeud in Sommets)
-            {
-                filePriorite.Add(noeud);
-            }
-
-            while (filePriorite.Count > 0)
-            {
-                Noeud<T> noeudActuel = filePriorite.Min;
-                filePriorite.Remove(noeudActuel);
-
-                if (noeudActuel.Equals(arrivee))
-                {
+                Noeud<T> noeudActuel = TrouverNoeudMin(distances, visited);
+                if (noeudActuel == null || noeudActuel.Equals(destination))
                     break;
-                }
 
-                foreach (var lien in noeudActuel.Voisins)
+                visited[noeudActuel] = true;
+
+                foreach (Lien<T> lien in noeudActuel.Voisins)
                 {
                     Noeud<T> voisin = lien.Noeud1.Equals(noeudActuel) ? lien.Noeud2 : lien.Noeud1;
-                    double nouvelleDistance = distances[noeudActuel] + lien.Poids;
-
-                    if (nouvelleDistance < distances[voisin])
+                    if (!visited[voisin] && distances[noeudActuel] + lien.Poids < distances[voisin])
                     {
-                        distances[voisin] = nouvelleDistance;
+                        distances[voisin] = distances[noeudActuel] + lien.Poids;
                         predecesseurs[voisin] = noeudActuel;
-                        filePriorite.Remove(voisin);
-                        filePriorite.Add(voisin);
                     }
                 }
             }
 
-            List<Noeud<T>> chemin = new List<Noeud<T>>();
-            Noeud<T> noeudCourant = arrivee;
-            while (noeudCourant != null)
+            return ReconstruireChemin(predecesseurs, destination);
+        }
+
+        private Noeud<T> TrouverNoeudMin(Dictionary<Noeud<T>, double> distances, Dictionary<Noeud<T>, bool> visited)
+        {
+            double minDistance = double.MaxValue;
+            Noeud<T> minNoeud = null;
+
+            foreach (Noeud<T> noeud in Sommets)
             {
-                chemin.Insert(0, noeudCourant);
-                noeudCourant = predecesseurs[noeudCourant];
+                if (!visited[noeud] && distances[noeud] < minDistance)
+                {
+                    minDistance = distances[noeud];
+                    minNoeud = noeud;
+                }
+            }
+            return minNoeud;
+        }
+
+        private List<Noeud<T>> ReconstruireChemin(Dictionary<Noeud<T>, Noeud<T>> predecesseurs, Noeud<T> destination)
+        {
+            List<Noeud<T>> chemin = new List<Noeud<T>>();
+            Noeud<T> noeudActuel = destination;
+
+            while (noeudActuel != null)
+            {
+                chemin.Insert(0, noeudActuel);
+                noeudActuel = predecesseurs[noeudActuel];
             }
 
-            return chemin; // Retourne uniquement la liste des nœuds empruntés
+            return chemin;
         }
 
 
 
-
-
-        /// <summary>
-        /// Fonction du plus court chemin : BellmanFord
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
         public List<Noeud<T>> BellmanFord(Noeud<T> source, Noeud<T> destination)
         {
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
             Dictionary<Noeud<T>, Noeud<T>> predecesseurs = new Dictionary<Noeud<T>, Noeud<T>>();
 
-            // Initialisation des distances à l'infini sauf la source
-            foreach (var noeud in Sommets)
+            foreach (Noeud<T> noeud in Sommets)
             {
-                distances[noeud] = double.PositiveInfinity;
+                distances[noeud] = double.MaxValue;
                 predecesseurs[noeud] = null;
             }
             distances[source] = 0;
 
-            // Boucle principale de Bellman-Ford
-            int n = Sommets.Count;
-            for (int i = 0; i < n - 1; i++)
+            for (int i = 0; i < Sommets.Count - 1; i++)
             {
-                foreach (var noeud in Sommets)
+                foreach (Noeud<T> noeud in Sommets)
                 {
-                    foreach (var lien in noeud.Voisins)
+                    foreach (Lien<T> lien in noeud.Voisins)
                     {
                         Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
-                        double nouvelleDistance = distances[noeud] + lien.Poids;
-
-                        if (nouvelleDistance < distances[voisin])
+                        if (distances[noeud] != double.MaxValue && distances[noeud] + lien.Poids < distances[voisin])
                         {
-                            distances[voisin] = nouvelleDistance;
+                            distances[voisin] = distances[noeud] + lien.Poids;
                             predecesseurs[voisin] = noeud;
                         }
                     }
                 }
             }
 
-            // Vérification des cycles de poids négatif
-            foreach (var noeud in Sommets)
+            foreach (Noeud<T> noeud in Sommets)
             {
-                foreach (var lien in noeud.Voisins)
+                foreach (Lien<T> lien in noeud.Voisins)
                 {
                     Noeud<T> voisin = lien.Noeud1.Equals(noeud) ? lien.Noeud2 : lien.Noeud1;
-                    if (distances[noeud] + lien.Poids < distances[voisin])
+                    if (distances[noeud] != double.MaxValue && distances[noeud] + lien.Poids < distances[voisin])
                     {
-                        throw new Exception("Il y a un circuit/cycle de poids négatif");
+                        throw new Exception("Graph contains a negative weight cycle");
                     }
                 }
             }
 
-            // Construction du chemin le plus court jusqu'à la destination
-            List<Noeud<T>> chemin = new List<Noeud<T>>();
-            Noeud<T> courant = destination;
-
-            if (distances[destination] == double.PositiveInfinity)
-            {
-                return chemin; // Aucun chemin trouvé
-            }
-
-            while (courant != null)
-            {
-                chemin.Insert(0, courant);
-                courant = predecesseurs[courant];
-            }
-
-            return chemin;
+            return ReconstruireChemin(predecesseurs, destination);
         }
+
 
         /// <summary>
         /// Algo du plus petit chemin : FloydWarshall
         /// </summary>
         /// <returns></returns>
-        public double[,] FloydWarshall()
+        public double FloydWarshall(Noeud<T> source, Noeud<T> destination)
         {
             int n = Sommets.Count;
-            if (n == 0) return new double[0, 0];
+            if (n == 0) return double.PositiveInfinity;
 
             Dictionary<Noeud<T>, int> indexMap = new Dictionary<Noeud<T>, int>();
             Noeud<T>[] noeuds = Sommets.ToArray();
 
-            // Associer chaque nœud à un index unique
             for (int i = 0; i < n; i++)
             {
                 indexMap[noeuds[i]] = i;
             }
 
-            // Initialisation de la matrice des distances
             double[,] distances = new double[n, n];
 
             for (int i = 0; i < n; i++)
@@ -382,13 +361,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 for (int j = 0; j < n; j++)
                 {
                     if (i == j)
-                        distances[i, j] = 0; // Distance à soi-même = 0
+                        distances[i, j] = 0;
                     else
-                        distances[i, j] = double.PositiveInfinity; // Initialisation à l'infini
+                        distances[i, j] = double.PositiveInfinity;
                 }
             }
 
-            // Remplir la matrice avec les poids des arêtes existantes
             foreach (var noeud in Sommets)
             {
                 int i = indexMap[noeud];
@@ -400,7 +378,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            // Algorithme de Floyd-Warshall
             for (int k = 0; k < n; k++)
             {
                 for (int i = 0; i < n; i++)
@@ -416,8 +393,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            return distances;
+            return distances[indexMap[source], indexMap[destination]];
         }
+
+
 
         /// <summary>
         /// Sous fonction de FloydWarshall pour la matrice de distances

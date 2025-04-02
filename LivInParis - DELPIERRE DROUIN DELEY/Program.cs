@@ -393,7 +393,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             int statut = Convert.ToInt32(Console.ReadLine());
                             if(statut == 1)
                             {
-                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                string suppressionClient = "delete from Client where id_Client = " + idClientModif + ";";
                                 MySqlCommand suppClient = maConnexion.CreateCommand();
                                 suppClient.CommandText = suppressionClient;
                                 MySqlDataReader reader = suppClient.ExecuteReader();
@@ -401,7 +401,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 suppClient.Dispose();
                                 Console.WriteLine("Suppression d'un client");
 
-                                string suppressionParticulier = "delete * from particulier where id_particulier = " + idClientModif + ";";
+                                string suppressionParticulier = "delete from particulier where id_particulier = " + idClientModif + ";";
                                 MySqlCommand suppParti = maConnexion.CreateCommand();
                                 suppParti.CommandText = suppressionParticulier;
                                 MySqlDataReader reader2 = suppParti.ExecuteReader();
@@ -411,7 +411,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             }
                             else if (statut == 2)
                             {
-                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                string suppressionClient = "delete from Client where id_Client = " + idClientModif + ";";
                                 MySqlCommand suppClient = maConnexion.CreateCommand();
                                 suppClient.CommandText = suppressionClient;
                                 MySqlDataReader reader = suppClient.ExecuteReader();
@@ -419,7 +419,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 suppClient.Dispose();
                                 Console.WriteLine("Suppression d'un client");
 
-                                string suppressionEntreprise = "delete * from Entreprise where Siret = " + idClientModif + ";";
+                                string suppressionEntreprise = "delete from Entreprise where Siret = " + idClientModif + ";";
                                 MySqlCommand suppEntr = maConnexion.CreateCommand();
                                 suppEntr.CommandText = suppressionEntreprise;
                                 MySqlDataReader reader2 = suppEntr.ExecuteReader();
@@ -498,12 +498,16 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             }  
                             
                         }
-                        if(choixClient == 5)
-                        {
-                            return;
-                        }
+
+                    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
+                    choixClient = Convert.ToInt32(Console.ReadLine());
+
                     }
-                    
+                    if (choixClient == 5)
+                    {
+                        return;
+                    }
+
                 }
                 else if (choix == 2) //cuisiner
                 {
@@ -686,49 +690,16 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         else if (choixCuisinier == 3) //SUPPRIMER
                         {
                             Console.WriteLine("Quel est votre identifiant ?");
-                            int idClientModif = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
-                            int statut = Convert.ToInt32(Console.ReadLine());
-                            if (statut == 1)
-                            {
-                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
-                                MySqlCommand suppClient = maConnexion.CreateCommand();
-                                suppClient.CommandText = suppressionClient;
-                                MySqlDataReader reader = suppClient.ExecuteReader();
-                                reader.Close();
-                                suppClient.Dispose();
-                                Console.WriteLine("Suppression d'un client");
-
-                                string suppressionParticulier = "delete * from particulier where id_particulier = " + idClientModif + ";";
-                                MySqlCommand suppParti = maConnexion.CreateCommand();
-                                suppParti.CommandText = suppressionParticulier;
-                                MySqlDataReader reader2 = suppParti.ExecuteReader();
-                                reader2.Close();
-                                suppParti.Dispose();
-                                Console.WriteLine("Suppression d'un particulier");
-                            }
-                            else if (statut == 2)
-                            {
-                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
-                                MySqlCommand suppClient = maConnexion.CreateCommand();
-                                suppClient.CommandText = suppressionClient;
-                                MySqlDataReader reader = suppClient.ExecuteReader();
-                                reader.Close();
-                                suppClient.Dispose();
-                                Console.WriteLine("Suppression d'un client");
-
-                                string suppressionEntreprise = "delete * from Entreprise where Siret = " + idClientModif + ";";
-                                MySqlCommand suppEntr = maConnexion.CreateCommand();
-                                suppEntr.CommandText = suppressionEntreprise;
-                                MySqlDataReader reader2 = suppEntr.ExecuteReader();
-                                reader2.Close();
-                                suppEntr.Dispose();
-                                Console.WriteLine("Suppression d'une entreprise");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Option invalide.");
-                            }
+                            int idCuisinierModif = Convert.ToInt32(Console.ReadLine());
+                           
+                            string suppressionCuisinier = "delete from Cuisinier where id_Cuisinier = " + idCuisinierModif + ";";
+                            MySqlCommand suppCuisinier = maConnexion.CreateCommand();
+                            suppCuisinier.CommandText = suppressionCuisinier;
+                            MySqlDataReader reader = suppCuisinier.ExecuteReader();
+                            reader.Close();
+                            suppCuisinier.Dispose();
+                            Console.WriteLine("Suppression d'un cuisinier");   
+                            
                         }
 
                         else if (choixCuisinier == 4) //AFFICHER
@@ -796,10 +767,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             }
 
                         }
-                        if (choixCuisinier == 5)
-                        {
-                            return;
-                        }
+                    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
+                    choixCuisinier = Convert.ToInt32(Console.ReadLine());
+
+
+                    }
+                    if (choixCuisinier == 5)
+                    {
+                        return;
                     }
                 }
                 else if (choix == 3)

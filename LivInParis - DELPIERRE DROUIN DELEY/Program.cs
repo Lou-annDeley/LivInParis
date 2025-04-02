@@ -18,118 +18,118 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         static void Main(string[] args)
         {
 
-            //MySqlConnection maConnexion = null;
-            //try
-            //{
-            //    string connectionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
-            //    maConnexion = new MySqlConnection(connectionString);
-            //    maConnexion.Open();
+            MySqlConnection maConnexion = null;
+            try
+            {
+                string connectionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
+                maConnexion = new MySqlConnection(connectionString);
+                maConnexion.Open();
 
-            //}
-            //catch (MySqlException e)
-            //{
-            //    Console.WriteLine("ErreurConnexion :" + e.ToString());
-            //    return;
-            //}
-
-
-            //Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
-            //string choix = Console.ReadLine();
-
-            //if (choix == "1")
-            //{
-            //    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Retour");
-            //    string choixClient = Console.ReadLine();
-
-            //    if (choixClient == "1")
-            //    {
-            //        Console.WriteLine("Quel est votre identifiant client?");
-            //        int idClient = Convert.ToInt32(Console.ReadLine());
-            //        Console.WriteLine("Quel est votre numéro de téléphone?");
-            //        int telClient = Convert.ToInt32(Console.ReadLine());
-            //        Console.WriteLine("Quel est votre adresse mail?");
-            //        string mailClient = Console.ReadLine();
-            //        Console.WriteLine("Quel est votre ville?");
-            //        string villeClient = Console.ReadLine();
-            //        Console.WriteLine("Quel est votre numéro de rue?");
-            //        int numrueClient = Convert.ToInt32(Console.ReadLine());
-            //        Console.WriteLine("Quel est votre rue?");
-            //        string rueClient = Console.ReadLine();
-            //        Console.WriteLine("Quel est votre code postal?");
-            //        int codepClient = Convert.ToInt32(Console.ReadLine());
-            //        Console.WriteLine("Quel est le métro le plus proche?");
-            //        string metroClient = Console.ReadLine();
-            //        string creationClient = "insert into Client(id_client, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + "," + mailClient + "," + villeClient + "," + numrueClient + "," + rueClient + "," + codepClient + "," + metroClient + ");";
-            //        MySqlCommand creaClient = maConnexion.CreateCommand();
-            //        creaClient.CommandText = creationClient;
-
-            //        Console.WriteLine("Ajout d'un client");
-            //    }
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("ErreurConnexion :" + e.ToString());
+                return;
+            }
 
 
-            //    else if (choixClient == "2") Console.WriteLine("Modification d'un client");
-            //    else if (choixClient == "3") Console.WriteLine("Suppression d'un client");
-            //    else if (choixClient == "4") Console.WriteLine("Affichage des clients");
-            //}
-            //else if (choix == "2")
-            //{
-            //    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Retour");
-            //    string choixCuisinier = Console.ReadLine();
+            Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
+            string choix = Console.ReadLine();
 
-            //    if (choixCuisinier == "1") Console.WriteLine("Ajout d'un cuisinier");
-            //    else if (choixCuisinier == "2") Console.WriteLine("Modification d'un cuisinier");
-            //    else if (choixCuisinier == "3") Console.WriteLine("Suppression d'un cuisinier");
-            //    else if (choixCuisinier == "4") Console.WriteLine("Affichage des cuisiniers");
-            //}
-            //else if (choix == "3")
-            //{
-            //    Console.WriteLine("Gestion des commandes");
-            //}
-            //else if (choix == "4")
-            //{
-            //    Console.WriteLine("Statistiques");
+            if (choix == "1")
+            {
+                Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Retour");
+                string choixClient = Console.ReadLine();
 
-            //    //string query = "SELECT cuisinier_id, COUNT(*) AS total FROM Commande GROUP BY cuisinier_id";
-            //    //using (MySqlConnection conn = new MySqlConnection(connectionString))
-            //    //{
-            //    //    conn.Open();
-            //    //    MySqlCommand cmd = new MySqlCommand(query, conn);
-            //    //    MySqlDataReader reader = cmd.ExecuteReader();
-            //    //    while (reader.Read())
-            //    //    {
-            //    //        Console.WriteLine($"Cuisinier {reader["cuisinier_id"]}: {reader["total"]} livraisons");
-            //    //    }
-            //    //}
+                if (choixClient == "1")
+                {
+                    Console.WriteLine("Quel est votre identifiant client?");
+                    int idClient = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Quel est votre numéro de téléphone?");
+                    int telClient = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Quel est votre adresse mail?");
+                    string mailClient = Console.ReadLine();
+                    Console.WriteLine("Quel est votre ville?");
+                    string villeClient = Console.ReadLine();
+                    Console.WriteLine("Quel est votre numéro de rue?");
+                    int numrueClient = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Quel est votre rue?");
+                    string rueClient = Console.ReadLine();
+                    Console.WriteLine("Quel est votre code postal?");
+                    int codepClient = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Quel est le métro le plus proche?");
+                    string metroClient = Console.ReadLine();
+                    string creationClient = "insert into Client(id_client, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + "," + mailClient + "," + villeClient + "," + numrueClient + "," + rueClient + "," + codepClient + "," + metroClient + ");";
+                    MySqlCommand creaClient = maConnexion.CreateCommand();
+                    creaClient.CommandText = creationClient;
 
-            //    //Console.Write("Numéro de commande: ");
-            //    //int idCommande = int.Parse(Console.ReadLine());
-            //    //string prixQuery = "SELECT prix FROM Commande WHERE id_commande = @id";
-            //    //using (MySqlConnection conn = new MySqlConnection(connectionString))
-            //    //{
-            //    //    conn.Open();
-            //    //    MySqlCommand cmd = new MySqlCommand(prixQuery, conn);
-            //    //    cmd.Parameters.AddWithValue("@id", idCommande);
-            //    //    object result = cmd.ExecuteScalar();
-            //    //    if (result != null)
-            //    //    {
-            //    //        Console.WriteLine($"Le prix de la commande est : {result} euros");
-            //    //    }
-            //    //    else
-            //    //    {
-            //    //        Console.WriteLine("Commande non trouvée.");
-            //    //    }
-            //    //}
-            //}
-            //else if (choix == "5")
-            //{
-            //    return;
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Option invalide.");
-            //}
-            //maConnexion.Close();
-            //Console.ReadLine();
+                    Console.WriteLine("Ajout d'un client");
+                }
+
+
+                else if (choixClient == "2") Console.WriteLine("Modification d'un client");
+                else if (choixClient == "3") Console.WriteLine("Suppression d'un client");
+                else if (choixClient == "4") Console.WriteLine("Affichage des clients");
+            }
+            else if (choix == "2")
+            {
+                Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Retour");
+                string choixCuisinier = Console.ReadLine();
+
+                if (choixCuisinier == "1") Console.WriteLine("Ajout d'un cuisinier");
+                else if (choixCuisinier == "2") Console.WriteLine("Modification d'un cuisinier");
+                else if (choixCuisinier == "3") Console.WriteLine("Suppression d'un cuisinier");
+                else if (choixCuisinier == "4") Console.WriteLine("Affichage des cuisiniers");
+            }
+            else if (choix == "3")
+            {
+                Console.WriteLine("Gestion des commandes");
+            }
+            else if (choix == "4")
+            {
+                Console.WriteLine("Statistiques");
+
+                //string query = "SELECT cuisinier_id, COUNT(*) AS total FROM Commande GROUP BY cuisinier_id";
+                //using (MySqlConnection conn = new MySqlConnection(connectionString))
+                //{
+                //    conn.Open();
+                //    MySqlCommand cmd = new MySqlCommand(query, conn);
+                //    MySqlDataReader reader = cmd.ExecuteReader();
+                //    while (reader.Read())
+                //    {
+                //        Console.WriteLine($"Cuisinier {reader["cuisinier_id"]}: {reader["total"]} livraisons");
+                //    }
+                //}
+
+                //Console.Write("Numéro de commande: ");
+                //int idCommande = int.Parse(Console.ReadLine());
+                //string prixQuery = "SELECT prix FROM Commande WHERE id_commande = @id";
+                //using (MySqlConnection conn = new MySqlConnection(connectionString))
+                //{
+                //    conn.Open();
+                //    MySqlCommand cmd = new MySqlCommand(prixQuery, conn);
+                //    cmd.Parameters.AddWithValue("@id", idCommande);
+                //    object result = cmd.ExecuteScalar();
+                //    if (result != null)
+                //    {
+                //        Console.WriteLine($"Le prix de la commande est : {result} euros");
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine("Commande non trouvée.");
+                //    }
+                //}
+            }
+            else if (choix == "5")
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Option invalide.");
+            }
+            maConnexion.Close();
+            Console.ReadLine();
 
 
             string filePath = "MetroParis.xlsx"; // Nom du fichier Excel

@@ -8,6 +8,7 @@ using SkiaSharp;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.Vml;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -56,13 +57,13 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// 
         public void DessinerGraphe(string outputPath)
         {
-            int width = 3000, height = 2000; // Taille de l'image
+            int width = 6000, height = 4000; // Taille de l'image
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
 
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
-            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 40, IsAntialias = true };
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 };
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
@@ -113,26 +114,22 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             foreach (var noeud in Sommets)
             {
-                int lienIndex = 0;
-                foreach (var lien in noeud.Voisins)
+
+                if (noeud.Voisins.Count == 1)
                 {
-                    if (noeud.Voisins.Count == 1)
+                    Noeud<T> voisin2 = noeud.Voisins[0].Noeud2;
+                    SKPoint point3 = positions[noeud];
+                    SKPoint point4 = positions[voisin2];
+
+                    canvas.DrawLine(point3, point4, paintEdge);
+
+                    SKPoint middle2 = new SKPoint((point3.X + point4.X) / 2, (point3.Y + point4.Y) / 2);
+                    canvas.DrawText(noeud.Voisins[0].Poids.ToString(), middle2.X, middle2.Y, fontPaint);
+                }
+                else
+                {
+                    foreach (var lien in noeud.Voisins.Skip(1))
                     {
-                        lienIndex = 0;
-                        Noeud<T> voisin2 = lien.Noeud2;
-                        SKPoint point3 = positions[noeud];
-                        SKPoint point4 = positions[voisin2];
-
-                        canvas.DrawLine(point3, point4, paintEdge);
-
-                        SKPoint middle2 = new SKPoint((point3.X + point4.X) / 2, (point3.Y + point4.Y) / 2);
-                        canvas.DrawText(lien.Poids.ToString(), middle2.X, middle2.Y, fontPaint);
-                    }
-
-                    
-                    if (noeud.Voisins.Count >= 2)
-                    {
-                        lienIndex++;
                         Noeud<T> voisin = lien.Noeud2;
                         SKPoint point1 = positions[noeud];
                         SKPoint point2 = positions[voisin];
@@ -142,9 +139,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         SKPoint middle = new SKPoint((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
                         canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
                     }
-                      
-
-                    
                 }
             }
 
@@ -163,99 +157,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
-
-
-
-
-
-        //public void DessinerGraphe(string outputPath)
-        //{
-        //    int width = 3000, height = 2000; // Taille de l'image
-        //    var bitmap = new SKBitmap(width, height);
-        //    var canvas = new SKCanvas(bitmap);
-        //    canvas.Clear(SKColors.White);
-
-        //    var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
-        //    var fontPaint = new SKPaint { Color = SKColors.White, TextSize = 50, IsAntialias = true };
-
-        //    Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
-
-        //    // Charger les données depuis le fichier Excel
-        //    int k = 0;
-        //    using (var workbook = new XLWorkbook("MetroParis.xlsx"))
-        //    {
-        //        var sheetNoeuds = workbook.Worksheet("Noeuds");
-
-        //        // Lecture des stations (Noeuds) à partir de la feuille Excel
-        //        foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
-        //        {
-        //            double latitude = 0;
-        //            double longitude = 0;
-
-        //            // Essayer de récupérer la latitude
-        //            if (!double.TryParse(row.Cell(5).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out latitude))
-        //            {
-        //                Console.WriteLine($"Erreur de conversion de la latitude pour la station {row.Cell(2).GetString()}");
-        //                continue; // Si la conversion échoue, passer à la ligne suivante
-        //            }
-
-        //            // Essayer de récupérer la longitude
-        //            if (!double.TryParse(row.Cell(4).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out longitude))
-        //            {
-        //                Console.WriteLine($"Erreur de conversion de la longitude pour la station {row.Cell(2).GetString()}");
-        //                continue; // Si la conversion échoue, passer à la ligne suivante
-        //            }
-
-        //            // Assigner la latitude et la longitude aux nœuds
-        //            Sommets[k].Latitude = latitude;
-        //            Sommets[k].Longitude = longitude;
-        //            k++;
-        //        }
-        //    }
-
-        //    double minLat = 48.819106595610265;
-        //    double maxLat = 48.897802691407826;
-        //    double minLong = 2.2570461929221497;
-        //    double maxLong = 2.4405400954061127;
-
-        //    // Calculer les positions des nœuds (les convertir en pixels en fonction des latitudes et longitudes)
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        float x = (float)((noeud.Longitude - minLong) / (maxLong - minLong) * width);
-        //        float y = (float)((noeud.Latitude - minLat) / (maxLat - minLat) * height);
-        //        positions[noeud] = new SKPoint(x, y);
-        //    }
-
-        //    // Dessiner les arêtes (liens entre les nœuds)
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        foreach (var lien in noeud.Voisins)
-        //        {
-        //            Noeud<T> voisin = lien.Noeud2;
-        //            SKPoint point1 = positions[noeud];
-        //            SKPoint point2 = positions[voisin];
-        //            canvas.DrawLine(point1, point2, paintEdge); // Dessiner le lien entre les nœuds
-        //        }
-        //    }
-
-        //    // Dessiner les nœuds (stations)
-        //    foreach (var noeud in Sommets)
-        //    {
-        //        SKPoint pos = positions[noeud];
-        //        var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
-        //        canvas.DrawCircle(pos, 15, paintNode); // Dessiner le cercle représentant le nœud
-        //        canvas.DrawText(noeud.Valeur.ToString(), pos.X - 5, pos.Y + 5, fontPaint); // Texte du nœud
-        //    }
-
-        //    // Sauvegarder l'image
-        //    using (var image = SKImage.FromBitmap(bitmap))
-        //    using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
-        //    using (var stream = File.OpenWrite(outputPath))
-        //    {
-        //        data.SaveTo(stream);
-        //    }
-        //}
-
         /// <summary>
         /// Fonction qui met en évidence le plus court chemin à emprunter
         /// </summary>
@@ -263,14 +164,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// <param name="outputPath"></param>
         public void MettreEnEvidenceChemin(List<Noeud<T>> chemin, string outputPath)
         {
-            int width = 3000, height = 2000; // Taille de l'image
+            int width = 6000, height = 4000; // Taille de l'image
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
 
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 2 }; // Liens normaux
-            var paintEdgeHighlighted = new SKPaint { Color = SKColors.Blue, StrokeWidth = 8 }; // Liens en gras pour le chemin
-            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 50, IsAntialias = true };
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 }; // Liens normaux
+            var paintEdgeHighlighted = new SKPaint { Color = SKColors.Blue, StrokeWidth = 10 }; // Liens en gras pour le chemin
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
@@ -290,28 +191,31 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             // Dessiner tous les liens normaux
             foreach (var noeud in Sommets)
             {
-                foreach (var lien in noeud.Voisins)
-                {
-                    Noeud<T> voisin = lien.Noeud2;
-                    SKPoint point1 = positions[noeud];
-                    SKPoint point2 = positions[voisin];
 
-                    canvas.DrawLine(point1, point2, paintEdge); // Dessiner tous les liens en noir fin
+                if (noeud.Voisins.Count == 1)
+                {
+                    Noeud<T> voisin2 = noeud.Voisins[0].Noeud2;
+                    SKPoint point3 = positions[noeud];
+                    SKPoint point4 = positions[voisin2];
+
+                    canvas.DrawLine(point3, point4, paintEdge);
+
+                    SKPoint middle2 = new SKPoint((point3.X + point4.X) / 2, (point3.Y + point4.Y) / 2);
+                    canvas.DrawText(noeud.Voisins[0].Poids.ToString(), middle2.X, middle2.Y, fontPaint);
                 }
-            }
-
-            foreach (var noeud in Sommets)
-            {
-                foreach (var lien in noeud.Voisins)
+                else
                 {
-                    Noeud<T> voisin = lien.Noeud2;
-                    SKPoint point1 = positions[noeud];
-                    SKPoint point2 = positions[voisin];
+                    foreach (var lien in noeud.Voisins.Skip(1))
+                    {
+                        Noeud<T> voisin = lien.Noeud2;
+                        SKPoint point1 = positions[noeud];
+                        SKPoint point2 = positions[voisin];
 
-                    canvas.DrawLine(point1, point2, paintEdge);
+                        canvas.DrawLine(point1, point2, paintEdge);
 
-                    SKPoint middle = new SKPoint((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
-                    canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
+                        SKPoint middle = new SKPoint((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
+                        canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
+                    }
                 }
             }
 
@@ -389,6 +293,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return ReconstruireChemin(predecesseurs, destination);
         }
 
+        /// <summary>
+        /// Sous fonction qui trouve le Noeud Min
+        /// </summary>
+        /// <param name="distances"></param>
+        /// <param name="visited"></param>
+        /// <returns></returns>
         private Noeud<T> TrouverNoeudMin(Dictionary<Noeud<T>, double> distances, Dictionary<Noeud<T>, bool> visited)
         {
             double minDistance = double.MaxValue;
@@ -405,6 +315,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return minNoeud;
         }
 
+        /// <summary>
+        /// Sous fonction qui reconstruit le chemin
+        /// </summary>
+        /// <param name="predecesseurs"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
         private List<Noeud<T>> ReconstruireChemin(Dictionary<Noeud<T>, Noeud<T>> predecesseurs, Noeud<T> destination)
         {
             List<Noeud<T>> chemin = new List<Noeud<T>>();
@@ -420,7 +336,13 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         }
 
 
-
+        /// <summary>
+        /// Fonction du plus court chemin : BellmanFord
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public List<Noeud<T>> BellmanFord(Noeud<T> source, Noeud<T> destination)
         {
             Dictionary<Noeud<T>, double> distances = new Dictionary<Noeud<T>, double>();
@@ -466,7 +388,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
         /// <summary>
-        /// Algo du plus petit chemin : FloydWarshall
+        /// Fonction du plus court chemin : FloydWarshall
         /// </summary>
         /// <returns></returns>
         public List<Noeud<T>> FloydWarshall(Noeud<T> source, Noeud<T> destination)

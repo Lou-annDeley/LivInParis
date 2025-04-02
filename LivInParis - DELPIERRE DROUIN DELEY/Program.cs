@@ -427,7 +427,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 suppEntr.Dispose();
                                 Console.WriteLine("Suppression d'une entreprise");
                             }
-
+                            else
+                            {
+                                Console.WriteLine("Option invalide.");
+                            }
                         }
 
                         else if (choixClient == 4) //AFFICHER

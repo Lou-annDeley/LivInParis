@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using DocumentFormat.OpenXml.EMMA;
 using Mysqlx.Crud;
 using System.Net.Sockets;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -214,7 +215,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             //    Console.Write(noeud1.Valeur + " -> ");
             //}
 
-            List<Noeud<string>> plus_petit_cheminS3 = metro.BellmanFord(noeuds[1], noeuds[38]);
+            // Appel de FloydWarshall
+            List<Noeud<string>> plus_petit_cheminS3 = metro.FloydWarshall(noeuds[1], noeuds[38]);
             Console.WriteLine("Nouveau bellman, le chemin est ");
             foreach (Noeud<string> noeud1 in plus_petit_cheminS3)
             {

@@ -48,7 +48,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                     while(choixClient != 5)
                     {
-                        if (choixClient == 1)
+                        if (choixClient == 1) //AJOUT
                         {
                             Console.WriteLine("Etes vous un 1.Particulier ou 2.Entreprise");
                             int statut = Convert.ToInt32(Console.ReadLine());
@@ -128,124 +128,309 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             }
                         }
 
-                        else if (choixClient == 2)
+                        else if (choixClient == 2) //MODIFIER
                         {
                             Console.WriteLine("Quel est votre identifiant ?");
                             int idClientModif = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine("Que voulez vous modifier ?");
-
-                            Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8.Quitter");
-                            int choixClientModif = Convert.ToInt32(Console.ReadLine());
-                            while (choixClientModif != 8)
+                            Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
+                            int statut = Convert.ToInt32(Console.ReadLine());
+                            if(statut == 1) //MODIF PARTICULIER
                             {
-                                if (choixClientModif == 1)
+                                Console.WriteLine("Que voulez vous modifier ?");
+                                Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom | 9. Prénom | 10.Quitter");
+                                int choixClientModif = Convert.ToInt32(Console.ReadLine());
+                                while (choixClientModif != 10)
                                 {
-                                    Console.WriteLine("Quel est le nouveau Numéro de téléphone ?");
-                                    int tel = Convert.ToInt32(Console.ReadLine());
-                                    string modifClient = "update Client set telephone = " + tel + " where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 2)
-                                {
-                                    Console.WriteLine("Quelle est la nouvelle adresse mail ?");
-                                    string mail = Console.ReadLine();
-                                    string modifClient = "update Client set adresse_mail = '" + mail + "' where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 3)
-                                {
-                                    Console.WriteLine("Quelle est la nouvelle ville ?");
-                                    string ville = Console.ReadLine();
-                                    string modifClient = "update Client set ville = '" + ville + "' where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 4)
-                                {
-                                    Console.WriteLine("Quel est le nouveau Numéro de rue ?");
-                                    int num_rue = Convert.ToInt32(Console.ReadLine());
-                                    string modifClient = "update Client set numero_de_rue = " + num_rue + " where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 5)
-                                {
-                                    Console.WriteLine("Quelle est la nouvelle rue ?");
-                                    string rue = Console.ReadLine();
-                                    string modifClient = "update Client set rue = '" + rue + "' where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 6)
-                                {
-                                    Console.WriteLine("Quel est le nouveau code postal ?");
-                                    int codep = Convert.ToInt32(Console.ReadLine());
-                                    string modifClient = "update Client set code_postal = " + codep + " where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
-                                else if (choixClientModif == 7)
-                                {
-                                    Console.WriteLine("Quel est le nouveau métro le plus proche ?");
-                                    string metrop = Console.ReadLine();
-                                    string modifClient = "update Client set metro_le_plus_proche = '" + metrop + "' where id_Client = " + idClientModif + ";";
-                                    MySqlCommand creaClient = maConnexion.CreateCommand();
-                                    creaClient.CommandText = modifClient;
-                                    MySqlDataReader reader = creaClient.ExecuteReader();
-                                    reader.Close();
-                                    creaClient.Dispose();
-                                    Console.WriteLine("Modification d'un client");
-                                }
+                                    if (choixClientModif == 1)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau Numéro de téléphone ?");
+                                        int tel = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set telephone = " + tel + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 2)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle adresse mail ?");
+                                        string mail = Console.ReadLine();
+                                        string modifClient = "update Client set adresse_mail = '" + mail + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 3)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle ville ?");
+                                        string ville = Console.ReadLine();
+                                        string modifClient = "update Client set ville = '" + ville + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 4)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau Numéro de rue ?");
+                                        int num_rue = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set numero_de_rue = " + num_rue + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 5)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle rue ?");
+                                        string rue = Console.ReadLine();
+                                        string modifClient = "update Client set rue = '" + rue + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 6)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau code postal ?");
+                                        int codep = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set code_postal = " + codep + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 7)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau métro le plus proche ?");
+                                        string metrop = Console.ReadLine();
+                                        string modifClient = "update Client set metro_le_plus_proche = '" + metrop + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 8)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau nom ?");
+                                        string nom = Console.ReadLine();
+                                        string modifClient = "update particulier set nom = '" + nom + "' where id_particulier = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un particulier");
+                                    }
+                                    else if (choixClientModif == 9)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau prénom ?");
+                                        string prenom = Console.ReadLine();
+                                        string modifClient = "update particulier set prenom = '" + prenom + "' where id_particulier = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un particulier");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Option invalide.");
+                                    }
 
-                                Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8.Quitter");
-                                choixClientModif = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom | 9. Prénom | 10.Quitter");
+                                    choixClientModif = Convert.ToInt32(Console.ReadLine());
+                                }
+                                if (choixClientModif == 10)
+                                {
+                                    return;
+                                }
                             }
-                            if (choixClientModif == 8)
+
+                            else if(statut == 2) //MODIF ENTREPRISE
                             {
-                                return;
+                                Console.WriteLine("Que voulez vous modifier ?");
+                                Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom référent | 9.Quitter");
+                                int choixClientModif = Convert.ToInt32(Console.ReadLine());
+                                while (choixClientModif != 9)
+                                {
+                                    if (choixClientModif == 1)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau Numéro de téléphone ?");
+                                        int tel = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set telephone = " + tel + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 2)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle adresse mail ?");
+                                        string mail = Console.ReadLine();
+                                        string modifClient = "update Client set adresse_mail = '" + mail + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 3)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle ville ?");
+                                        string ville = Console.ReadLine();
+                                        string modifClient = "update Client set ville = '" + ville + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 4)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau Numéro de rue ?");
+                                        int num_rue = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set numero_de_rue = " + num_rue + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 5)
+                                    {
+                                        Console.WriteLine("Quelle est la nouvelle rue ?");
+                                        string rue = Console.ReadLine();
+                                        string modifClient = "update Client set rue = '" + rue + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 6)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau code postal ?");
+                                        int codep = Convert.ToInt32(Console.ReadLine());
+                                        string modifClient = "update Client set code_postal = " + codep + " where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 7)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau métro le plus proche ?");
+                                        string metrop = Console.ReadLine();
+                                        string modifClient = "update Client set metro_le_plus_proche = '" + metrop + "' where id_Client = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'un client");
+                                    }
+                                    else if (choixClientModif == 8)
+                                    {
+                                        Console.WriteLine("Quel est le nouveau nom de référent ?");
+                                        string nomRef = Console.ReadLine();
+                                        string modifClient = "update Entreprise set nom_référent = '" + nomRef + "' where Siret = " + idClientModif + ";";
+                                        MySqlCommand modificationClient = maConnexion.CreateCommand();
+                                        modificationClient.CommandText = modifClient;
+                                        MySqlDataReader reader = modificationClient.ExecuteReader();
+                                        reader.Close();
+                                        modificationClient.Dispose();
+                                        Console.WriteLine("Modification d'une entreprise");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Option invalide.");
+                                    }
+
+                                    Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 9. Nom référent | 10.Quitter");
+                                    choixClientModif = Convert.ToInt32(Console.ReadLine());
+                                }
+                                if (choixClientModif == 9)
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Option invalide.");
                             }
                         }
 
-                        else if (choixClient == 3)
+                        else if (choixClient == 3) //SUPPRIMER
                         {
                             Console.WriteLine("Quel est votre identifiant ?");
                             int idClientModif = Convert.ToInt32(Console.ReadLine());
-                            string modifClient = "delete (*) from Client where id_Client = " + idClientModif + ";";
-                            MySqlCommand creaClient = maConnexion.CreateCommand();
-                            creaClient.CommandText = modifClient;
-                            MySqlDataReader reader = creaClient.ExecuteReader();
-                            reader.Close();
-                            creaClient.Dispose();
-                            Console.WriteLine("Suppression d'un client");
+                            Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
+                            int statut = Convert.ToInt32(Console.ReadLine());
+                            if(statut == 1)
+                            {
+                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                MySqlCommand suppClient = maConnexion.CreateCommand();
+                                suppClient.CommandText = suppressionClient;
+                                MySqlDataReader reader = suppClient.ExecuteReader();
+                                reader.Close();
+                                suppClient.Dispose();
+                                Console.WriteLine("Suppression d'un client");
+
+                                string suppressionParticulier = "delete * from particulier where id_particulier = " + idClientModif + ";";
+                                MySqlCommand suppParti = maConnexion.CreateCommand();
+                                suppParti.CommandText = suppressionParticulier;
+                                MySqlDataReader reader2 = suppParti.ExecuteReader();
+                                reader2.Close();
+                                suppParti.Dispose();
+                                Console.WriteLine("Suppression d'un particulier");
+                            }
+                            else if (statut == 2)
+                            {
+                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                MySqlCommand suppClient = maConnexion.CreateCommand();
+                                suppClient.CommandText = suppressionClient;
+                                MySqlDataReader reader = suppClient.ExecuteReader();
+                                reader.Close();
+                                suppClient.Dispose();
+                                Console.WriteLine("Suppression d'un client");
+
+                                string suppressionEntreprise = "delete * from Entreprise where Siret = " + idClientModif + ";";
+                                MySqlCommand suppEntr = maConnexion.CreateCommand();
+                                suppEntr.CommandText = suppressionEntreprise;
+                                MySqlDataReader reader2 = suppEntr.ExecuteReader();
+                                reader2.Close();
+                                suppEntr.Dispose();
+                                Console.WriteLine("Suppression d'une entreprise");
+                            }
+
                         }
 
-                        else if (choixClient == 4)
+                        else if (choixClient == 4) //AFFICHER
                         {
                             Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
                             int choixClientModif = Convert.ToInt32(Console.ReadLine());

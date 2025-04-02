@@ -704,67 +704,67 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                         else if (choixCuisinier == 4) //AFFICHER
                         {
-                            Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
-                            int choixClientModif = Convert.ToInt32(Console.ReadLine());
-                            if (choixClientModif == 1) //ordre alphabétique
-                            {
-                                string affichageClient = "select nom from particulier union select nom_référent as nom from entreprise order by nom asc;";
-                                MySqlCommand affichClient = maConnexion.CreateCommand();
-                                affichClient.CommandText = affichageClient;
-                                MySqlDataReader reader = affichClient.ExecuteReader();
+                            //Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
+                            //int choixClientModif = Convert.ToInt32(Console.ReadLine());
+                            //if (choixClientModif == 1) //ordre alphabétique
+                            //{
+                            //    string affichageClient = "select nom from particulier union select nom_référent as nom from entreprise order by nom asc;";
+                            //    MySqlCommand affichClient = maConnexion.CreateCommand();
+                            //    affichClient.CommandText = affichageClient;
+                            //    MySqlDataReader reader = affichClient.ExecuteReader();
 
-                                string[] valueString = new string[reader.FieldCount];
+                            //    string[] valueString = new string[reader.FieldCount];
 
-                                while (reader.Read())
-                                {
-
-
-                                    for (int i = 0; i < reader.FieldCount; i++)
-                                    {
-                                        valueString[i] = reader.GetValue(i).ToString();
-                                        Console.Write(valueString[i] + " ");
-                                    }
-
-                                    Console.WriteLine();
-                                }
-
-                                reader.Close();
-                                affichClient.Dispose();
-                                Console.WriteLine("Affichage des clients");
-                            }
-                            else if (choixClientModif == 2) //par rue
-                            {
-                                string affichageClient = "select * from Client order by rue asc;";
-                                MySqlCommand affichClient = maConnexion.CreateCommand();
-                                affichClient.CommandText = affichageClient;
-                                MySqlDataReader reader = affichClient.ExecuteReader();
-
-                                string[] valueString = new string[reader.FieldCount];
-
-                                while (reader.Read())
-                                {
+                            //    while (reader.Read())
+                            //    {
 
 
-                                    for (int i = 0; i < reader.FieldCount; i++)
-                                    {
-                                        valueString[i] = reader.GetValue(i).ToString();
-                                        Console.Write(valueString[i] + " ");
-                                    }
+                            //        for (int i = 0; i < reader.FieldCount; i++)
+                            //        {
+                            //            valueString[i] = reader.GetValue(i).ToString();
+                            //            Console.Write(valueString[i] + " ");
+                            //        }
 
-                                    Console.WriteLine();
-                                }
+                            //        Console.WriteLine();
+                            //    }
 
-                                reader.Close();
-                                affichClient.Dispose();
-                                Console.WriteLine("Affichage des clients");
+                            //    reader.Close();
+                            //    affichClient.Dispose();
+                            //    Console.WriteLine("Affichage des clients");
+                            //}
+                            //else if (choixClientModif == 2) //par rue
+                            //{
+                            //    string affichageClient = "select * from Client order by rue asc;";
+                            //    MySqlCommand affichClient = maConnexion.CreateCommand();
+                            //    affichClient.CommandText = affichageClient;
+                            //    MySqlDataReader reader = affichClient.ExecuteReader();
+
+                            //    string[] valueString = new string[reader.FieldCount];
+
+                            //    while (reader.Read())
+                            //    {
+
+
+                            //        for (int i = 0; i < reader.FieldCount; i++)
+                            //        {
+                            //            valueString[i] = reader.GetValue(i).ToString();
+                            //            Console.Write(valueString[i] + " ");
+                            //        }
+
+                            //        Console.WriteLine();
+                            //    }
+
+                            //    reader.Close();
+                            //    affichClient.Dispose();
+                            //    Console.WriteLine("Affichage des clients");
 
 
 
-                            }
-                            else if (choixClientModif == 3) // par montant des achats cumulés
-                            {
+                            //}
+                            //else if (choixClientModif == 3) // par montant des achats cumulés
+                            //{
 
-                            }
+                            //}
 
                         }
                     Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
@@ -779,7 +779,44 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
                 else if (choix == 3)
                 {
-                    Console.WriteLine("Gestion des commandes");
+                    Console.WriteLine("1. Ajouter | 2. Modifier |3.Afficher |4. Quitter");
+                    int choixCommande = Convert.ToInt32(Console.ReadLine());
+                    while (choixCommande != 4)
+                    {
+
+                        if (choixCommande == 1) //AJOUT
+                        {
+
+                            Console.WriteLine("Quel est votre identifiant commande?");
+                            int idcommande = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est l'addition?");
+                            float addition = float.Parse(Console.ReadLine());
+                            Console.WriteLine("Quel est l'etat de la commande?");
+                            string etat_de_la_commande = Console.ReadLine();
+                            Console.WriteLine("Quel est l'heure actuellement?");
+                            DateTime datetime = DateTime.Parse(Console.ReadLine());
+                            Console.WriteLine("Quelle est votre id_client");
+                            int id_client = Convert.ToInt32(Console.ReadLine());
+                            string creationCommande = "insert into Cuisinier(id_commande,addition,etat_de_la_commande,date_,id_client) Values(" + idcommande + ", " + addition + ",'" + etat_de_la_commande + "','" + datetime + "'," + id_client+"); ";
+                            MySqlCommand creaCommande = maConnexion.CreateCommand();
+                            creaCommande.CommandText = creationCommande;
+                            MySqlDataReader reader = creaCommande.ExecuteReader();
+                            reader.Close();
+                            creaCommande.Dispose();
+
+
+                        }
+
+
+
+
+                        Console.WriteLine("1. Ajouter | 2. Modifier |3.Afficher |4. Quitter");
+                        choixCommande = Convert.ToInt32(Console.ReadLine());
+                    }
+                    if(choixCommande==4)
+                    {
+                        return;
+                    }
                 }
                 else if (choix == 4)
                 {

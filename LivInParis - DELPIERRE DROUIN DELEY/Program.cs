@@ -437,9 +437,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         {
                             Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
                             int choixClientModif = Convert.ToInt32(Console.ReadLine());
-                            if (choixClientModif == 1)
+                            if (choixClientModif == 1) //ordre alphabétique
                             {
-                                string affichageClient = "select * from Client order by (select nom from particulier) asc;";
+                                string affichageClient = "select nom from particulier union select nom_référent as nom from entreprise order by nom asc;";
                                 MySqlCommand affichClient = maConnexion.CreateCommand();
                                 affichClient.CommandText = affichageClient;
                                 MySqlDataReader reader = affichClient.ExecuteReader();
@@ -452,8 +452,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                     for (int i = 0; i < reader.FieldCount; i++)
                                     {
-                                        string first_name = (string)reader[i];
-                                        Console.WriteLine(first_name);
                                         valueString[i] = reader.GetValue(i).ToString();
                                         Console.Write(valueString[i] + " ");
                                     }
@@ -465,14 +463,40 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 affichClient.Dispose();
                                 Console.WriteLine("Affichage des clients");
                             }
-                            else if (choixClientModif == 2)
+                            else if (choixClientModif == 2) //par rue
                             {
+                                string affichageClient = "select * from Client order by rue asc;";
+                                MySqlCommand affichClient = maConnexion.CreateCommand();
+                                affichClient.CommandText = affichageClient;
+                                MySqlDataReader reader = affichClient.ExecuteReader();
+
+                                string[] valueString = new string[reader.FieldCount];
+
+                                while (reader.Read())
+                                {
+
+
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        valueString[i] = reader.GetValue(i).ToString();
+                                        Console.Write(valueString[i] + " ");
+                                    }
+
+                                    Console.WriteLine();
+                                }
+
+                                reader.Close();
+                                affichClient.Dispose();
+                                Console.WriteLine("Affichage des clients");
+
+
 
                             }
-                            else if (choixClientModif == 3)
+                            else if (choixClientModif == 3) // par montant des achats cumulés
                             {
 
-                            }
+                            }  
+                            
                         }
                         if(choixClient == 5)
                         {
@@ -481,15 +505,302 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     }
                     
                 }
-                else if (choix == 2)
+                else if (choix == 2) //cuisiner
                 {
-                    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Retour");
-                    string choixCuisinier = Console.ReadLine();
+                    Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
+                    int choixCuisinier = Convert.ToInt32(Console.ReadLine());
 
-                    if (choixCuisinier == "1") Console.WriteLine("Ajout d'un cuisinier");
-                    else if (choixCuisinier == "2") Console.WriteLine("Modification d'un cuisinier");
-                    else if (choixCuisinier == "3") Console.WriteLine("Suppression d'un cuisinier");
-                    else if (choixCuisinier == "4") Console.WriteLine("Affichage des cuisiniers");
+                    while (choixCuisinier != 5)
+                    {
+                        if (choixCuisinier == 1) //AJOUT
+                        {
+                            
+                            Console.WriteLine("Quel est votre identifiant cuisinier?");
+                            int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est votre prénom?");
+                            string prenomcuisinier = Console.ReadLine();
+                            Console.WriteLine("Quel est votre nom?");
+                            string nomcuisinier = Console.ReadLine();
+                            Console.WriteLine("Quel est votre téléphone?");
+                            int telCuisinier = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quelle est votre mail");
+                            string mailCuisinier = Console.ReadLine();
+                            Console.WriteLine("Quel est votre métro le plus proche?");
+                            string metroCuisinier = Console.ReadLine();
+                            Console.WriteLine("Quelle est votre rue?");
+                            string rueCuisinier = Console.ReadLine();
+                            Console.WriteLine("Quelle est votre ville?");
+                            string villeCuisinier = Console.ReadLine();
+                            Console.WriteLine("Quelle est votre numéro de rue?");
+                            int numerorueCuisinier = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est votre code postal?");
+                            int codepCuisinier = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est votre id client (attention il doit exister)");
+                            int idclient = Convert.ToInt32(Console.ReadLine());
+                            string creationCuisinier = "insert into Cuisinier(id_Cuisinier,prénom,nom,téléphone,adresse_mail,metro_le_plus_proche,rue_,ville,numéro_rue,code_postal, id_client) Values(" + idcuisinier + ", '" + prenomcuisinier + "','" + nomcuisinier + "'," + telCuisinier + ",'" + mailCuisinier + "','" + metroCuisinier + "','" + rueCuisinier + "','" + villeCuisinier + "',"+ numerorueCuisinier+ ","+codepCuisinier+","+idclient+"); ";
+                            MySqlCommand creaCuisinier = maConnexion.CreateCommand();
+                            creaCuisinier.CommandText = creationCuisinier;
+                            MySqlDataReader reader = creaCuisinier.ExecuteReader();
+                            reader.Close();
+                            creaCuisinier.Dispose();
+                            
+                           
+                        }
+
+                        else if (choixCuisinier == 2) //MODIFIER
+                        {
+                            Console.WriteLine("Quel est votre id ?");
+                            int idCuisinierModif = Convert.ToInt32(Console.ReadLine());
+
+
+                            Console.WriteLine("Que voulez vous modifier ?");
+                            Console.WriteLine("1. prénom | 2. nom | 3. téléphone | 4. adresse_mail | 5. metro_le_plus_proche | 6. rue_ | 7. ville | 8. numéro_rue | 9. code_postal | 10.Quitter");
+                            int choixCuisinierModif = Convert.ToInt32(Console.ReadLine());
+                            while (choixCuisinierModif != 10)
+                            {
+                                if (choixCuisinierModif == 1)
+                                {
+                                    Console.WriteLine("Quel est le nouveau prénom?");
+                                    string prenom = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set prénom = " + prenom + " where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 2)
+                                {
+                                    Console.WriteLine("Quel est le nouveau nom ?");
+                                    string nom = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set nom = '" + nom + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 3)
+                                {
+                                    Console.WriteLine("Quel est le nouveau tel ?");
+                                    int tel = Convert.ToInt32(Console.ReadLine());
+                                    string modifCuisinier = "update Cuisinier set téléphone = '" + tel + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 4)
+                                {
+                                    Console.WriteLine("Quel est le nouveau adresse mail ?");
+                                    string adresse_mail = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set adresse_mail = '" + adresse_mail + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 5)
+                                {
+                                    Console.WriteLine("Quel est le nouveau metro le plus proche ?");
+                                    string metro_le_plus_proche = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set metro_le_plus_proche = '" + metro_le_plus_proche + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 6)
+                                {
+                                    Console.WriteLine("Quel est le nouvelle rue ?");
+                                    string rue = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set rue_ = '" + rue + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 7)
+                                {
+                                    Console.WriteLine("Quel est le nouvelle ville ?");
+                                    string ville = Console.ReadLine();
+                                    string modifCuisinier = "update Cuisinier set ville = '" + ville + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 8)
+                                {
+                                    Console.WriteLine("Quel est le nouveau numero de rue ?");
+                                    int numéro_rue = Convert.ToInt32(Console.ReadLine());
+                                    string modifCuisinier = "update Cuisinier set numéro_rue = '" + numéro_rue + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else if (choixCuisinierModif == 9)
+                                {
+                                    Console.WriteLine("Quel est le nouveau code postal ?");
+                                    int code_postal = Convert.ToInt32(Console.ReadLine()); ;
+                                    string modifCuisinier = "update Cuisinier set code_postal = '" + code_postal + "' where id_Cuisinier = " + idCuisinierModif + ";";
+                                    MySqlCommand modificationCuisinier = maConnexion.CreateCommand();
+                                    modificationCuisinier.CommandText = modifCuisinier;
+                                    MySqlDataReader reader = modificationCuisinier.ExecuteReader();
+                                    reader.Close();
+                                    modificationCuisinier.Dispose();
+                                    Console.WriteLine("Modification d'un cuisinier");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Option invalide.");
+                                }
+
+                                Console.WriteLine("1. prénom | 2. nom | 3. téléphone | 4. adresse_mail | 5. metro_le_plus_proche | 6. rue_ | 7. ville | 8. numéro_rue | 9. code_postal | 10.Quitter");
+                                choixCuisinierModif = Convert.ToInt32(Console.ReadLine());
+                            }
+                            if (choixCuisinierModif == 10)
+                            {
+                                return;
+                            }
+                            
+
+                            
+                        }
+
+                        else if (choixCuisinier == 3) //SUPPRIMER
+                        {
+                            Console.WriteLine("Quel est votre identifiant ?");
+                            int idClientModif = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
+                            int statut = Convert.ToInt32(Console.ReadLine());
+                            if (statut == 1)
+                            {
+                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                MySqlCommand suppClient = maConnexion.CreateCommand();
+                                suppClient.CommandText = suppressionClient;
+                                MySqlDataReader reader = suppClient.ExecuteReader();
+                                reader.Close();
+                                suppClient.Dispose();
+                                Console.WriteLine("Suppression d'un client");
+
+                                string suppressionParticulier = "delete * from particulier where id_particulier = " + idClientModif + ";";
+                                MySqlCommand suppParti = maConnexion.CreateCommand();
+                                suppParti.CommandText = suppressionParticulier;
+                                MySqlDataReader reader2 = suppParti.ExecuteReader();
+                                reader2.Close();
+                                suppParti.Dispose();
+                                Console.WriteLine("Suppression d'un particulier");
+                            }
+                            else if (statut == 2)
+                            {
+                                string suppressionClient = "delete * from Client where id_Client = " + idClientModif + ";";
+                                MySqlCommand suppClient = maConnexion.CreateCommand();
+                                suppClient.CommandText = suppressionClient;
+                                MySqlDataReader reader = suppClient.ExecuteReader();
+                                reader.Close();
+                                suppClient.Dispose();
+                                Console.WriteLine("Suppression d'un client");
+
+                                string suppressionEntreprise = "delete * from Entreprise where Siret = " + idClientModif + ";";
+                                MySqlCommand suppEntr = maConnexion.CreateCommand();
+                                suppEntr.CommandText = suppressionEntreprise;
+                                MySqlDataReader reader2 = suppEntr.ExecuteReader();
+                                reader2.Close();
+                                suppEntr.Dispose();
+                                Console.WriteLine("Suppression d'une entreprise");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Option invalide.");
+                            }
+                        }
+
+                        else if (choixCuisinier == 4) //AFFICHER
+                        {
+                            Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
+                            int choixClientModif = Convert.ToInt32(Console.ReadLine());
+                            if (choixClientModif == 1) //ordre alphabétique
+                            {
+                                string affichageClient = "select nom from particulier union select nom_référent as nom from entreprise order by nom asc;";
+                                MySqlCommand affichClient = maConnexion.CreateCommand();
+                                affichClient.CommandText = affichageClient;
+                                MySqlDataReader reader = affichClient.ExecuteReader();
+
+                                string[] valueString = new string[reader.FieldCount];
+
+                                while (reader.Read())
+                                {
+
+
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        valueString[i] = reader.GetValue(i).ToString();
+                                        Console.Write(valueString[i] + " ");
+                                    }
+
+                                    Console.WriteLine();
+                                }
+
+                                reader.Close();
+                                affichClient.Dispose();
+                                Console.WriteLine("Affichage des clients");
+                            }
+                            else if (choixClientModif == 2) //par rue
+                            {
+                                string affichageClient = "select * from Client order by rue asc;";
+                                MySqlCommand affichClient = maConnexion.CreateCommand();
+                                affichClient.CommandText = affichageClient;
+                                MySqlDataReader reader = affichClient.ExecuteReader();
+
+                                string[] valueString = new string[reader.FieldCount];
+
+                                while (reader.Read())
+                                {
+
+
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        valueString[i] = reader.GetValue(i).ToString();
+                                        Console.Write(valueString[i] + " ");
+                                    }
+
+                                    Console.WriteLine();
+                                }
+
+                                reader.Close();
+                                affichClient.Dispose();
+                                Console.WriteLine("Affichage des clients");
+
+
+
+                            }
+                            else if (choixClientModif == 3) // par montant des achats cumulés
+                            {
+
+                            }
+
+                        }
+                        if (choixCuisinier == 5)
+                        {
+                            return;
+                        }
+                    }
                 }
                 else if (choix == 3)
                 {

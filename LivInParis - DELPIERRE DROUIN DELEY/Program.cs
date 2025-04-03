@@ -562,56 +562,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             reader.Close();
                             creaCuisinier.Dispose();
 
-                            Console.WriteLine("Combien de plats proposez-vous ?");
-                            int nbPlat =  Convert.ToInt32(Console.ReadLine());  
-                            for(int i = 0; i < nbPlat; i++)
-                            {
-                                Console.WriteLine("Quel est l'identifiant du plat?");
-                                int idPlat = Convert.ToInt32(Console.ReadLine());
-                                Console.WriteLine("Quel est le nom du plat?");
-                                string nomPlat = Console.ReadLine();
-                                Console.WriteLine("Quel est le prix?");
-                                int prixPlat = Convert.ToInt32(Console.ReadLine());
-                                Console.WriteLine("Quel est la recette?");
-                                string recettePlat = Console.ReadLine();
-                                Console.WriteLine("Pour combien de personnes?");
-                                int nbpersonnesPlat = Convert.ToInt32(Console.ReadLine());
-                                Console.WriteLine("Quel est la date de péremption?");
-                                DateTime dateperemptionPlat = Convert.ToDateTime(Console.ReadLine());
-                                Console.WriteLine("Quelle est la date de fabrication?");
-                                DateTime datefabricationPlat = Convert.ToDateTime(Console.ReadLine());
-                                Console.WriteLine("Quelle est la nationalité?");
-                                string nationalitePlat = Console.ReadLine();
-                                Console.WriteLine("Quelle est le régime alimentaire?");
-                                string regimePlat = Console.ReadLine();
-
-                                string creationPlat = "insert into Plat(id_Plat,nom,prix,recette,nb_personnes,date_de_péremption,date_de_fabrication,nationalité,régime_alimentaire,id_Cuisinier) Values(" + idPlat + ", '" + nomPlat + "'," + prixPlat + ",'" + recettePlat + "'," + nbpersonnesPlat + ",'" + dateperemptionPlat + "','" + datefabricationPlat + "','" + nationalitePlat + "','" + regimePlat + "'," + idcuisinier + "); ";
-                                MySqlCommand creaPlat = maConnexion.CreateCommand();
-                                creaPlat.CommandText = creationPlat;
-                                MySqlDataReader reader3 = creaPlat.ExecuteReader();
-                                reader3.Close();
-                                creaPlat.Dispose();
-
-                                Console.WriteLine("Combien d'ingrédients utilisez-vous?");
-                                int nbIngredients = Convert.ToInt32(Console.ReadLine());
-                                for(int j = 0;  j < nbIngredients; j++)
-                                {
-                                    Console.WriteLine("Quel est l'identifiant de l'ingrédient?");
-                                    int idIngrédient = Convert.ToInt32(Console.ReadLine());
-                                    Console.WriteLine("Quel est le nom de l'ingrédient?");
-                                    string nomIngredient = Console.ReadLine();
-                                    Console.WriteLine("Quel est la quantité de l'ingrédient?");
-                                    string quantiteIngredient = Console.ReadLine();
-                                    Console.WriteLine("Quel est la date de peremption de l'ingrédient?");
-                                    DateTime peremptionIngredient = Convert.ToDateTime(Console.ReadLine());
-                                    string creationIngredient= "insert into Ingredients(id_Ingrédient,nom,quantité,date_de_péremption) Values(" + idIngrédient + ", '" + nomIngredient + "','" + quantiteIngredient + "','" + peremptionIngredient + "'); ";
-                                    MySqlCommand creaIngredient = maConnexion.CreateCommand();
-                                    creaIngredient.CommandText = creationIngredient;
-                                    MySqlDataReader reader4 = creaIngredient.ExecuteReader();
-                                    reader4.Close();
-                                    creaIngredient.Dispose();
-                                }
-                            }
+                            
                         }
 
                         else if (choixCuisinier == 2) //MODIFIER
@@ -770,73 +721,162 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             reader2.Close();
                             suppCuisinier.Dispose();
                             Console.WriteLine("Suppression d'un cuisinier");
-
                         }
 
                         else if (choixCuisinier == 4) //AFFICHER
                         {
-                            //Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
-                            //int choixClientModif = Convert.ToInt32(Console.ReadLine());
-                            //if (choixClientModif == 1) //ordre alphabétique
-                            //{
-                            //    string affichageClient = "select nom from particulier union select nom_référent as nom from entreprise order by nom asc;";
-                            //    MySqlCommand affichClient = maConnexion.CreateCommand();
-                            //    affichClient.CommandText = affichageClient;
-                            //    MySqlDataReader reader = affichClient.ExecuteReader();
+                            Console.WriteLine("Quel est votre identifiant ?");
+                            int idCuisinierAffiche = Convert.ToInt32(Console.ReadLine());
 
-                            //    string[] valueString = new string[reader.FieldCount];
+                            Console.WriteLine("1. Clients servis | 2. Plats par fréquence | 3. Plat du jour | 4. Quitter");
+                            int choixCuisinierAfficher = Convert.ToInt32(Console.ReadLine());
+                            while (choixCuisinierAfficher != 4)
+                            {
+                                if (choixCuisinierAfficher == 1) //clients servis
+                                {
+                                    string affichageCuisinier1 = "select id_client from Client union select nom_référent as nom from entreprise order by nom asc;";
+                                    MySqlCommand affichCuisinier1 = maConnexion.CreateCommand();
+                                    affichCuisinier1.CommandText = affichageCuisinier1;
+                                    MySqlDataReader reader = affichCuisinier1.ExecuteReader();
 
-                            //    while (reader.Read())
-                            //    {
+                                    string[] valueString = new string[reader.FieldCount];
 
-
-                            //        for (int i = 0; i < reader.FieldCount; i++)
-                            //        {
-                            //            valueString[i] = reader.GetValue(i).ToString();
-                            //            Console.Write(valueString[i] + " ");
-                            //        }
-
-                            //        Console.WriteLine();
-                            //    }
-
-                            //    reader.Close();
-                            //    affichClient.Dispose();
-                            //    Console.WriteLine("Affichage des clients");
-                            //}
-                            //else if (choixClientModif == 2) //par rue
-                            //{
-                            //    string affichageClient = "select * from Client order by rue asc;";
-                            //    MySqlCommand affichClient = maConnexion.CreateCommand();
-                            //    affichClient.CommandText = affichageClient;
-                            //    MySqlDataReader reader = affichClient.ExecuteReader();
-
-                            //    string[] valueString = new string[reader.FieldCount];
-
-                            //    while (reader.Read())
-                            //    {
+                                    while (reader.Read())
+                                    {
 
 
-                            //        for (int i = 0; i < reader.FieldCount; i++)
-                            //        {
-                            //            valueString[i] = reader.GetValue(i).ToString();
-                            //            Console.Write(valueString[i] + " ");
-                            //        }
+                                        for (int i = 0; i < reader.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
 
-                            //        Console.WriteLine();
-                            //    }
+                                        Console.WriteLine();
+                                    }
 
-                            //    reader.Close();
-                            //    affichClient.Dispose();
-                            //    Console.WriteLine("Affichage des clients");
+                                    reader.Close();
+                                    affichCuisinier1.Dispose();
+                                    Console.WriteLine("Affichage des clients");
+                                }
+                                else if (choixCuisinierAfficher == 2) //plats par fréquence
+                                {
+                                    string affichageCuisinier1 = "select nom from Plat where id_Cuisinier = " + idCuisinierAffiche + " group by nom;";
+                                    MySqlCommand affichCuisinier1 = maConnexion.CreateCommand();
+                                    affichCuisinier1.CommandText = affichageCuisinier1;
+                                    MySqlDataReader reader = affichCuisinier1.ExecuteReader();
 
+                                    string[] valueString = new string[reader.FieldCount];
 
+                                    while (reader.Read())
+                                    {
+                                        for (int i = 0; i < reader.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader.Close();
+                                    affichCuisinier1.Dispose();
+                                    Console.WriteLine("Affichage des plats du cuisinier");
+                                }
+                                else if (choixCuisinierAfficher == 3) // plat du jour 
+                                {
+                                    string affichageCuisinier3 = "select nom from Plat where id_Cuisinier = " + idCuisinierAffiche + " and plat_du_jour = true;";
+                                    MySqlCommand affichCuisinier3 = maConnexion.CreateCommand();
+                                    affichCuisinier3.CommandText = affichageCuisinier3;
+                                    MySqlDataReader reader3 = affichCuisinier3.ExecuteReader();
 
-                            //}
-                            //else if (choixClientModif == 3) // par montant des achats cumulés
-                            //{
+                                    string[] valueString = new string[reader3.FieldCount];
 
-                            //}
+                                    while (reader3.Read())
+                                    {
+                                        for (int i = 0; i < reader3.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader3.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader3.Close();
+                                    affichCuisinier3.Dispose();
+                                    Console.WriteLine("Affichage du plat du jour");
+                                }
+                                Console.WriteLine("1. Clients servis | 2. Plats par fréquence | 3. Plat du jour | 4. Quitter");
+                                choixCuisinierAfficher = Convert.ToInt32(Console.ReadLine());
+                            }
+                            if(choixCuisinierAfficher == 4)
+                            {
+                                return;
+                            }
 
+                        }
+                    else if (choixCuisinier == 5)
+                        {
+                            Console.WriteLine("Quel est votre identifiant ?");
+                            int idCuisinier = Convert.ToInt32(Console.ReadLine());
+
+                            Console.WriteLine("Combien de plats proposez-vous ?");
+                            int nbPlat = Convert.ToInt32(Console.ReadLine());
+                            for (int i = 0; i < nbPlat; i++)
+                            {
+                                Console.WriteLine("Quel est l'identifiant du plat numéro " + i + "?");
+                                int idPlat = Convert.ToInt32(Console.ReadLine());
+                                Console.WriteLine("Quel est le nom du plat numéro " + i + "?");
+                                string nomPlat = Console.ReadLine();
+                                Console.WriteLine("Quel est le prix du plat numéro" + i + "?");
+                                float prixPlat = float.Parse(Console.ReadLine());
+                                Console.WriteLine("Quel est la recette?");
+                                string recettePlat = Console.ReadLine();
+                                Console.WriteLine("Pour combien de personnes?");
+                                int nbpersonnesPlat = Convert.ToInt32(Console.ReadLine());
+                                Console.WriteLine("Quel est la date de péremption?");
+                                string dateperemptionPlat = Console.ReadLine();
+                                Console.WriteLine("Quelle est la date de fabrication?");
+                                string datefabricationPlat = Console.ReadLine();
+                                Console.WriteLine("Quelle est la nationalité?");
+                                string nationalitePlat = Console.ReadLine();
+                                Console.WriteLine("Quelle est le régime alimentaire?");
+                                string regimePlat = Console.ReadLine();
+                                Console.WriteLine("Est-ce le plat du jour ?");
+                                bool plat_du_jour = Convert.ToBoolean(Console.ReadLine());
+
+                                string creationPlat = "insert into Plat(id_Plat,nom,prix,recette,nb_personnes,date_de_péremption,date_de_fabrication,nationalité,régime_alimentaire,id_Cuisinier,plat_du_jour) Values(" + idPlat + ", '" + nomPlat + "'," + prixPlat + ",'" + recettePlat + "'," + nbpersonnesPlat + ",'" + dateperemptionPlat + "','" + datefabricationPlat + "','" + nationalitePlat + "','" + regimePlat + "'," + idCuisinier + "," + plat_du_jour + "); ";
+                                MySqlCommand creaPlat = maConnexion.CreateCommand();
+                                creaPlat.CommandText = creationPlat;
+                                MySqlDataReader reader3 = creaPlat.ExecuteReader();
+                                reader3.Close();
+                                creaPlat.Dispose();
+
+                                Console.WriteLine("Combien d'ingrédients utilisez-vous?");
+                                int nbIngredients = Convert.ToInt32(Console.ReadLine());
+                                for (int j = 0; j < nbIngredients; j++)
+                                {
+                                    Console.WriteLine("Quel est l'identifiant de l'ingrédient?");
+                                    int idIngrédient = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine("Quel est le nom de l'ingrédient?");
+                                    string nomIngredient = Console.ReadLine();
+                                    Console.WriteLine("Quelle est la quantité de l'ingrédient que vous possédez ?");
+                                    string quantiteIngredient = Console.ReadLine();
+                                    Console.WriteLine("Quelle est la date de péremption de l'ingrédient?");
+                                    string peremptionIngredient = Console.ReadLine();
+                                    string creationIngredient = "insert into Ingrédients(id_Ingrédient,nom,quantité,date_de_péremption) Values(" + idIngrédient + ", '" + nomIngredient + "','" + quantiteIngredient + "','" + peremptionIngredient + "'); ";
+                                    MySqlCommand creaIngredient = maConnexion.CreateCommand();
+                                    creaIngredient.CommandText = creationIngredient;
+                                    MySqlDataReader reader4 = creaIngredient.ExecuteReader();
+                                    reader4.Close();
+                                    creaIngredient.Dispose();
+
+                                    Console.WriteLine("Quelle est la quantité de l'ingrédient que vous utilisez ?");
+                                    string quantiteIngredientutilisee = Console.ReadLine();
+                                    string creationComposee = "insert into composer(id_Plat,id_Ingrédient,quantité) Values(" + idPlat + ", " + idIngrédient + ",'" + quantiteIngredientutilisee + "'); ";
+                                    MySqlCommand creaComposee = maConnexion.CreateCommand();
+                                    creaComposee.CommandText = creationComposee;
+                                    MySqlDataReader reader5 = creaComposee.ExecuteReader();
+                                    reader5.Close();
+                                    creaComposee.Dispose();
+                                }
+                            }
                         }
                     Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Ajouter un plat | 6. Quitter");
                     choixCuisinier = Convert.ToInt32(Console.ReadLine());

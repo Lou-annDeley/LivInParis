@@ -13,6 +13,8 @@ using MySqlX.XDevAPI;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using static RBush.RBush<T>;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -21,6 +23,72 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         
         static void Main(string[] args)
         {
+            string filePath = "MetroParis.xlsx"; // Nom du fichier Excel
+
+            Graphe<string> metro = new Graphe<string>();
+            Dictionary<int, Noeud<string>> noeuds = new Dictionary<int, Noeud<string>>();
+
+            // Utilisation de ClosedXML pour lire le fichier Excel
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                var sheetNoeuds = workbook.Worksheet("Arcs");
+
+                // Lecture des stations (Noeuds) à partir de la feuille Excel
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
+                {
+                    int id = row.Cell(1).GetValue<int>(); // ID de la station
+                    string station = row.Cell(2).GetString(); // Nom de la station
+
+
+                    Noeud<string> noeud = metro.AjouterSommet(station);
+
+                    noeuds[id] = noeud;
+                }
+
+                // Lecture des connexions en utilisant les colonnes "Précédent" et "Suivant"
+                var rows = sheetNoeuds.RowsUsed().ToList(); // Convertir en liste pour un accès par index
+
+                for (int i = 1; i < rows.Count - 1; i++) // -1 pour éviter d'accéder hors limites
+                {
+                    var row = rows[i];
+                    var nextRow = rows[i + 1]; // Récupérer la ligne suivante
+
+                    int id = row.Cell(1).GetValue<int>();
+                    int poids = nextRow.Cell(5).GetValue<int>(); // Poids de la ligne suivante
+                    var suivantObj = row.Cell(4).Value;
+
+                    if (!row.Cell(4).IsEmpty() && row.Cell(4).TryGetValue(out int suivantId))
+                    {
+                        if (noeuds.ContainsKey(suivantId) && noeuds.ContainsKey(id))
+                        {
+                            metro.AjouterLien(noeuds[id], noeuds[suivantId], poids);
+                        }
+                    }
+                }
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
+                {
+                    if (!row.Cell(6).IsEmpty())
+                    {
+                        int id = row.Cell(1).GetValue<int>();
+                        string nom_station = row.Cell(2).GetValue<string>();
+                        int poids_correspondance = row.Cell(6).GetValue<int>();
+                        foreach (var noeud in noeuds)
+                        {
+                            if (noeud.Value.Valeur == nom_station)
+                            {
+                                int id_correspodance = noeud.Key;
+                                if (noeuds[id].ExisteLien(noeuds[id_correspodance]) == false)
+                                {
+                                    metro.AjouterLien(noeuds[id], noeuds[id_correspodance], poids_correspondance);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+// ----------------------- DEBUT DU SQL ---------------------------------------------------------------------------------------------------------------------------------------------
 
             MySqlConnection maConnexion = null;
             try
@@ -41,11 +109,25 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             //
             // L'ajout de la date d'inscription dans la création du cuisinier
             // Requete de clients par date pour le cuisinier
-            //Création d'une Commande
+            // Création d'une Commande
             // ModificationId d'une Commande (addition)
             // ModificationId d'une Commande (état commande)
             // ModificationId d'une Commande (date)
+            // Affichage d'une commande (état de livraison)
+            // Affichage d'une commande (prix en moyenne)
+            // Affichage d'une commande (court chemin/algo dijkstra)
+            // Affichage Statistiques (nb livraisons par cuisto)
+            // Affichage Stat (commandes selon périodes)
+            // Affichage Stat (moyenne des prix de commande)
+            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...
 
+
+            //A faire
+            //
+            // Vérifier à chaque fois le les id n'existent pas déjà
+            // Affichage Client (Par montant des achats cumulés, ce qui permettra de connaître les meilleurs clients)
+            // Affichage Stat (Afficher la moyenne des comptes clients) => On sait pas ce que c'est...
+            // 5 suggestions
 
 
 
@@ -61,7 +143,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                     while(choixClient != 5)
                     {
-                        if (choixClient == 1) //AJOUT
+                        if (choixClient == 1) //AJOUTER
                         {
                             Console.WriteLine("Etes vous un 1.Particulier ou 2.Entreprise");
                             int statut = Convert.ToInt32(Console.ReadLine());
@@ -147,11 +229,13 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             int idClientModif = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
                             int statut = Convert.ToInt32(Console.ReadLine());
+
                             if(statut == 1) //MODIF PARTICULIER
                             {
                                 Console.WriteLine("Que voulez vous modifier ?");
                                 Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom | 9. Prénom | 10.Quitter");
                                 int choixClientModif = Convert.ToInt32(Console.ReadLine());
+
                                 while (choixClientModif != 10)
                                 {
                                     if (choixClientModif == 1)
@@ -165,7 +249,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //TElEPHONE
                                     else if (choixClientModif == 2)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle adresse mail ?");
@@ -177,7 +261,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //ADRESSE MAIL
                                     else if (choixClientModif == 3)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle ville ?");
@@ -189,7 +273,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //VILLE
                                     else if (choixClientModif == 4)
                                     {
                                         Console.WriteLine("Quel est le nouveau Numéro de rue ?");
@@ -201,7 +285,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //NUMERO RUE
                                     else if (choixClientModif == 5)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle rue ?");
@@ -213,7 +297,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //RUE
                                     else if (choixClientModif == 6)
                                     {
                                         Console.WriteLine("Quel est le nouveau code postal ?");
@@ -225,7 +309,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //CODE POSTAL
                                     else if (choixClientModif == 7)
                                     {
                                         Console.WriteLine("Quel est le nouveau métro le plus proche ?");
@@ -237,7 +321,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //METRO PROCHE
                                     else if (choixClientModif == 8)
                                     {
                                         Console.WriteLine("Quel est le nouveau nom ?");
@@ -249,7 +333,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un particulier");
-                                    }
+                                    } //NOM
                                     else if (choixClientModif == 9)
                                     {
                                         Console.WriteLine("Quel est le nouveau prénom ?");
@@ -261,11 +345,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un particulier");
-                                    }
+                                    } //PRENOM
                                     else
                                     {
                                         Console.WriteLine("Option invalide.");
-                                    }
+                                    } //OPTION INVALIDE
 
                                     Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom | 9. Prénom | 10.Quitter");
                                     choixClientModif = Convert.ToInt32(Console.ReadLine());
@@ -273,8 +357,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 if (choixClientModif == 10)
                                 {
                                     return;
-                                }
-                            }
+                                } //QUITTER
+                            }//MODIF PARTICULIER
 
                             else if(statut == 2) //MODIF ENTREPRISE
                             {
@@ -294,7 +378,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //TELEPHONE
                                     else if (choixClientModif == 2)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle adresse mail ?");
@@ -306,7 +390,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //ADRESSE MAIL
                                     else if (choixClientModif == 3)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle ville ?");
@@ -318,7 +402,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //VILLE
                                     else if (choixClientModif == 4)
                                     {
                                         Console.WriteLine("Quel est le nouveau Numéro de rue ?");
@@ -330,7 +414,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //NUMERO RUE
                                     else if (choixClientModif == 5)
                                     {
                                         Console.WriteLine("Quelle est la nouvelle rue ?");
@@ -342,7 +426,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //RUE
                                     else if (choixClientModif == 6)
                                     {
                                         Console.WriteLine("Quel est le nouveau code postal ?");
@@ -354,7 +438,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //CODE POSTAL
                                     else if (choixClientModif == 7)
                                     {
                                         Console.WriteLine("Quel est le nouveau métro le plus proche ?");
@@ -366,7 +450,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'un client");
-                                    }
+                                    } //METRO PROCHE
                                     else if (choixClientModif == 8)
                                     {
                                         Console.WriteLine("Quel est le nouveau nom de référent ?");
@@ -378,11 +462,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader.Close();
                                         modificationClient.Dispose();
                                         Console.WriteLine("Modification d'une entreprise");
-                                    }
+                                    } //NOM REF
                                     else
                                     {
                                         Console.WriteLine("Option invalide.");
-                                    }
+                                    } //OPTION INVALIDE
 
                                     Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 9. Nom référent | 10.Quitter");
                                     choixClientModif = Convert.ToInt32(Console.ReadLine());
@@ -390,12 +474,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 if (choixClientModif == 9)
                                 {
                                     return;
-                                }
-                            }
+                                } //QUITTER
+                            } //MODIF ENTREPRISE
+
                             else
                             {
                                 Console.WriteLine("Option invalide.");
-                            }
+                            } //OPTION INVALIDE
+
                         } //MODIFIER
 
                         else if (choixClient == 3) //SUPPRIMER
@@ -477,7 +563,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     affichClient.Dispose();
                                     Console.WriteLine("Affichage des clients");
-                                }
+                                } //ORDRE ALPHABETIQUE
+
                                 else if (choixClientModif == 2) //par rue
                                 {
                                     string affichageClient = "select * from Client order by rue asc;";
@@ -504,18 +591,24 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     affichClient.Dispose();
                                     Console.WriteLine("Affichage des clients");
 
-                                }
+                                } //PAR RUE
+
                                 else if (choixClientModif == 3) // par montant des achats cumulés
                                 {
 
-                                }
+                                } //PAR MONTANT
+
+                                else
+                                {
+                                    Console.WriteLine("Option Invalide.");
+                                } //OPTION INVALIDE
                                 Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
                                 choixClientModif = Convert.ToInt32(Console.ReadLine());
                             }
                             if (choixClientModif == 4)
                             {
                                 return;
-                            }
+                            } //QUITTER
                         } //AFFICHER
 
                         else
@@ -525,7 +618,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         } //OPTION INVALIDE
 
                         Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
-                    choixClient = Convert.ToInt32(Console.ReadLine());
+                        choixClient = Convert.ToInt32(Console.ReadLine());
 
                     }
                     if (choixClient == 5) //QUITTER
@@ -544,7 +637,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     {
                         if (choixCuisinier == 1) //AJOUT
                         {
-                            
                             Console.WriteLine("Quel est votre identifiant cuisinier?");
                             int idcuisinier = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Quel est votre prénom?");
@@ -584,10 +676,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Quel est votre id ?");
                             int idCuisinierModif = Convert.ToInt32(Console.ReadLine());
 
-
                             Console.WriteLine("Que voulez vous modifier ?");
-                            Console.WriteLine("1. prénom | 2. nom | 3. téléphone | 4. adresse_mail | 5. metro_le_plus_proche | 6. rue_ | 7. ville | 8. numéro_rue | 9. code_postal | 10.Quitter");
+                            Console.WriteLine("1. Prénom | 2. Nom | 3. Téléphone | 4. Adresse mail | 5. Métro le plus proche | 6. Rue | 7. Ville | 8. Numéro rue | 9. Code postal | 10. Quitter");
                             int choixCuisinierModif = Convert.ToInt32(Console.ReadLine());
+
                             while (choixCuisinierModif != 10)
                             {
                                 if (choixCuisinierModif == 1)
@@ -601,7 +693,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //PRENOM
                                 else if (choixCuisinierModif == 2)
                                 {
                                     Console.WriteLine("Quel est le nouveau nom ?");
@@ -613,7 +705,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //NOM
                                 else if (choixCuisinierModif == 3)
                                 {
                                     Console.WriteLine("Quel est le nouveau tel ?");
@@ -625,7 +717,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //TELEPHONE
                                 else if (choixCuisinierModif == 4)
                                 {
                                     Console.WriteLine("Quel est le nouveau adresse mail ?");
@@ -637,7 +729,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //ADRESSE MAIL
                                 else if (choixCuisinierModif == 5)
                                 {
                                     Console.WriteLine("Quel est le nouveau metro le plus proche ?");
@@ -649,7 +741,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //METRO PROCHE
                                 else if (choixCuisinierModif == 6)
                                 {
                                     Console.WriteLine("Quel est le nouvelle rue ?");
@@ -661,7 +753,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //RUE
                                 else if (choixCuisinierModif == 7)
                                 {
                                     Console.WriteLine("Quel est le nouvelle ville ?");
@@ -673,7 +765,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //VILLE
                                 else if (choixCuisinierModif == 8)
                                 {
                                     Console.WriteLine("Quel est le nouveau numero de rue ?");
@@ -685,7 +777,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //NUMERO RUE
                                 else if (choixCuisinierModif == 9)
                                 {
                                     Console.WriteLine("Quel est le nouveau code postal ?");
@@ -697,11 +789,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader.Close();
                                     modificationCuisinier.Dispose();
                                     Console.WriteLine("Modification d'un cuisinier");
-                                }
+                                } //CODE POSTAL
                                 else
                                 {
                                     Console.WriteLine("Option invalide.");
-                                }
+                                } //OPTION INVALIDE
 
                                 Console.WriteLine("1. prénom | 2. nom | 3. téléphone | 4. adresse_mail | 5. metro_le_plus_proche | 6. rue_ | 7. ville | 8. numéro_rue | 9. code_postal | 10.Quitter");
                                 choixCuisinierModif = Convert.ToInt32(Console.ReadLine());
@@ -709,7 +801,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             if (choixCuisinierModif == 10)
                             {
                                 return;
-                            }
+                            } //QUITTER
                             
 
                             
@@ -750,7 +842,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 {
                                     Console.WriteLine("Depuis votre inscription (1) ou sur un certain interval de temps (2)?");
                                     int choixCuistoAff = Convert.ToInt32(Console.ReadLine());
-                                    if(choixCuistoAff == 1)
+                                    if(choixCuistoAff == 1) //DEPUIS INSCRIPTION
                                     {
                                         string affichageCuisinier1_1 = "SELECT DISTINCT c.id_client" +
                                             "FROM Commande AS cmd" +
@@ -779,8 +871,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader1_1.Close();
                                         affichCuisinier1_1.Dispose();
                                         Console.WriteLine("Affichage des clients servis depuis inscription");
-                                    }
-                                    else if (choixCuistoAff == 2)
+                                    } //DEPUIS INSCRIPTION
+                                    else if (choixCuistoAff == 2) //SUR UNE PERIODE
                                     {
                                         Console.WriteLine("Quelle est la date de début?");
                                         string dateDebut = Console.ReadLine();
@@ -813,14 +905,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         reader1_2.Close();
                                         affichCuisinier1_2.Dispose();
                                         Console.WriteLine("Affichage des clients servis sur une période de temps");
-                                    }
+                                    } //SUR UNE PERIODE
                                     else
                                     {
                                         Console.WriteLine("Option invalide.");
 
-                                    }
+                                    } //OPTION INVALIDE
                                     
-                                }
+                                } //CLIENTS SERVIS
 
                                 else if (choixCuisinierAfficher == 2) //plats par fréquence
                                 {
@@ -843,7 +935,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader2.Close();
                                     affichCuisinier2.Dispose();
                                     Console.WriteLine("Affichage des plats du cuisinier");
-                                }
+                                } //PLATS FREQUENCE
 
                                 else if (choixCuisinierAfficher == 3) // plat du jour 
                                 {
@@ -866,14 +958,20 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     reader3.Close();
                                     affichCuisinier3.Dispose();
                                     Console.WriteLine("Affichage du plat du jour");
-                                }
+                                } //PLAT DU JOUR
+
+                                else
+                                {
+                                    Console.WriteLine("Option invalide.");
+                                } //OPTION INVALIDE
+
                                 Console.WriteLine("1. Clients servis | 2. Plats par fréquence | 3. Plat du jour | 4. Quitter");
                                 choixCuisinierAfficher = Convert.ToInt32(Console.ReadLine());
                             }
                             if(choixCuisinierAfficher == 4)
                             {
                                 return;
-                            }
+                            } //QUITTER
 
                         } //AFFICHER
 
@@ -964,6 +1062,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 {
                     Console.WriteLine("1. Ajouter | 2. Modifier |3.Afficher |4. Quitter");
                     int choixCommande = Convert.ToInt32(Console.ReadLine());
+
                     while (choixCommande != 4)
                     {
                         if (choixCommande == 1) //AJOUTER
@@ -995,9 +1094,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Que voulez vous modifier ?");
                             Console.WriteLine("1. Addition | 2. Etat de la commande |3. Date |4. Quitter");
                             int choixModifCommande = Convert.ToInt32(Console.ReadLine());
+
                             while(choixModifCommande != 4)
                             {
-                                if (choixModifCommande == 1)
+                                if (choixModifCommande == 1) //ADDITION
                                 {
                                     Console.WriteLine("Quelle est le nouvelle addition ?");
                                     float addition = float.Parse(Console.ReadLine());
@@ -1010,7 +1110,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     Console.WriteLine("Modification d'une Commande");
                                 } //ADDITION
 
-                                else if (choixModifCommande == 2)
+                                else if (choixModifCommande == 2) //ETAT COMMANDE
                                 {
                                     Console.WriteLine("Quel est le nouvel Etat de commande ?");
                                     string etatCommande = Console.ReadLine();
@@ -1023,7 +1123,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     Console.WriteLine("Modification d'une Commande");
                                 } //ETAT COMMANDE
 
-                                else if (choixModifCommande == 3)
+                                else if (choixModifCommande == 3) //DATE
                                 {
                                     Console.WriteLine("Quel est la nouvelle date ?");
                                     string date = Console.ReadLine();
@@ -1036,21 +1136,176 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     Console.WriteLine("Modification d'une Commande");
                                 } //DATE
 
-                                else
+                                else //OPTION INVALIDE
                                 {
                                     Console.WriteLine("Option invalide.");
                                 } //OPTION INVALIDE
                             }
-                            if (choixModifCommande == 4)
+                            if (choixModifCommande == 4) //QUITTER
                             {
                                 return;
                             } //QUITTER
 
                         } //MODIFIER
 
-                        else if (choixCommande == 3)
+                        else if (choixCommande == 3) //AFFICHER
                         {
+                            Console.WriteLine("Quel est votre identifiant ?");
+                            int idCommandeAffiche = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Que voulez-vous afficher ?");
+                            Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Quitter");
+                            int choixCommandeAfficher = Convert.ToInt32(Console.ReadLine());
 
+                            while (choixCommandeAfficher != 4)
+                            {
+                                if(choixCommandeAfficher == 1) //ETAT COMMANDE
+                                {
+                                    string affichageCommande1 = "SELECT etat_de_la_commande FROM Commande WHERE id_commande = " + idCommandeAffiche + ";";
+
+                                    MySqlCommand affichCommande1 = maConnexion.CreateCommand();
+                                    affichCommande1.CommandText = affichageCommande1;
+                                    MySqlDataReader reader1 = affichCommande1.ExecuteReader();
+
+                                    string[] valueString = new string[reader1.FieldCount];
+
+                                    while (reader1.Read())
+                                    {
+                                        for (int i = 0; i < reader1.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader1.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader1.Close();
+                                    affichCommande1.Dispose();
+                                    Console.WriteLine("Affichage des clients servis depuis inscription");
+                                } //ETAT COMMANDE
+
+                                else if (choixCommandeAfficher == 2) //PRIX MOYENNE
+                                {
+                                    string affichageCommande2 = "SELECT cmd.id_commande, " +
+                                        "SUM(p.prix * ldc.quantité) AS prix_total FROM Commande AS cmd " +
+                                        "JOIN ligne_de_commande AS ldc ON cmd.id_commande = ldc.id_commande" +
+                                        "JOIN Plat AS p ON ldc.id_Plat = p.id_Plat " +
+                                        "WHERE cmd.id_commande = " + idCommandeAffiche + " GROUP BY cmd.id_commande;";
+
+                                    MySqlCommand affichCommande2 = maConnexion.CreateCommand();
+                                    affichCommande2.CommandText = affichageCommande2;
+                                    MySqlDataReader reader2 = affichCommande2.ExecuteReader();
+
+                                    string[] valueString = new string[reader2.FieldCount];
+
+                                    while (reader2.Read())
+                                    {
+                                        for (int i = 0; i < reader2.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader2.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader2.Close();
+                                    affichCommande2.Dispose();
+                                    Console.WriteLine("Affichage des clients servis depuis inscription");
+                                } //PRIX MOYENNE
+
+                                else if (choixCommandeAfficher == 3) //COURT CHEMIN
+                                {
+                                    string affichageCommande3_1 = "SELECT c.metro_le_plus_proche FROM Commande AS cmd" +
+                                        "JOIN Client AS c ON c.id_client = cmd.id_client" +
+                                        "WHERE cmd.id_commande = " + idCommandeAffiche + ";";
+
+                                    MySqlCommand affichCommande3_1 = maConnexion.CreateCommand();
+                                    affichCommande3_1.CommandText = affichageCommande3_1;
+                                    MySqlDataReader reader3_1 = affichCommande3_1.ExecuteReader();
+
+                                    string[] valueString3_1 = new string[reader3_1.FieldCount];
+
+                                    while (reader3_1.Read())
+                                    {
+                                        for (int i = 0; i < reader3_1.FieldCount; i++)
+                                        {
+                                            valueString3_1[i] = reader3_1.GetValue(i).ToString();
+                                            Console.Write(valueString3_1[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader3_1.Close();
+                                    affichCommande3_1.Dispose();
+                                    Console.WriteLine("Affichage des metro proche du client");
+
+
+                                    string affichageCommande3_2 = "SELECT cui.metro_le_plus_proche FROM Commande AS cmd" +
+                                        "JOIN ligne_de_commande AS ldc ON cmd.id_commande = ldc.id_commande" +
+                                        "JOIN Plat AS p ON ldc.id_Plat = p.id_Plat " +
+                                        "JOIN Cuisinier AS cui ON p.id_Cuisinier = cui.id_Cuisinier" +
+                                        "WHERE cmd.id_commande = " + idCommandeAffiche + ";";
+
+                                    MySqlCommand affichCommande3_2 = maConnexion.CreateCommand();
+                                    affichCommande3_2.CommandText = affichageCommande3_2;
+                                    MySqlDataReader reader3_2 = affichCommande3_2.ExecuteReader();
+
+                                    string[] valueString3_2 = new string[reader3_2.FieldCount];
+
+                                    while (reader3_2.Read())
+                                    {
+                                        for (int i = 0; i < reader3_2.FieldCount; i++)
+                                        {
+                                            valueString3_2[i] = reader3_2.GetValue(i).ToString();
+                                            Console.Write(valueString3_2[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader3_2.Close();
+                                    affichCommande3_2.Dispose();
+                                    Console.WriteLine("Affichage des metro proche du cuisinier");
+
+                                    string station1 = valueString3_1[0];
+                                    string station2 = valueString3_2[0];
+                                    int idStation1 = -1;
+                                    int idStation2 = -1;
+
+                                    foreach (var station in noeuds)
+                                    {
+                                        if (station.Value.Valeur == station1)
+                                        {
+                                            idStation1 = station.Key;
+                                        }
+                                    }
+                                    foreach (var station in noeuds)
+                                    {
+                                        if (station.Value.Valeur == station2)
+                                        {
+                                            idStation2 = station.Key;
+                                        }
+                                    }
+
+                                    List<Noeud<string>> plus_petit_chemin = metro.Dijkstra(noeuds[idStation1], noeuds[idStation2]);
+
+                                    Console.WriteLine("Nouveau djikstra, le chemin est ");
+                                    foreach (Noeud<string> noeud1 in plus_petit_chemin)
+                                    {
+                                        Console.Write(noeud1.Valeur + " ");
+                                    }
+                                    Console.WriteLine();
+
+                                    metro.DessinerGraphe("Graphe_des_stations.png");
+                                    Console.WriteLine("Graphe généré");
+                                    metro.MettreEnEvidenceChemin(plus_petit_chemin, "Plus_court_chemin.png");
+                                    Console.WriteLine("Graphe avec le plus court chemin généré");
+
+                                } //COURT CHEMIN
+
+                                else //OPTION INVALIDE
+                                {
+                                    Console.WriteLine("Option invalide.");
+                                } //OPTION INVALIDE
+                            }
+                            if(choixCommandeAfficher == 4) //QUITTER
+                            {
+                                return;
+                            } //QUITTER
                         } //AFFICHER
 
                         else
@@ -1062,46 +1317,141 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         Console.WriteLine("1. Ajouter | 2. Modifier |3.Afficher |4. Quitter");
                         choixCommande = Convert.ToInt32(Console.ReadLine());
                     }
-                    if(choixCommande==4)
+                    if(choixCommande==4) //QUITTER
                     {
                         return;
                     } //QUITTER
                 } //COMMANDES
 
-                else if (choix == 4)
+                else if (choix == 4) //STATISTIQUES
                 {
-                    Console.WriteLine("Statistiques");
+                    Console.WriteLine("1. Nombre de livraison par cuisiniers | 2. Commandes selon un période | 3. Moyenne des prix des commandes | 4. Moyenne des comptes clients | 5. Commandes selon nationnalité et période | 6. Quitter");
+                    int choixStatistiques = Convert.ToInt32(Console.ReadLine());
 
-                    //string query = "SELECT cuisinier_id, COUNT(*) AS total FROM Commande GROUP BY cuisinier_id";
-                    //using (MySqlConnection conn = new MySqlConnection(connectionString))
-                    //{
-                    //    conn.Open();
-                    //    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    //    MySqlDataReader reader = cmd.ExecuteReader();
-                    //    while (reader.Read())
-                    //    {
-                    //        Console.WriteLine($"Cuisinier {reader["cuisinier_id"]}: {reader["total"]} livraisons");
-                    //    }
-                    //}
+                    while(choixStatistiques != 4)
+                    {
+                        if(choixStatistiques == 1) //NB LIVRAISON PAR CUISTO
+                        {
+                            Console.WriteLine("Quel est votre identifiant cuisinier?");
+                            int idCuistoStatistiques = Convert.ToInt32(Console.ReadLine());
 
-                    //Console.Write("Numéro de commande: ");
-                    //int idCommande = int.Parse(Console.ReadLine());
-                    //string prixQuery = "SELECT prix FROM Commande WHERE id_commande = @id";
-                    //using (MySqlConnection conn = new MySqlConnection(connectionString))
-                    //{
-                    //    conn.Open();
-                    //    MySqlCommand cmd = new MySqlCommand(prixQuery, conn);
-                    //    cmd.Parameters.AddWithValue("@id", idCommande);
-                    //    object result = cmd.ExecuteScalar();
-                    //    if (result != null)
-                    //    {
-                    //        Console.WriteLine($"Le prix de la commande est : {result} euros");
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine("Commande non trouvée.");
-                    //    }
-                    //}
+                            string affichageStat1 = "COUNT(id_commande) AS nombre_livraisons FROM Commande" +
+                                "JOIN Cuisiniers ON id_Cuisinier = " + idCuistoStatistiques +
+                                "WHERE etat_de_la_commande = 'livrée';";
+
+                            MySqlCommand affichStat1 = maConnexion.CreateCommand();
+                            affichStat1.CommandText = affichageStat1;
+                            MySqlDataReader reader1 = affichStat1.ExecuteReader();
+
+                            string[] valueString = new string[reader1.FieldCount];
+
+                            while (reader1.Read())
+                            {
+                                for (int i = 0; i < reader1.FieldCount; i++)
+                                {
+                                    valueString[i] = reader1.GetValue(i).ToString();
+                                    Console.Write(valueString[i] + " ");
+                                }
+                                Console.WriteLine();
+                            }
+                            reader1.Close();
+                            affichStat1.Dispose();
+                            Console.WriteLine("Affichage du nombre de livraison par cuisto");
+
+                        } //NB LIVRAISON PAR CUISTO
+
+                        else if (choixStatistiques == 2) //COMMANDES SELON PERIODE
+                        {
+                            Console.WriteLine("Quelle est la date de début?");
+                            string dateDebut = Console.ReadLine();
+                            Console.WriteLine("Quelle est la date de fin?");
+                            string dateFin = Console.ReadLine();
+
+                            string affichageStat2 = "SELECT * FROM Commandes WHERE date_ BETWEEN '" + dateDebut + "' AND '" + dateFin + "';";
+                            MySqlCommand affichStat2 = maConnexion.CreateCommand();
+                            affichStat2.CommandText = affichageStat2;
+                            MySqlDataReader reader2 = affichStat2.ExecuteReader();
+
+                            string[] valueString = new string[reader2.FieldCount];
+
+                            while (reader2.Read())
+                            {
+                                for (int i = 0; i < reader2.FieldCount; i++)
+                                {
+                                    valueString[i] = reader2.GetValue(i).ToString();
+                                    Console.Write(valueString[i] + " ");
+                                }
+                                Console.WriteLine();
+                            }
+                            reader2.Close();
+                            affichStat2.Dispose();
+                            Console.WriteLine("Affichage des commandes selon une période");
+                        } //COMMANDES SELON PERIODE
+                         
+                        else if (choixStatistiques == 3) //MOYENNE PRIX COMMANDES
+                        {
+                            string affichageStat3 = "SELECT AVG(addition) AS moyenne_prix_commandes FROM Commandes; ";
+                            MySqlCommand affichStat3 = maConnexion.CreateCommand();
+                            affichStat3.CommandText = affichageStat3;
+                            MySqlDataReader reader3 = affichStat3.ExecuteReader();
+
+                            string[] valueString = new string[reader3.FieldCount];
+
+                            while (reader3.Read())
+                            {
+                                for (int i = 0; i < reader3.FieldCount; i++)
+                                {
+                                    valueString[i] = reader3.GetValue(i).ToString();
+                                    Console.Write(valueString[i] + " ");
+                                }
+                                Console.WriteLine();
+                            }
+                            reader3.Close();
+                            affichStat3.Dispose();
+                            Console.WriteLine("Affichage de la moyenne des prix des commandes");
+                        } //MOYENNE PRIX COMMANDES
+
+                        else if (choixStatistiques == 4) //MOYENNE COMPTE CLIENT
+                        {
+
+                        } //MOYENNE COMPTE CLIENT
+
+                        else if (choixStatistiques == 5) //COMANDES SEON NATIONALITE ET PERIODE
+                        {
+                            Console.WriteLine("Quelle est la date de début?");
+                            string dateDebut = Console.ReadLine();
+                            Console.WriteLine("Quelle est la date de fin?");
+                            string dateFin = Console.ReadLine();
+
+                            string affichageStat5 = "SELECT id_commande FROM Commandes " +
+                                "WHERE (JOIN Clients ON id_client = idClient) " +
+                                "AND (JOIN Plats ON id_Plat = idPlat AND ORDER BY nationalité) " +
+                                "date_ BETWEEN '" + dateDebut + "' AND '" + dateFin + 
+                                "ORDER BY date_;";
+                            MySqlCommand affichStat5 = maConnexion.CreateCommand();
+                            affichStat5.CommandText = affichageStat5;
+                            MySqlDataReader reader5 = affichStat5.ExecuteReader();
+
+                            string[] valueString = new string[reader5.FieldCount];
+
+                            while (reader5.Read())
+                            {
+                                for (int i = 0; i < reader5.FieldCount; i++)
+                                {
+                                    valueString[i] = reader5.GetValue(i).ToString();
+                                    Console.Write(valueString[i] + " ");
+                                }
+                                Console.WriteLine();
+                            }
+                            reader5.Close();
+                            affichStat5.Dispose();
+                            Console.WriteLine("Affichage des commandes selon nationalité et une période");
+                        } //COMANDES SEON NATIONALITE ET PERIODE
+                    }
+                    if(choixStatistiques == 4) //QUITTER
+                    {
+                        return;
+                    } //QUITTER
                 } //STATISTIQUES
 
                 else
@@ -1115,116 +1465,12 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 //maConnexion.Close();
                 Console.ReadLine();
             }
-            if (choix == 5)
+            if (choix == 5) //QUITTER
             {
                 return;
             } //QUITTER
             Console.ReadLine();
-
-
-
-            string filePath = "MetroParis.xlsx"; // Nom du fichier Excel
-
-            Graphe<string> metro = new Graphe<string>();
-            Dictionary<int, Noeud<string>> noeuds = new Dictionary<int, Noeud<string>>();
-
-            // Utilisation de ClosedXML pour lire le fichier Excel
-            using (var workbook = new XLWorkbook(filePath))
-            {
-                var sheetNoeuds = workbook.Worksheet("Arcs");
-
-                // Lecture des stations (Noeuds) à partir de la feuille Excel
-                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
-                {
-                    int id = row.Cell(1).GetValue<int>(); // ID de la station
-                    string station = row.Cell(2).GetString(); // Nom de la station
-                    
-
-                    Noeud<string> noeud = metro.AjouterSommet(station);
-                       
-                    noeuds[id] = noeud;
-                }
-
-                // Lecture des connexions en utilisant les colonnes "Précédent" et "Suivant"
-                var rows = sheetNoeuds.RowsUsed().ToList(); // Convertir en liste pour un accès par index
-
-                for (int i = 1; i < rows.Count - 1; i++) // -1 pour éviter d'accéder hors limites
-                {
-                    var row = rows[i];
-                    var nextRow = rows[i + 1]; // Récupérer la ligne suivante
-
-                    int id = row.Cell(1).GetValue<int>();
-                    int poids = nextRow.Cell(5).GetValue<int>(); // Poids de la ligne suivante
-                    var suivantObj = row.Cell(4).Value;
-
-                    if (!row.Cell(4).IsEmpty() && row.Cell(4).TryGetValue(out int suivantId))
-                    {
-                        if (noeuds.ContainsKey(suivantId) && noeuds.ContainsKey(id))
-                        {
-                            metro.AjouterLien(noeuds[id], noeuds[suivantId], poids);
-                        }
-                    }
-                }
-                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
-                {
-                    if(!row.Cell(6).IsEmpty())
-                    {
-                        int id = row.Cell(1).GetValue<int>();
-                        string nom_station = row.Cell(2).GetValue<string>();
-                        int poids_correspondance = row.Cell(6).GetValue<int>();
-                        foreach (var noeud in noeuds)
-                        {
-                            if(noeud.Value.Valeur == nom_station)
-                            {
-                                int id_correspodance = noeud.Key;
-                                if (noeuds[id].ExisteLien(noeuds[id_correspodance]) == false)
-                                {
-                                    metro.AjouterLien(noeuds[id], noeuds[id_correspodance], poids_correspondance);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-
-
-            //Afficher les chemins les plus courts
-
-            //List<Noeud<string>> plus_petit_cheminS2 = metro.Dijkstra(noeuds[25], noeuds[235]);
-            //Console.WriteLine("Nouveau djikstra, le chemin est ");
-            //foreach (Noeud<string> noeud1 in plus_petit_cheminS2)
-            //{
-            //    Console.Write(noeud1.Valeur + " ");
-            //}
-            //Console.WriteLine();
-
-            //List<Noeud<string>> plus_petit_cheminS3 = metro.BellmanFord(noeuds[1], noeuds[38]);
-            //Console.WriteLine("Nouveau bellman, le chemin est ");
-            //foreach (Noeud<string> noeud1 in plus_petit_cheminS3)
-            //{
-            //    Console.Write(noeud1.Valeur + " -> ");
-            //}
-
-            // Appel de FloydWarshall
-            List<Noeud<string>> plus_petit_cheminS3 = metro.FloydWarshall(noeuds[1], noeuds[38]);
-            Console.WriteLine("Nouveau bellman, le chemin est ");
-            foreach (Noeud<string> noeud1 in plus_petit_cheminS3)
-            {
-                Console.Write(noeud1.Valeur + " -> ");
-            }
-
-
-            // Dessiner le graphe et sauvegarder l'image
-            metro.DessinerGraphe("graphe.png");
-            Console.WriteLine("Graphe généré");
-            metro.MettreEnEvidenceChemin(plus_petit_cheminS3, "court_chemin.png");
-            Console.WriteLine("Graphe avec plus court chemin généré");
-
-
-
         }
-       
     }
 }
 

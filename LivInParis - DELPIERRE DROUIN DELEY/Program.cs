@@ -109,29 +109,21 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             //On doit vérifier :
             //
-            // L'ajout de la date d'inscription dans la création du cuisinier
-            // Requete de clients par date pour le cuisinier
-            // Création d'une Commande
-            // ModificationId d'une Commande (addition)
-            // ModificationId d'une Commande (état commande)
-            // ModificationId d'une Commande (date)
-            // Affichage d'une commande (état de livraison)
-            // Affichage d'une commande (prix en moyenne)
-            // Affichage d'une commande (court chemin/algo dijkstra)
-            // Affichage Statistiques (nb livraisons par cuisto)
-            // Affichage Stat (commandes selon périodes)
-            // Affichage Stat (moyenne des prix de commande)
-            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...
+            // Requete de clients par date pour le cuisinier (doute)
+            // Affichage d'une commande (prix en moyenne)(un peu une entourloupe (pas vraiment de calcul))
+            // Affichage d'une commande (court chemin/algo dijkstra) (marche pas) URGENCE 
+            // Affichage Statistiques (nb livraisons par cuisto) (normalement oui)
+            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...(non...)
 
 
             //A faire
             //
             // Vérifier à chaque fois le les id n'existent pas déjà
-            // Affichage Client (Par montant des achats cumulés, ce qui permettra de connaître les meilleurs clients)
             // Affichage Stat (Afficher la moyenne des comptes clients) => On sait pas ce que c'est...
             // 5 suggestions
 
-            
+            //ligne de commande et livraison ? 
+
 
             Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
             int choix = Convert.ToInt32(Console.ReadLine());
@@ -597,7 +589,29 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                 else if (choixClientModif == 3) // par montant des achats cumulés
                                 {
+                                    string affichageClient = "SELECT Client.id_client, SUM(Commande.addition) AS montant_total FROM Commande JOIN Client ON Commande.id_client = Client.id_client GROUP BY Client.id_client ORDER BY montant_total DESC;";
+                                    MySqlCommand affichClient = maConnexion.CreateCommand();
+                                    affichClient.CommandText = affichageClient;
+                                    MySqlDataReader reader = affichClient.ExecuteReader();
 
+                                    string[] valueString = new string[reader.FieldCount];
+
+                                    while (reader.Read())
+                                    {
+
+
+                                        for (int i = 0; i < reader.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+
+                                        Console.WriteLine();
+                                    }
+
+                                    reader.Close();
+                                    affichClient.Dispose();
+                                    Console.WriteLine("Affichage des clients");
                                 } //PAR MONTANT
 
                                 else
@@ -846,14 +860,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     int choixCuistoAff = Convert.ToInt32(Console.ReadLine());
                                     if(choixCuistoAff == 1) //DEPUIS INSCRIPTION
                                     {
-                                        string affichageCuisinier1_1 = "SELECT DISTINCT c.id_client" +
-                                            "FROM Commande AS cmd" +
-                                            "JOIN Client AS c ON cmd.id_client = c.id_client" +
-                                            "JOIN ligne_de_commande AS ldc ON cmd.id_commande = ldc.id_commande" +
-                                            "JOIN Plat AS p ON ldc.id_Plat = p.id_Plat" +
-                                            "JOIN Cuisinier AS cuis ON p.id_Cuisinier = cuis.id_Cuisinier" +
-                                            "WHERE cuis.id_Cuisinier = " + choixCuisinierAfficher +
-                                            "ANDcmd.date_ >= cuis.date_inscription;";
+                                        string affichageCuisinier1_1 = "SELECT Client.id_client FROM Client JOIN Commande ON Client.id_client = Commande.id_client JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = "+idCuisinierAffiche+" AND Commande.date_ >= Cuisinier.date_inscription ORDER BY Commande.date_;";
 
                                         MySqlCommand affichCuisinier1_1 = maConnexion.CreateCommand();
                                         affichCuisinier1_1.CommandText = affichageCuisinier1_1;
@@ -1189,11 +1196,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                 else if (choixCommandeAfficher == 2) //PRIX MOYENNE
                                 {
-                                    string affichageCommande2 = "SELECT cmd.id_commande, " +
-                                        "SUM(p.prix * ldc.quantité) AS prix_total FROM Commande AS cmd " +
-                                        "JOIN ligne_de_commande AS ldc ON cmd.id_commande = ldc.id_commande" +
-                                        "JOIN Plat AS p ON ldc.id_Plat = p.id_Plat " +
-                                        "WHERE cmd.id_commande = " + idCommandeAffiche + " GROUP BY cmd.id_commande;";
+                                    string affichageCommande2 = "SELECT id_commande, addition FROM Commande;";
 
                                     MySqlCommand affichCommande2 = maConnexion.CreateCommand();
                                     affichCommande2.CommandText = affichageCommande2;
@@ -1344,9 +1347,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Quel est votre identifiant cuisinier?");
                             int idCuistoStatistiques = Convert.ToInt32(Console.ReadLine());
 
-                            string affichageStat1 = "COUNT(id_commande) AS nombre_livraisons FROM Commande" +
-                                "JOIN Cuisiniers ON id_Cuisinier = " + idCuistoStatistiques +
-                                "WHERE etat_de_la_commande = 'livrée';";
+                            string affichageStat1 = "SELECT COUNT(Commande.id_commande) AS nombre_de_livraisons FROM Commande JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = "+idCuistoStatistiques+" AND Commande.etat_de_la_commande = 'livree'";
 
                             MySqlCommand affichStat1 = maConnexion.CreateCommand();
                             affichStat1.CommandText = affichageStat1;
@@ -1399,7 +1400,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                          
                         else if (choixStatistiques == 3) //MOYENNE PRIX COMMANDES
                         {
-                            string affichageStat3 = "SELECT AVG(addition) AS moyenne_prix_commandes FROM Commandes; ";
+                            string affichageStat3 = "SELECT AVG(Commande.addition) AS moyenne_prix_commandes FROM Commande; ";
                             MySqlCommand affichStat3 = maConnexion.CreateCommand();
                             affichStat3.CommandText = affichageStat3;
                             MySqlDataReader reader3 = affichStat3.ExecuteReader();
@@ -1431,12 +1432,15 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             string dateDebut = Console.ReadLine();
                             Console.WriteLine("Quelle est la date de fin?");
                             string dateFin = Console.ReadLine();
+                            Console.WriteLine("Quel est l'id du client ?");
+                            int idClient = Convert.ToInt32(Console.ReadLine());
 
-                            string affichageStat5 = "SELECT id_commande FROM Commandes " +
-                                "WHERE (JOIN Clients ON id_client = idClient) " +
-                                "AND (JOIN Plats ON id_Plat = idPlat AND ORDER BY nationalité) " +
-                                "date_ BETWEEN '" + dateDebut + "' AND '" + dateFin + 
-                                "ORDER BY date_;";
+                            string affichageStat5 = "SELECT Commande.id_commande, Commande.date_ FROM Commande " +
+                            "JOIN Client ON Commande.id_client = Client.id_client " +
+                            "JOIN Plat ON Commande.id_commande = Plat.id_Plat " +
+                            "WHERE Client.id_client = "+idClient+
+                            " AND Commande.date_ BETWEEN "+dateDebut+" AND "+dateFin+
+                            " ORDER BY Plat.nationalité;";
                             MySqlCommand affichStat5 = maConnexion.CreateCommand();
                             affichStat5.CommandText = affichageStat5;
                             MySqlDataReader reader5 = affichStat5.ExecuteReader();
@@ -1456,11 +1460,15 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             affichStat5.Dispose();
                             Console.WriteLine("Affichage des commandes selon nationalité et une période");
                         } //COMANDES SEON NATIONALITE ET PERIODE
+                        Console.WriteLine("1. Nombre de livraison par cuisiniers | 2. Commandes selon un période | 3. Moyenne des prix des commandes | 4. Moyenne des comptes clients | 5. Commandes selon nationnalité et période | 6. Quitter");
+                        choixStatistiques = Convert.ToInt32(Console.ReadLine());
                     }
                     if(choixStatistiques == 4) //QUITTER
                     {
                         return;
                     } //QUITTER
+                    
+
                 } //STATISTIQUES
 
                 else

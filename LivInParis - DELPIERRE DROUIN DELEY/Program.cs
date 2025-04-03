@@ -999,7 +999,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             {
                                 if (choixModifCommande == 1)
                                 {
-                                    Console.WriteLine("Quel est le nouvel Etat de commande ?");
+                                    Console.WriteLine("Quelle est le nouvelle addition ?");
                                     float addition = float.Parse(Console.ReadLine());
                                     string modifCommande = "update Commande set addition = " + addition + " where id_commande = " + idCommande + ";";
                                     MySqlCommand modificationCommande1 = maConnexion.CreateCommand();

@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS Plat(
    nationalité VARCHAR(50),
    régime_alimentaire VARCHAR(50),
    id_Cuisinier BIGINT NOT NULL,
+   plat_du_jour BOOL,
    PRIMARY KEY(id_Plat),
    FOREIGN KEY(id_Cuisinier) REFERENCES Cuisinier(id_Cuisinier)
 );

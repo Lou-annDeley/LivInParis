@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS Cuisinier(
    numéro_rue INT,
    code_postal INT,
    id_client BIGINT NOT NULL,
+   date_inscription DATE,
    PRIMARY KEY(id_Cuisinier),
    UNIQUE(id_client),
    FOREIGN KEY(id_client) REFERENCES Client(id_client)
@@ -106,6 +107,7 @@ CREATE TABLE IF NOT EXISTS Plat(
    nationalité VARCHAR(50),
    régime_alimentaire VARCHAR(50),
    id_Cuisinier BIGINT NOT NULL,
+   plat_du_jour BOOLEAN,
    PRIMARY KEY(id_Plat),
    FOREIGN KEY(id_Cuisinier) REFERENCES Cuisinier(id_Cuisinier)
 );

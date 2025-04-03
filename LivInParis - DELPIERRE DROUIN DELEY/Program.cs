@@ -14,7 +14,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Office2010.Excel;
-using static RBush.RBush<T>;
+
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -94,8 +94,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             try
             {
                 string connectionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
+                
                 maConnexion = new MySqlConnection(connectionString);
                 maConnexion.Open();
+
 
             }
             catch (MySqlException e)
@@ -129,7 +131,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             // Affichage Stat (Afficher la moyenne des comptes clients) => On sait pas ce que c'est...
             // 5 suggestions
 
-
+            
 
             Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
             int choix = Convert.ToInt32(Console.ReadLine());
@@ -165,7 +167,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 int codepClient = Convert.ToInt32(Console.ReadLine());
                                 Console.WriteLine("Quel est le métro le plus proche?");
                                 string metroClient = Console.ReadLine();
-                                string creationClient = "insert into Client(id_particulier, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + ",'" + mailClient + "','" + villeClient + "'," + numrueClient + ",'" + rueClient + "'," + codepClient + "," + metroClient + ");";
+                                string creationClient = "insert into Client(id_client, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + ",'" + mailClient + "','" + villeClient + "'," + numrueClient + ",'" + rueClient + "'," + codepClient + "," + metroClient + ");";
                                 MySqlCommand creaClient = maConnexion.CreateCommand();
                                 creaClient.CommandText = creationClient;
                                 MySqlDataReader reader = creaClient.ExecuteReader();
@@ -176,7 +178,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 string nomParti = Console.ReadLine();
                                 Console.WriteLine("Quel est votre prénom?");
                                 string prenomParti = Console.ReadLine();
-                                string creationParticulier = "insert into particulier(id_client, nom, prenom, id_client) Values(" + idClient + ", '" + nomParti + "', '" + prenomParti + "'," + idClient + ");";
+                                string creationParticulier = "insert into particulier(id_particulier, nom, prenom, id_client) Values(" + idClient + ", '" + nomParti + "', '" + prenomParti + "'," + idClient + ");";
                                 MySqlCommand creaParti = maConnexion.CreateCommand();
                                 creaParti.CommandText = creationParticulier;
                                 MySqlDataReader reader2 = creaParti.ExecuteReader();
@@ -661,7 +663,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             int idclient = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Quelle est la date de votre inscription?");
                             string date_inscriptionCuisinier = Console.ReadLine();
-                            string creationCuisinier = "insert into Cuisinier(id_Cuisinier,prénom,nom,téléphone,adresse_mail,metro_le_plus_proche,rue_,ville,numéro_rue,code_postal, id_client, date_inscription) Values(" + idcuisinier + ", '" + prenomcuisinier + "','" + nomcuisinier + "'," + telCuisinier + ",'" + mailCuisinier + "','" + metroCuisinier + "','" + rueCuisinier + "','" + villeCuisinier + "'," + numerorueCuisinier + "," + codepCuisinier + "," + idclient + ",'" + date_inscriptionCuisinier + "); ";
+                            string creationCuisinier = "insert into Cuisinier(id_Cuisinier,prénom,nom,téléphone,adresse_mail,metro_le_plus_proche,rue_,ville,numéro_rue,code_postal, id_client, date_inscription) Values(" + idcuisinier + ", '" + prenomcuisinier + "','" + nomcuisinier + "'," + telCuisinier + ",'" + mailCuisinier + "','" + metroCuisinier + "','" + rueCuisinier + "','" + villeCuisinier + "'," + numerorueCuisinier + "," + codepCuisinier + "," + idclient + ",'" + date_inscriptionCuisinier + "'); ";
                             MySqlCommand creaCuisinier = maConnexion.CreateCommand();
                             creaCuisinier.CommandText = creationCuisinier;
                             MySqlDataReader reader = creaCuisinier.ExecuteReader();
@@ -1078,7 +1080,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             string datetime = Console.ReadLine();
                             Console.WriteLine("Quelle est votre id_client");
                             int id_client = Convert.ToInt32(Console.ReadLine());
-                            string creationCommande = "insert into Cuisinier(id_commande,addition,etat_de_la_commande,date_,id_client) Values(" + idcommande + ", " + addition + ",'" + etat_de_la_commande + "','" + datetime + "'," + id_client + ");";
+                            string creationCommande = "insert into Commande(id_commande,addition,etat_de_la_commande,date_,id_client) Values(" + idcommande + ", " + addition + ",'" + etat_de_la_commande + "','" + datetime + "'," + id_client + ");";
                             MySqlCommand creaCommande = maConnexion.CreateCommand();
                             creaCommande.CommandText = creationCommande;
                             MySqlDataReader reader = creaCommande.ExecuteReader();
@@ -1140,6 +1142,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 {
                                     Console.WriteLine("Option invalide.");
                                 } //OPTION INVALIDE
+                                Console.WriteLine("Que voulez vous modifier ?");
+                                Console.WriteLine("1. Addition | 2. Etat de la commande |3. Date |4. Quitter");
+                                choixModifCommande = Convert.ToInt32(Console.ReadLine());
                             }
                             if (choixModifCommande == 4) //QUITTER
                             {
@@ -1301,6 +1306,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 {
                                     Console.WriteLine("Option invalide.");
                                 } //OPTION INVALIDE
+
+                                Console.WriteLine("Que voulez-vous afficher ?");
+                                Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Quitter");
+                                choixCommandeAfficher = Convert.ToInt32(Console.ReadLine());
                             }
                             if(choixCommandeAfficher == 4) //QUITTER
                             {
@@ -1367,7 +1376,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Quelle est la date de fin?");
                             string dateFin = Console.ReadLine();
 
-                            string affichageStat2 = "SELECT * FROM Commandes WHERE date_ BETWEEN '" + dateDebut + "' AND '" + dateFin + "';";
+                            string affichageStat2 = "SELECT * FROM Commande WHERE date_ BETWEEN '" + dateDebut + "' AND '" + dateFin + "';";
                             MySqlCommand affichStat2 = maConnexion.CreateCommand();
                             affichStat2.CommandText = affichageStat2;
                             MySqlDataReader reader2 = affichStat2.ExecuteReader();
@@ -1470,6 +1479,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 return;
             } //QUITTER
             Console.ReadLine();
+
+            maConnexion.Close();
+            maConnexion.Dispose();
         }
     }
 }

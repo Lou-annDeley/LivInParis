@@ -143,41 +143,33 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 int idClient = Convert.ToInt32(Console.ReadLine());
 
                                 #region
-                                string affichageClient = "SELECT id_client FROM Client;";
-                                MySqlCommand affichClient = maConnexion.CreateCommand();
-                                affichClient.CommandText = affichageClient;
-                                MySqlDataReader readerID = affichClient.ExecuteReader();
+                                string requete = "SELECT id_client FROM Client WHERE id_client = " + idClient + ";";
+                                MySqlCommand commande = maConnexion.CreateCommand();
+                                commande.CommandText = requete;
 
-                                string[] valueString = new string[readerID.FieldCount];
+                                bool existe = false;
 
-                                while (readerID.Read())
+                                try
                                 {
-                                    for (int i = 0; i < readerID.FieldCount; i++)
+                                    MySqlDataReader readerID = commande.ExecuteReader();
+
+                                    if (readerID.Read())
                                     {
-                                        valueString[i] = readerID.GetValue(i).ToString();
-                                        
-                                        Console.Write(valueString[i] + " ");
+                                        existe = true;
                                     }
-                                    Console.WriteLine();
+
+                                    readerID.Close();
+                                }
+                                catch (MySqlException ex)
+                                {
+                                    Console.WriteLine("Erreur lors de la vérification du client : " + ex.ToString());
                                 }
 
-                                readerID.Close();
-                                affichClient.Dispose();
-                                bool idValide = false;
-                                do
+                                while(existe == false)
                                 {
                                     Console.WriteLine("Quel est votre identifiant client?");
                                     idClient = Convert.ToInt32(Console.ReadLine());
-                                    for (int i = 0; i < valueString.Length; i++)
-                                    {
-                                        if (idClient == Convert.ToInt32(valueString[i]))
-                                        {
-                                            idValide = true;
-                                            break;
-                                        }
-                                    }
-
-                                } while (!idValide);
+                                }
                                 #endregion
 
                                 Console.WriteLine("Quel est votre numéro de téléphone?");

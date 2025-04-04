@@ -14,7 +14,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Office2010.Excel;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -141,6 +141,43 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             {
                                 Console.WriteLine("Quel est votre identifiant client?");
                                 int idClient = Convert.ToInt32(Console.ReadLine());
+
+                                #region
+                                string affichageClient = "SELECT id_client FROM Client;";
+                                MySqlCommand affichClient = maConnexion.CreateCommand();
+                                affichClient.CommandText = affichageClient;
+                                MySqlDataReader readerID = affichClient.ExecuteReader();
+
+                                string[] valueString = new string[readerID.FieldCount];
+
+                                while (readerID.Read())
+                                {
+                                    for (int i = 0; i < readerID.FieldCount; i++)
+                                    {
+                                        valueString[i] = readerID.GetValue(i).ToString();
+                                        
+                                        Console.Write(valueString[i] + " ");
+                                    }
+                                    Console.WriteLine();
+                                }
+
+                                readerID.Close();
+                                affichClient.Dispose();
+
+                                int j = 0;
+                                while(j< valueString.Length)
+                                {
+                                    Console.WriteLine("je suis rentré dans le while");
+                                    while (Convert.ToInt32(valueString[j]) == idClient)
+                                    {
+                                        Console.WriteLine("je suis rentré dans le while2");
+                                        Console.WriteLine("Quel est votre identifiant client?");
+                                        idClient = Convert.ToInt32(Console.ReadLine());
+                                    }
+                                    j++;
+                                }
+                                #endregion
+
                                 Console.WriteLine("Quel est votre numéro de téléphone?");
                                 int telClient = Convert.ToInt32(Console.ReadLine());
                                 Console.WriteLine("Quel est votre adresse mail?");
@@ -1161,10 +1198,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Quel est votre identifiant ?");
                             int idCommandeAffiche = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Que voulez-vous afficher ?");
-                            Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Quitter");
+                            Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Ligne de commande | 5. Quitter");
                             int choixCommandeAfficher = Convert.ToInt32(Console.ReadLine());
 
-                            while (choixCommandeAfficher != 4)
+                            while (choixCommandeAfficher != 5)
                             {
                                 if (choixCommandeAfficher == 1) //ETAT COMMANDE
                                 {
@@ -1301,16 +1338,44 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                 } //COURT CHEMIN
 
+                                else if (choixCommandeAfficher==4) // Ligne de commande
+                                {
+                                    string affichageCommande4 = "SELECT Plat.nom FROM ligne_de_commande " +
+                                        "JOIN Plat ON ligne_de_commande.id_Plat = Plat.id_Plat " +
+                                        "JOIN Commande ON ligne_de_commande.id_commande = Commande.id_commande " +
+                                        "WHERE ligne_de_commande.id_commande = " + idCommandeAffiche + ";";
+
+                                    MySqlCommand affichCommande4 = maConnexion.CreateCommand();
+                                    affichCommande4.CommandText = affichageCommande4;
+                                    MySqlDataReader reader4 = affichCommande4.ExecuteReader();
+
+                                    string[] valueString = new string[reader4.FieldCount];
+
+                                    while (reader4.Read())
+                                    {
+                                        for (int i = 0; i < reader4.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader4.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader4.Close();
+                                    affichCommande4.Dispose();
+                                    Console.WriteLine("Affichage des clients servis depuis inscription");
+
+                                }
+
                                 else //OPTION INVALIDE
                                 {
                                     Console.WriteLine("Option invalide.");
                                 } //OPTION INVALIDE
 
                                 Console.WriteLine("Que voulez-vous afficher ?");
-                                Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Quitter");
+                                Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Ligne de commande | 5. Quitter");
                                 choixCommandeAfficher = Convert.ToInt32(Console.ReadLine());
                             }
-                            if (choixCommandeAfficher == 4) //QUITTER
+                            if (choixCommandeAfficher == 5) //QUITTER
                             {
                                 return;
                             } //QUITTER
@@ -1477,7 +1542,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         {
                             Console.WriteLine("Quel est le numero de l'avis");
                             int idavis = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine("Quel est votre notre ");
+                            Console.WriteLine("Quelle est votre note sur 5");
                             int note = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Entrez votre commentaire");
                             string commentaire = Console.ReadLine();
@@ -1511,9 +1576,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         }
                         else if (choixAvis == 3)
                         {
-                            Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Quitter");
+                            Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Liste des meilleurs cuisinier |5. Quitter");
                             int choixaffiche = Convert.ToInt32(Console.ReadLine());
-                            while (choixaffiche != 4)
+                            while (choixaffiche != 5)
                             {
                                 if (choixaffiche == 1)
                                 {
@@ -1540,12 +1605,90 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     Console.WriteLine("Affichage des notes");
 
                                 }
+                                else if (choixaffiche == 2)
+                                {
+                                    Console.WriteLine("Quel est le numéro du cuisinier");
+                                    int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                                    string affichageNote = "SELECT commentaire FROM avis WHERE id_Cuisinier = " + idcuisinier + ";";
+                                    MySqlCommand affichNote = maConnexion.CreateCommand();
+                                    affichNote.CommandText = affichageNote;
+                                    MySqlDataReader reader2 = affichNote.ExecuteReader();
 
+                                    string[] valueString = new string[reader2.FieldCount];
 
-                                Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Quitter");
+                                    while (reader2.Read())
+                                    {
+                                        for (int i = 0; i < reader2.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader2.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader2.Close();
+                                    affichNote.Dispose();
+                                    Console.WriteLine("Affichage des commentaires");
+
+                                }
+                                else if (choixaffiche == 3)
+                                {
+                                    Console.WriteLine("Quel est le numéro du cuisinier");
+                                    int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                                    string affichageNote = "SELECT AVG(Avis.note) AS moyenne FROM Avis; ";
+                                    MySqlCommand affichNote = maConnexion.CreateCommand();
+                                    affichNote.CommandText = affichageNote;
+                                    MySqlDataReader reader2 = affichNote.ExecuteReader();
+
+                                    string[] valueString = new string[reader2.FieldCount];
+
+                                    while (reader2.Read())
+                                    {
+                                        for (int i = 0; i < reader2.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader2.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader2.Close();
+                                    affichNote.Dispose();
+                                    Console.WriteLine("Affichage de la moyenne des notes d'un cuisinier");
+
+                                }
+                                else if (choixaffiche == 4)
+                                {
+                                    Console.WriteLine("Quel est le numéro du cuisinier");
+                                    int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                                    string affichageNote = "SELECT Cuisinier.id_Cuisinier, Cuisinier.prénom, Cuisinier.nom, AVG(Avis.note) AS moyenne_notes FROM Avis JOIN Cuisinier ON Avis.id_Cuisinier = Cuisinier.id_Cuisinier GROUP BY Cuisinier.id_Cuisinier, Cuisinier.prénom, Cuisinier.nom ORDER BY moyenne_notes DESC; ";
+                                    MySqlCommand affichNote = maConnexion.CreateCommand();
+                                    affichNote.CommandText = affichageNote;
+                                    MySqlDataReader reader2 = affichNote.ExecuteReader();
+
+                                    string[] valueString = new string[reader2.FieldCount];
+
+                                    while (reader2.Read())
+                                    {
+                                        for (int i = 0; i < reader2.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader2.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader2.Close();
+                                    affichNote.Dispose();
+                                    Console.WriteLine("Affichage de la liste des meilleurs cuisiniers");
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Option invalide");
+                                }
+
+                                Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Liste des meilleurs cuisinier |5. Quitter");
                                 choixaffiche = Convert.ToInt32(Console.ReadLine());
                             }
-                            if(choixaffiche == 4)
+                            if(choixaffiche == 5)
                             {
                                 return;
                             }

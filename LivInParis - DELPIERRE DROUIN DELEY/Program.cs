@@ -110,10 +110,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             //On doit vérifier :
             //
             // Requete de clients par date pour le cuisinier (doute)
-            // Affichage d'une commande (prix en moyenne)(un peu une entourloupe (pas vraiment de calcul))
-            // Affichage d'une commande (court chemin/algo dijkstra) (marche pas) URGENCE 
-            // Affichage Statistiques (nb livraisons par cuisto) (normalement oui)
-            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...(non...)
+            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...
 
 
             //A faire
@@ -122,7 +119,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             // Affichage Stat (Afficher la moyenne des comptes clients) => On sait pas ce que c'est...
             // 5 suggestions
 
-            //ligne de commande et livraison ? 
 
 
             Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
@@ -196,7 +192,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 int codepClient = Convert.ToInt32(Console.ReadLine());
                                 Console.WriteLine("Quel est le métro le plus proche?");
                                 string metroClient = Console.ReadLine();
-                                string creationClient = "insert into Client(id_particulier, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + ",'" + mailClient + "','" + villeClient + "'," + numrueClient + ",'" + rueClient + "'," + codepClient + "," + metroClient + ");";
+                                string creationClient = "insert into Client(id_client, telephone, adresse_mail, ville, numero_de_rue, rue, code_postal, metro_le_plus_proche) Values(" + idClient + ", " + telClient + ",'" + mailClient + "','" + villeClient + "'," + numrueClient + ",'" + rueClient + "'," + codepClient + "," + metroClient + ");";
                                 MySqlCommand creaClient = maConnexion.CreateCommand();
                                 creaClient.CommandText = creationClient;
                                 MySqlDataReader reader = creaClient.ExecuteReader();
@@ -1220,9 +1216,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                 else if (choixCommandeAfficher == 3) //COURT CHEMIN
                                 {
-                                    string affichageCommande3_1 = "SELECT c.metro_le_plus_proche FROM Commande AS cmd" +
-                                        "JOIN Client AS c ON c.id_client = cmd.id_client" +
-                                        "WHERE cmd.id_commande = " + idCommandeAffiche + ";";
+                                    string affichageCommande3_1 = "SELECT Client.metro_le_plus_proche FROM Commande " +
+                                        "JOIN Client ON Client.id_client = Commande.id_client " +
+                                        "WHERE Commande.id_commande = " + idCommandeAffiche + ";";
 
                                     MySqlCommand affichCommande3_1 = maConnexion.CreateCommand();
                                     affichCommande3_1.CommandText = affichageCommande3_1;
@@ -1244,11 +1240,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                     Console.WriteLine("Affichage des metro proche du client");
 
 
-                                    string affichageCommande3_2 = "SELECT cui.metro_le_plus_proche FROM Commande AS cmd" +
-                                        "JOIN ligne_de_commande AS ldc ON cmd.id_commande = ldc.id_commande" +
-                                        "JOIN Plat AS p ON ldc.id_Plat = p.id_Plat " +
-                                        "JOIN Cuisinier AS cui ON p.id_Cuisinier = cui.id_Cuisinier" +
-                                        "WHERE cmd.id_commande = " + idCommandeAffiche + ";";
+                                    string affichageCommande3_2 = "SELECT Cuisinier.metro_le_plus_proche FROM Commande " +
+                                        "JOIN ligne_de_commande ON Commande.id_commande = ligne_de_commande.id_commande" +
+                                        " JOIN Plat ON ligne_de_commande.id_Plat = Plat.id_Plat " +
+                                        "JOIN Cuisinier ON Plat.id_Cuisinier = Cuisinier.id_Cuisinier " +
+                                        "WHERE Commande.id_commande = " + idCommandeAffiche + ";";
 
                                     MySqlCommand affichCommande3_2 = maConnexion.CreateCommand();
                                     affichCommande3_2.CommandText = affichageCommande3_2;

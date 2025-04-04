@@ -163,19 +163,21 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                                 readerID.Close();
                                 affichClient.Dispose();
-
-                                int j = 0;
-                                while(j< valueString.Length)
+                                bool idValide = false;
+                                do
                                 {
-                                    Console.WriteLine("je suis rentré dans le while");
-                                    while (Convert.ToInt32(valueString[j]) == idClient)
+                                    Console.WriteLine("Quel est votre identifiant client?");
+                                    idClient = Convert.ToInt32(Console.ReadLine());
+                                    for (int i = 0; i < valueString.Length; i++)
                                     {
-                                        Console.WriteLine("je suis rentré dans le while2");
-                                        Console.WriteLine("Quel est votre identifiant client?");
-                                        idClient = Convert.ToInt32(Console.ReadLine());
+                                        if (idClient == Convert.ToInt32(valueString[i]))
+                                        {
+                                            idValide = true;
+                                            break;
+                                        }
                                     }
-                                    j++;
-                                }
+
+                                } while (!idValide);
                                 #endregion
 
                                 Console.WriteLine("Quel est votre numéro de téléphone?");

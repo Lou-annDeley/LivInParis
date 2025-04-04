@@ -121,17 +121,17 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
 
-            Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
+            Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques |5. Avis | 6. Quitter");
             int choix = Convert.ToInt32(Console.ReadLine());
 
-            while(choix != 5)
+            while(choix != 6)
             {
                 if (choix == 1) //CLIENT
                 {
                     Console.WriteLine("1. Ajouter | 2. Modifier | 3. Supprimer | 4. Afficher | 5. Quitter");
                     int choixClient = Convert.ToInt32(Console.ReadLine());
 
-                    while(choixClient != 5)
+                    while (choixClient != 5)
                     {
                         if (choixClient == 1) //AJOUTER
                         {
@@ -220,7 +220,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
                             int statut = Convert.ToInt32(Console.ReadLine());
 
-                            if(statut == 1) //MODIF PARTICULIER
+                            if (statut == 1) //MODIF PARTICULIER
                             {
                                 Console.WriteLine("Que voulez vous modifier ?");
                                 Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom | 9. Prénom | 10.Quitter");
@@ -350,7 +350,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 } //QUITTER
                             }//MODIF PARTICULIER
 
-                            else if(statut == 2) //MODIF ENTREPRISE
+                            else if (statut == 2) //MODIF ENTREPRISE
                             {
                                 Console.WriteLine("Que voulez vous modifier ?");
                                 Console.WriteLine("1. Télephone | 2. Adresse mail | 3. Ville | 4. Numéro de rue | 5. Rue | 6. Code Postal | 7. Metro le plus proche | 8. Nom référent | 9.Quitter");
@@ -480,7 +480,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             int idClientModif = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Etes vous un 1. Particulier ou 2. Entreprise ?");
                             int statut = Convert.ToInt32(Console.ReadLine());
-                            if(statut == 1)
+                            if (statut == 1)
                             {
                                 string suppressionClient = "delete from Client where id_Client = " + idClientModif + ";";
                                 MySqlCommand suppClient = maConnexion.CreateCommand();
@@ -526,7 +526,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         {
                             Console.WriteLine("1. Par ordre alphabétique | 2. Par rue | 3. Par montant des achats cumulés | 4. Quitter");
                             int choixClientModif = Convert.ToInt32(Console.ReadLine());
-                            while(choixClientModif != 4)
+                            while (choixClientModif != 4)
                             {
                                 if (choixClientModif == 1) //ordre alphabétique
                                 {
@@ -680,7 +680,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             reader.Close();
                             creaCuisinier.Dispose();
 
-                            
+
                         } //AJOUTER
 
                         else if (choixCuisinier == 2) //MODIFIER
@@ -814,16 +814,16 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             {
                                 return;
                             } //QUITTER
-                            
 
-                            
+
+
                         } //MODIFIER
 
                         else if (choixCuisinier == 3) //SUPPRIMER
                         {
                             Console.WriteLine("Quel est votre identifiant ?");
                             int idCuisinierModif = Convert.ToInt32(Console.ReadLine());
-                           
+
                             string suppressionPlat = "delete from Plat where id_Cuisinier = " + idCuisinierModif + ";";
                             MySqlCommand suppPlat = maConnexion.CreateCommand();
                             suppPlat.CommandText = suppressionPlat;
@@ -854,9 +854,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 {
                                     Console.WriteLine("Depuis votre inscription (1) ou sur un certain interval de temps (2)?");
                                     int choixCuistoAff = Convert.ToInt32(Console.ReadLine());
-                                    if(choixCuistoAff == 1) //DEPUIS INSCRIPTION
+                                    if (choixCuistoAff == 1) //DEPUIS INSCRIPTION
                                     {
-                                        string affichageCuisinier1_1 = "SELECT Client.id_client FROM Client JOIN Commande ON Client.id_client = Commande.id_client JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = "+idCuisinierAffiche+" AND Commande.date_ >= Cuisinier.date_inscription ORDER BY Commande.date_;";
+                                        string affichageCuisinier1_1 = "SELECT Client.id_client FROM Client JOIN Commande ON Client.id_client = Commande.id_client JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = " + idCuisinierAffiche + " AND Commande.date_ >= Cuisinier.date_inscription ORDER BY Commande.date_;";
 
                                         MySqlCommand affichCuisinier1_1 = maConnexion.CreateCommand();
                                         affichCuisinier1_1.CommandText = affichageCuisinier1_1;
@@ -916,7 +916,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                         Console.WriteLine("Option invalide.");
 
                                     } //OPTION INVALIDE
-                                    
+
                                 } //CLIENTS SERVIS
 
                                 else if (choixCuisinierAfficher == 2) //plats par fréquence
@@ -973,7 +973,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 Console.WriteLine("1. Clients servis | 2. Plats par fréquence | 3. Plat du jour | 4. Quitter");
                                 choixCuisinierAfficher = Convert.ToInt32(Console.ReadLine());
                             }
-                            if(choixCuisinierAfficher == 4)
+                            if (choixCuisinierAfficher == 4)
                             {
                                 return;
                             } //QUITTER
@@ -1100,7 +1100,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             Console.WriteLine("1. Addition | 2. Etat de la commande |3. Date |4. Quitter");
                             int choixModifCommande = Convert.ToInt32(Console.ReadLine());
 
-                            while(choixModifCommande != 4)
+                            while (choixModifCommande != 4)
                             {
                                 if (choixModifCommande == 1) //ADDITION
                                 {
@@ -1166,7 +1166,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                             while (choixCommandeAfficher != 4)
                             {
-                                if(choixCommandeAfficher == 1) //ETAT COMMANDE
+                                if (choixCommandeAfficher == 1) //ETAT COMMANDE
                                 {
                                     string affichageCommande1 = "SELECT etat_de_la_commande FROM Commande WHERE id_commande = " + idCommandeAffiche + ";";
 
@@ -1310,7 +1310,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 Console.WriteLine("1. Etat de la commande | 2. Prix moyenné au numéro | 3. Chemin de livraison | 4. Quitter");
                                 choixCommandeAfficher = Convert.ToInt32(Console.ReadLine());
                             }
-                            if(choixCommandeAfficher == 4) //QUITTER
+                            if (choixCommandeAfficher == 4) //QUITTER
                             {
                                 return;
                             } //QUITTER
@@ -1325,7 +1325,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         Console.WriteLine("1. Ajouter | 2. Modifier |3.Afficher |4. Quitter");
                         choixCommande = Convert.ToInt32(Console.ReadLine());
                     }
-                    if(choixCommande==4) //QUITTER
+                    if (choixCommande == 4) //QUITTER
                     {
                         return;
                     } //QUITTER
@@ -1336,14 +1336,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     Console.WriteLine("1. Nombre de livraison par cuisiniers | 2. Commandes selon un période | 3. Moyenne des prix des commandes | 4. Moyenne des comptes clients | 5. Commandes selon nationnalité et période | 6. Quitter");
                     int choixStatistiques = Convert.ToInt32(Console.ReadLine());
 
-                    while(choixStatistiques != 4)
+                    while (choixStatistiques != 4)
                     {
-                        if(choixStatistiques == 1) //NB LIVRAISON PAR CUISTO
+                        if (choixStatistiques == 1) //NB LIVRAISON PAR CUISTO
                         {
                             Console.WriteLine("Quel est votre identifiant cuisinier?");
                             int idCuistoStatistiques = Convert.ToInt32(Console.ReadLine());
 
-                            string affichageStat1 = "SELECT COUNT(Commande.id_commande) AS nombre_de_livraisons FROM Commande JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = "+idCuistoStatistiques+" AND Commande.etat_de_la_commande = 'livree'";
+                            string affichageStat1 = "SELECT COUNT(Commande.id_commande) AS nombre_de_livraisons FROM Commande JOIN Cuisinier ON Commande.id_client = Cuisinier.id_client WHERE Cuisinier.id_Cuisinier = " + idCuistoStatistiques + " AND Commande.etat_de_la_commande = 'livree'";
 
                             MySqlCommand affichStat1 = maConnexion.CreateCommand();
                             affichStat1.CommandText = affichageStat1;
@@ -1393,7 +1393,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             affichStat2.Dispose();
                             Console.WriteLine("Affichage des commandes selon une période");
                         } //COMMANDES SELON PERIODE
-                         
+
                         else if (choixStatistiques == 3) //MOYENNE PRIX COMMANDES
                         {
                             string affichageStat3 = "SELECT AVG(Commande.addition) AS moyenne_prix_commandes FROM Commande; ";
@@ -1434,8 +1434,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             string affichageStat5 = "SELECT Commande.id_commande, Commande.date_ FROM Commande " +
                             "JOIN Client ON Commande.id_client = Client.id_client " +
                             "JOIN Plat ON Commande.id_commande = Plat.id_Plat " +
-                            "WHERE Client.id_client = "+idClient+
-                            " AND Commande.date_ BETWEEN "+dateDebut+" AND "+dateFin+
+                            "WHERE Client.id_client = " + idClient +
+                            " AND Commande.date_ BETWEEN " + dateDebut + " AND " + dateFin +
                             " ORDER BY Plat.nationalité;";
                             MySqlCommand affichStat5 = maConnexion.CreateCommand();
                             affichStat5.CommandText = affichageStat5;
@@ -1459,26 +1459,122 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         Console.WriteLine("1. Nombre de livraison par cuisiniers | 2. Commandes selon un période | 3. Moyenne des prix des commandes | 4. Moyenne des comptes clients | 5. Commandes selon nationnalité et période | 6. Quitter");
                         choixStatistiques = Convert.ToInt32(Console.ReadLine());
                     }
-                    if(choixStatistiques == 4) //QUITTER
+                    if (choixStatistiques == 4) //QUITTER
                     {
                         return;
                     } //QUITTER
-                    
+
 
                 } //STATISTIQUES
 
+                else if (choix == 5)
+                {
+                    Console.WriteLine("1. Ajouter | 2. Supprimer |3. Afficher |4. Quitter");
+                    int choixAvis = Convert.ToInt32(Console.ReadLine());
+                    while (choixAvis != 4)
+                    {
+                        if (choixAvis == 1) //AJOUTER
+                        {
+                            Console.WriteLine("Quel est le numero de l'avis");
+                            int idavis = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est votre notre ");
+                            int note = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Entrez votre commentaire");
+                            string commentaire = Console.ReadLine();
+                            Console.WriteLine("Quel est le numero du client");
+                            int idclient = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Quel est le numero du cuisinier");
+                            int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                            string creationavis = "insert into Avis(id_avis,note,commentaire,id_client,id_Cuisinier) Values(" + idavis + ", " + note + ",'" + commentaire + "'," + idclient + "," + idcuisinier +"); ";
+                            MySqlCommand creaavis = maConnexion.CreateCommand();
+                            creaavis.CommandText = creationavis;
+                            MySqlDataReader reader = creaavis.ExecuteReader();
+                            reader.Close();
+                            creaavis.Dispose();
+
+
+
+                        }
+                        else if (choixAvis == 2)
+                        {
+                            Console.WriteLine("Quel est le numéro de votre avis ?");
+                            int idavissupp = Convert.ToInt32(Console.ReadLine());
+
+                            string suppressionavis = "delete from Avis where id_avis = " + idavissupp + ";";
+                            MySqlCommand suppavis = maConnexion.CreateCommand();
+                            suppavis.CommandText = suppressionavis;
+                            MySqlDataReader reader = suppavis.ExecuteReader();
+                            reader.Close();
+                            suppavis.Dispose();
+                            Console.WriteLine("Suppression d'un cuisinier");
+
+                        }
+                        else if (choixAvis == 3)
+                        {
+                            Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Quitter");
+                            int choixaffiche = Convert.ToInt32(Console.ReadLine());
+                            while (choixaffiche != 4)
+                            {
+                                if (choixaffiche == 1)
+                                {
+                                    Console.WriteLine("Quel est le numéro du cuisinier");
+                                    int idcuisinier = Convert.ToInt32(Console.ReadLine());
+                                    string affichageNote = "SELECT note FROM avis WHERE id_Cuisinier = "+idcuisinier+";";
+                                    MySqlCommand affichNote = maConnexion.CreateCommand();
+                                    affichNote.CommandText = affichageNote;
+                                    MySqlDataReader reader2 = affichNote.ExecuteReader();
+
+                                    string[] valueString = new string[reader2.FieldCount];
+
+                                    while (reader2.Read())
+                                    {
+                                        for (int i = 0; i < reader2.FieldCount; i++)
+                                        {
+                                            valueString[i] = reader2.GetValue(i).ToString();
+                                            Console.Write(valueString[i] + " ");
+                                        }
+                                        Console.WriteLine();
+                                    }
+                                    reader2.Close();
+                                    affichNote.Dispose();
+                                    Console.WriteLine("Affichage des notes");
+
+                                }
+
+
+                                Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Quitter");
+                                choixaffiche = Convert.ToInt32(Console.ReadLine());
+                            }
+                            if(choixaffiche == 4)
+                            {
+                                return;
+                            }
+
+                        }
+                        Console.WriteLine("1. Ajouter | 2. Supprimer |3. Quitter");
+                        choixAvis = Convert.ToInt32(Console.ReadLine());
+
+                    }
+                    if(choixAvis==4)
+                    {
+                        return;
+                    }
+                }
                 else
                 {
                     Console.WriteLine("Option invalide.");
                 } //OPTION INVALIDE
 
-                Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques | 5. Quitter");
+
+                Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques |5.Avis | 6. Quitter");
                 choix = Convert.ToInt32(Console.ReadLine());
 
                 //maConnexion.Close();
                 Console.ReadLine();
             }
-            if (choix == 5) //QUITTER
+
+
+            if (choix == 6) //QUITTER
             {
                 return;
             } //QUITTER

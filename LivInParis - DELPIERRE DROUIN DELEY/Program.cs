@@ -143,33 +143,35 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 int idClient = Convert.ToInt32(Console.ReadLine());
 
                                 #region
-                                string requete = "SELECT id_client FROM Client WHERE id_client = " + idClient + ";";
-                                MySqlCommand commande = maConnexion.CreateCommand();
-                                commande.CommandText = requete;
 
-                                bool existe = false;
+                                //bool existe = false;
+                                
 
-                                try
-                                {
-                                    MySqlDataReader readerID = commande.ExecuteReader();
+                                //while(existe == false)
+                                //{
+                                    
+                                //    string requete = "SELECT id_client FROM Client WHERE id_client = " + idClient + ";";
+                                //    MySqlCommand commande = maConnexion.CreateCommand();
+                                //    commande.CommandText = requete;
 
-                                    if (readerID.Read())
-                                    {
-                                        existe = true;
-                                    }
+                                //    try
+                                //    {
+                                //        MySqlDataReader readerID = commande.ExecuteReader();
 
-                                    readerID.Close();
-                                }
-                                catch (MySqlException ex)
-                                {
-                                    Console.WriteLine("Erreur lors de la vérification du client : " + ex.ToString());
-                                }
+                                //        if (readerID.Read())
+                                //        {
+                                //            existe = true;
+                                //        }
 
-                                while(existe == false)
-                                {
-                                    Console.WriteLine("Quel est votre identifiant client?");
-                                    idClient = Convert.ToInt32(Console.ReadLine());
-                                }
+                                //        readerID.Close();
+                                //    }
+                                //    catch (MySqlException ex)
+                                //    {
+                                //        Console.WriteLine("Erreur lors de la vérification du client : " + ex.ToString());
+                                //    }
+                                //    Console.WriteLine("Quel est votre identifiant client?");
+                                //    idClient = Convert.ToInt32(Console.ReadLine());
+                                //}
                                 #endregion
 
                                 Console.WriteLine("Quel est votre numéro de téléphone?");

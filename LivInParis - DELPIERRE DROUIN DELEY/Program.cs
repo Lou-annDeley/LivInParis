@@ -23,6 +23,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         
         static void Main(string[] args)
         {
+// ----------------------- CREATION DU GRAPHE -----------------------------------------------------------------------------------------------------------------------------------------------
+            #region
             string filePath = "MetroParis.xlsx"; // Nom du fichier Excel
 
             Graphe<string> metro = new Graphe<string>();
@@ -86,10 +88,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     }
                 }
             }
+            #endregion
 
-
-// ----------------------- DEBUT DU SQL ---------------------------------------------------------------------------------------------------------------------------------------------
-
+// ----------------------- DEBUT DU SQL -----------------------------------------------------------------------------------------------------------------------------------------------------
+            #region
             MySqlConnection maConnexion = null;
             try
             {
@@ -105,20 +107,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 Console.WriteLine("ErreurConnexion :" + e.ToString());
                 return;
             }
-
-
-            //On doit vérifier :
-            //
-            // Requete de clients par date pour le cuisinier (doute)
-            // Affichage Stat(COMANDES SEON NATIONALITE ET PERIODE) => Début de requête mais pas sure de si elle marche ou pas...
-
-
-            //A faire
-            //
-            // Vérifier à chaque fois le les id n'existent pas déjà
-            // Affichage Stat (Afficher la moyenne des comptes clients) => On sait pas ce que c'est...
-            // 5 suggestions
-
 
 
             Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques |5. Avis | 6. Quitter");
@@ -1528,7 +1516,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                 } //STATISTIQUES
 
-                else if (choix == 5)
+                else if (choix == 5) //AVIS
                 {
                     Console.WriteLine("1. Ajouter | 2. Supprimer |3. Afficher |4. Quitter");
                     int choixAvis = Convert.ToInt32(Console.ReadLine());
@@ -1555,7 +1543,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
 
-                        }
+                        } //AJOUTER
+
                         else if (choixAvis == 2)
                         {
                             Console.WriteLine("Quel est le numéro de votre avis ?");
@@ -1569,7 +1558,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                             suppavis.Dispose();
                             Console.WriteLine("Suppression d'un cuisinier");
 
-                        }
+                        } //SUPPRIMER
+
                         else if (choixAvis == 3)
                         {
                             Console.WriteLine("1. Afficher les notes | 2. Afficher les commentaires |3. moyenne des notes pour un cuisinier |4. Liste des meilleurs cuisinier |5. Quitter");
@@ -1689,7 +1679,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 return;
                             }
 
-                        }
+                        } //AFFICHER
+
                         Console.WriteLine("1. Ajouter | 2. Supprimer |3. Quitter");
                         choixAvis = Convert.ToInt32(Console.ReadLine());
 
@@ -1698,29 +1689,60 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     {
                         return;
                     }
-                }
-                else
+                } //AVIS
+
+                else //OPTION INVALIDE
                 {
                     Console.WriteLine("Option invalide.");
                 } //OPTION INVALIDE
 
-
                 Console.WriteLine("Choisissez une action : 1. Gérer Clients | 2. Gérer Cuisiniers | 3. Gérer Commandes | 4. Statistiques |5.Avis | 6. Quitter");
                 choix = Convert.ToInt32(Console.ReadLine());
 
-                //maConnexion.Close();
                 Console.ReadLine();
             }
-
 
             if (choix == 6) //QUITTER
             {
                 return;
             } //QUITTER
-            Console.ReadLine();
+
 
             maConnexion.Close();
             maConnexion.Dispose();
+            #endregion
+
+            // ----------------------- COLORATION DU GRAPHE ---------------------------------------------------------------------------------------------------------------------------------------------
+            #region
+            var couleurs = metro.ColorierWelshPowell();
+
+            // Affichage des résultats
+            Console.WriteLine("\nColoration du graphe :");
+            foreach (var kvp in couleurs)
+            {
+                Console.WriteLine($"{kvp.Key.Valeur} -> Couleur {kvp.Value}");
+            }
+
+            int nbCouleurs = couleurs.Values.Max();
+            Console.WriteLine($"\nNombre minimal de couleurs : {nbCouleurs}");
+
+            // Vérification biparti
+            Console.WriteLine("\nLe graphe est-il biparti ?");
+            Console.WriteLine(nbCouleurs == 2 ? "✅ Oui" : "❌ Non");
+
+            // Vérification planaire (théorème des 4 couleurs pour les graphes planaires)
+            Console.WriteLine("\nLe graphe est-il planaire ?");
+            Console.WriteLine(nbCouleurs <= 4 ? "✅ Oui (≤ 4 couleurs)" : "❌ Non (plus de 4 couleurs)");
+
+            // Groupes indépendants
+            Console.WriteLine("\nGroupes indépendants :");
+            var groupes = couleurs.GroupBy(kvp => kvp.Value);
+            foreach (var groupe in groupes)
+            {
+                Console.WriteLine($"Couleur {groupe.Key} : {string.Join(", ", groupe.Select(k => k.Key.Valeur))}");
+            }
+
+            #endregion
         }
     }
 }

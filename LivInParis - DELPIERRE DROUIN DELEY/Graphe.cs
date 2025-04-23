@@ -499,5 +499,41 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 Console.WriteLine();
             }
         }
+
+
+        public Dictionary<Noeud<T>, int> ColorierWelshPowell()
+        {
+            var couleurs = new Dictionary<Noeud<T>, int>();
+            var degres = Sommets.ToDictionary(n => n, n => n.Voisins.Count);
+            var sommetsTries = degres.OrderByDescending(kv => kv.Value).Select(kv => kv.Key).ToList();
+
+            int couleurActuelle = 0;
+
+            while (sommetsTries.Count > 0)
+            {
+                couleurActuelle++;
+                var disponibles = new HashSet<Noeud<T>>(sommetsTries);
+
+                foreach (var sommet in sommetsTries.ToList())
+                {
+                    bool conflit = sommet.Voisins
+                        .Select(l => l.AutreSommet(sommet))
+                        .Any(v => couleurs.TryGetValue(v, out int c) && c == couleurActuelle);
+
+                    if (!couleurs.ContainsKey(sommet) && !conflit)
+                    {
+                        couleurs[sommet] = couleurActuelle;
+                        disponibles.RemoveWhere(s => sommet.Voisins
+                            .Select(l => l.AutreSommet(sommet))
+                            .Contains(s));
+                    }
+                }
+
+                sommetsTries.RemoveAll(s => couleurs.ContainsKey(s));
+            }
+
+            return couleurs;
+        }
+
     }
 }

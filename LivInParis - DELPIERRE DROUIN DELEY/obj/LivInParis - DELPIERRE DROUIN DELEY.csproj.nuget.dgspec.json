@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj": {}
+    "C:\\Users\\alixd\\OneDrive\\Bureau\\Pb scientifique info\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj": {}
   },
   "projects": {
-    "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj": {
+    "C:\\Users\\alixd\\OneDrive\\Bureau\\Pb scientifique info\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj",
+        "projectUniqueName": "C:\\Users\\alixd\\OneDrive\\Bureau\\Pb scientifique info\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj",
         "projectName": "LivInParis - DELPIERRE DROUIN DELEY",
-        "projectPath": "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj",
-        "packagesPath": "C:\\Users\\warfy\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\warfy\\Desktop\\ESILV\\A2\\S2\\Info\\Pb scientifique info\\GitHub\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\obj\\",
+        "projectPath": "C:\\Users\\alixd\\OneDrive\\Bureau\\Pb scientifique info\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\LivInParis - DELPIERRE DROUIN DELEY.csproj",
+        "packagesPath": "C:\\Users\\alixd\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alixd\\OneDrive\\Bureau\\Pb scientifique info\\LivInParis\\LivInParis - DELPIERRE DROUIN DELEY\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\warfy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\alixd\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

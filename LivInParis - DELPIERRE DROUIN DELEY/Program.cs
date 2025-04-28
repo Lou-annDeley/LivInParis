@@ -15,6 +15,7 @@ using System.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using System.ComponentModel.DataAnnotations;
+using static System.Collections.Specialized.BitVector32;
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -90,9 +91,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
             #endregion
 
-            //-----------------------DEBUT DU SQL -----------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------DEBUT DU SQL -----------------------------------------------------------------------------------------------------------------------------------------------------
             #region
-                       MySqlConnection maConnexion = null;
+            MySqlConnection maConnexion = null;
             try
             {
                 string connectionString = "SERVER=localhost; PORT=3306;" + "DATABASE=Livraison;" + "UID=root;PASSWORD=root";
@@ -1712,9 +1713,82 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             maConnexion.Dispose();
             #endregion
 
-            // ----------------------- COLORATION DU GRAPHE ---------------------------------------------------------------------------------------------------------------------------------------------
             #region
-            var couleurs = metro.ColorierWelshPowell();
+            Graphe<string> GrapheRelations = new Graphe<string>();
+
+                // 1. Ajouter les clients comme noeuds
+                string recuperationClients = "SELECT id_client, CONCAT(prenom, ' ', nom) AS nom_complet FROM particulier JOIN Client ON particulier.id_particulier = Client.id_client;";
+                MySqlCommand commandeClients = new MySqlCommand(recuperationClients, maConnexion);
+                MySqlDataReader readerClients = commandeClients.ExecuteReader();
+
+                while (readerClients.Read())
+                {
+                    int idClient = readerClients.GetInt32("id_client");
+                    string nomClient = readerClients.GetString("nom_complet");
+
+                    Noeud<string> noeudClient = GrapheRelations.AjouterSommet(nomClient);
+                    noeuds[idClient] = noeudClient;
+                }
+
+                readerClients.Close();
+                commandeClients.Dispose();
+                Console.WriteLine("Clients ajoutés dans le graphe.");
+
+                // 2. Ajouter les cuisiniers comme noeuds
+                string recuperationCuisiniers = "SELECT id_Cuisinier, CONCAT(prénom, ' ', nom) AS nom_complet FROM Cuisinier;";
+                MySqlCommand commandeCuisiniers = new MySqlCommand(recuperationCuisiniers, maConnexion);
+                MySqlDataReader readerCuisiniers = commandeCuisiniers.ExecuteReader();
+
+                while (readerCuisiniers.Read())
+                {
+                    int idCuisinier = readerCuisiniers.GetInt32("id_Cuisinier");
+                    string nomCuisinier = readerCuisiniers.GetString("nom_complet");
+
+                    Noeud<string> noeudCuisinier = GrapheRelations.AjouterSommet(nomCuisinier);
+                    noeuds[idCuisinier] = noeudCuisinier;
+                }
+
+                readerCuisiniers.Close();
+                commandeCuisiniers.Dispose();
+                Console.WriteLine("Cuisiniers ajoutés dans le graphe.");
+
+                // 3. Ajouter les arcs entre cuisiniers et clients via les commandes
+                string recuperationRelations = @"
+            SELECT Commande.id_client, Cuisinier.id_Cuisinier, COUNT(*) AS poids
+            FROM Commande
+            JOIN Client ON Commande.id_client = Client.id_client
+            JOIN Cuisinier ON Client.id_client = Cuisinier.id_client
+            GROUP BY Commande.id_client, Cuisinier.id_Cuisinier;";
+
+                MySqlCommand commandeRelations = new MySqlCommand(recuperationRelations, maConnexion);
+                MySqlDataReader readerRelations = commandeRelations.ExecuteReader();
+
+                while (readerRelations.Read())
+                {
+                    int idClient = readerRelations.GetInt32("id_client");
+                    int idCuisinier = readerRelations.GetInt32("id_Cuisinier");
+                    int poids = readerRelations.GetInt32("poids"); // Le poids pourrait représenter ici le nombre de commandes
+
+                    if (noeuds.ContainsKey(idCuisinier) && noeuds.ContainsKey(idClient))
+                    {
+                    GrapheRelations.AjouterLien(noeuds[idCuisinier], noeuds[idClient], poids);
+                    }
+                }
+
+                readerRelations.Close();
+                commandeRelations.Dispose();
+                Console.WriteLine("Liens entre cuisiniers et clients ajoutés.");
+
+                maConnexion.Close();
+
+            GrapheRelations.DessinerGrapheCuisiniersClients("Graphe_Cuisiniers_Clients.png");
+
+
+        #endregion
+
+        // ----------------------- COLORATION DU GRAPHE ---------------------------------------------------------------------------------------------------------------------------------------------
+        #region
+        var couleurs = metro.ColorierWelshPowell();
 
             // Affichage des résultats
             Console.WriteLine("\nColoration du graphe :");

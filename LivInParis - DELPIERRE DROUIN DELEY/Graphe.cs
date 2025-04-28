@@ -157,6 +157,131 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        public void DessinerGraphe2(string outputPath)
+        {
+            int width = 6000, height = 4000;
+            var bitmap = new SKBitmap(width, height);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.White);
+
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 };
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
+
+            Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
+
+            // --- Welsh-Powell pour récupérer les couleurs des noeuds ---
+            var couleursWelshPowell = ColorierWelshPowell();
+
+            // Palette des couleurs
+            List<SKColor> palette = new List<SKColor>
+    {
+        SKColors.Blue,
+        SKColors.Red,
+        SKColors.Green,
+        SKColors.Orange,
+        SKColors.Purple,
+        SKColors.Brown,
+        SKColors.Cyan,
+        SKColors.Magenta
+    };
+
+            // Chargement des données depuis Excel
+            int k = 0;
+            using (var workbook = new XLWorkbook("MetroParis.xlsx"))
+            {
+                var sheetNoeuds = workbook.Worksheet("Noeuds");
+
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1))
+                {
+                    double latitude = 0;
+                    double longitude = 0;
+
+                    if (!double.TryParse(row.Cell(5).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out latitude))
+                    {
+                        Console.WriteLine($"Erreur de conversion de la latitude pour la station {row.Cell(2).GetString()}");
+                        continue;
+                    }
+
+                    if (!double.TryParse(row.Cell(4).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out longitude))
+                    {
+                        Console.WriteLine($"Erreur de conversion de la longitude pour la station {row.Cell(2).GetString()}");
+                        continue;
+                    }
+
+                    Sommets[k].Latitude = latitude;
+                    Sommets[k].Longitude = longitude;
+                    k++;
+                }
+            }
+
+            double minLat = 48.819106595610265;
+            double maxLat = 48.897802691407826;
+            double minLong = 2.2570461929221497;
+            double maxLong = 2.4405400954061127;
+
+            foreach (var noeud in Sommets)
+            {
+                float x = (float)((noeud.Longitude - minLong) / (maxLong - minLong) * width);
+                float y = (float)((noeud.Latitude - minLat) / (maxLat - minLat) * height);
+                positions[noeud] = new SKPoint(x, y);
+            }
+
+            foreach (var noeud in Sommets)
+            {
+                if (noeud.Voisins.Count == 1)
+                {
+                    Noeud<T> voisin2 = noeud.Voisins[0].Noeud2;
+                    SKPoint point3 = positions[noeud];
+                    SKPoint point4 = positions[voisin2];
+
+                    canvas.DrawLine(point3, point4, paintEdge);
+
+                    SKPoint middle2 = new SKPoint((point3.X + point4.X) / 2, (point3.Y + point4.Y) / 2);
+                    canvas.DrawText(noeud.Voisins[0].Poids.ToString(), middle2.X, middle2.Y, fontPaint);
+                }
+                else
+                {
+                    foreach (var lien in noeud.Voisins.Skip(1))
+                    {
+                        Noeud<T> voisin = lien.Noeud2;
+                        SKPoint point1 = positions[noeud];
+                        SKPoint point2 = positions[voisin];
+
+                        canvas.DrawLine(point1, point2, paintEdge);
+
+                        SKPoint middle = new SKPoint((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
+                        canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
+                    }
+                }
+            }
+
+            foreach (var noeud in Sommets)
+            {
+                SKPoint pos = positions[noeud];
+
+                // --- Ici on applique la bonne couleur depuis Welsh-Powell ---
+                int numeroCouleur = couleursWelshPowell[noeud]; // 1, 2, 3, etc.
+                SKColor couleur = palette[(numeroCouleur - 1) % palette.Count]; // Choisir couleur
+
+                var paintNode = new SKPaint { Color = couleur, Style = SKPaintStyle.Fill };
+
+                canvas.DrawCircle(pos, 15, paintNode);
+            }
+
+            using (var image = SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+            using (var stream = File.OpenWrite(outputPath))
+            {
+                data.SaveTo(stream);
+            }
+        }
+
+
+
+
+
+
+
         /// <summary>
         /// Fonction qui met en évidence le plus court chemin à emprunter
         /// </summary>
@@ -504,36 +629,76 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         public Dictionary<Noeud<T>, int> ColorierWelshPowell()
         {
             var couleurs = new Dictionary<Noeud<T>, int>();
-            var degres = Sommets.ToDictionary(n => n, n => n.Voisins.Count);
-            var sommetsTries = degres.OrderByDescending(kv => kv.Value).Select(kv => kv.Key).ToList();
+            var degres = new Dictionary<Noeud<T>, int>();
+
+            // 1. Calculer le degré de chaque sommet
+            foreach (var sommet in Sommets)
+            {
+                degres[sommet] = sommet.Voisins.Count;
+            }
+
+            // 2. Trier par degré décroissant
+            var sommetsTries = new List<Noeud<T>>(Sommets);
+            sommetsTries.Sort((a, b) => degres[b].CompareTo(degres[a]));
 
             int couleurActuelle = 0;
 
+            // 3. Tant qu'il reste des sommets non coloriés
             while (sommetsTries.Count > 0)
             {
                 couleurActuelle++;
-                var disponibles = new HashSet<Noeud<T>>(sommetsTries);
 
-                foreach (var sommet in sommetsTries.ToList())
+                var aColorier = new List<Noeud<T>>();
+
+                foreach (var sommet in sommetsTries)
                 {
-                    bool conflit = sommet.Voisins
-                        .Select(l => l.AutreSommet(sommet))
-                        .Any(v => couleurs.TryGetValue(v, out int c) && c == couleurActuelle);
+                    bool conflit = false;
 
-                    if (!couleurs.ContainsKey(sommet) && !conflit)
+                    // Vérifier s'il est adjacent à un sommet déjà colorié avec couleurActuelle
+                    foreach (var voisin in sommet.Voisins)
+                    {
+                        var autre = voisin.AutreSommet(sommet);
+                        if (couleurs.TryGetValue(autre, out int couleurVoisin) && couleurVoisin == couleurActuelle)
+                        {
+                            conflit = true;
+                            break;
+                        }
+                    }
+
+                    // Vérifier s'il est adjacent à un sommet qu'on vient de colorier dans ce tour
+                    foreach (var dejaColorie in aColorier)
+                    {
+                        foreach (var lien in dejaColorie.Voisins)
+                        {
+                            var autre = lien.AutreSommet(dejaColorie);
+                            if (autre.Equals(sommet))
+                            {
+                                conflit = true;
+                                break;
+                            }
+                        }
+                        if (conflit)
+                            break;
+                    }
+
+                    if (!conflit)
                     {
                         couleurs[sommet] = couleurActuelle;
-                        disponibles.RemoveWhere(s => sommet.Voisins
-                            .Select(l => l.AutreSommet(sommet))
-                            .Contains(s));
+                        aColorier.Add(sommet);
                     }
                 }
 
-                sommetsTries.RemoveAll(s => couleurs.ContainsKey(s));
+                // Retirer les sommets coloriés du tri
+                foreach (var sommet in aColorier)
+                {
+                    sommetsTries.Remove(sommet);
+                }
             }
 
             return couleurs;
         }
+
+
 
     }
 }

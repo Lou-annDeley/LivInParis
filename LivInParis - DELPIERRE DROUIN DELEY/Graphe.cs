@@ -278,66 +278,49 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
         public void DessinerGrapheCuisiniersClients(string outputPath)
         {
-            int width = 3000, height = 2000; // Taille de l'image
+            int width = 6000, height = 4000; // Taille de l'image
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
 
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 4 };
-            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 40, IsAntialias = true };
-            var paintNodeClient = new SKPaint { Color = SKColors.Blue, Style = SKPaintStyle.Fill };
-            var paintNodeCuisinier = new SKPaint { Color = SKColors.Green, Style = SKPaintStyle.Fill };
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 };
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            // Séparer les nœuds clients et cuisiniers
-            var clients = Sommets.Where(n => n.Valeur.ToString().StartsWith("Client")).ToList();
-            var cuisiniers = Sommets.Where(n => n.Valeur.ToString().StartsWith("Cuisinier")).ToList();
-
-            int nbClients = clients.Count;
-            int nbCuisiniers = cuisiniers.Count;
-
-            int margin = 200;
-
-            // Placer les clients à gauche
-            for (int i = 0; i < nbClients; i++)
+            // Générer des positions aléatoires pour chaque nœud
+            Random rand = new Random();
+            foreach (var noeud in Sommets)
             {
-                float x = margin;
-                float y = margin + i * (height - 2 * margin) / Math.Max(nbClients - 1, 1);
-                positions[clients[i]] = new SKPoint(x, y);
+                float x = (float)(rand.NextDouble() * (width - 200) + 100); // marges de 100px
+                float y = (float)(rand.NextDouble() * (height - 200) + 100);
+                positions[noeud] = new SKPoint(x, y);
             }
 
-            // Placer les cuisiniers à droite
-            for (int i = 0; i < nbCuisiniers; i++)
-            {
-                float x = width - margin;
-                float y = margin + i * (height - 2 * margin) / Math.Max(nbCuisiniers - 1, 1);
-                positions[cuisiniers[i]] = new SKPoint(x, y);
-            }
-
-            // Dessiner les arêtes
+            // Dessiner les arêtes (lignes entre voisins)
             foreach (var noeud in Sommets)
             {
                 foreach (var lien in noeud.Voisins)
                 {
+                    if (!positions.ContainsKey(lien.Noeud2)) continue;
+
                     SKPoint point1 = positions[noeud];
                     SKPoint point2 = positions[lien.Noeud2];
                     canvas.DrawLine(point1, point2, paintEdge);
 
-                    // Dessiner le poids au milieu de la ligne
                     SKPoint middle = new SKPoint((point1.X + point2.X) / 2, (point1.Y + point2.Y) / 2);
                     canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
                 }
             }
 
-            // Dessiner les nœuds
+            // Dessiner les nœuds (cercles rouges)
             foreach (var noeud in Sommets)
             {
+                if (!positions.ContainsKey(noeud)) continue;
+
                 SKPoint pos = positions[noeud];
-                var paintNode = noeud.Valeur.ToString().StartsWith("Client") ? paintNodeClient : paintNodeCuisinier;
-                canvas.DrawCircle(pos, 20, paintNode);
-                // Afficher le nom à côté du point
-                canvas.DrawText(noeud.Valeur.ToString(), pos.X + 25, pos.Y + 10, fontPaint);
+                var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
+                canvas.DrawCircle(pos, 15, paintNode);
             }
 
             // Sauvegarder l'image
@@ -348,6 +331,8 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 data.SaveTo(stream);
             }
         }
+
+
 
 
 

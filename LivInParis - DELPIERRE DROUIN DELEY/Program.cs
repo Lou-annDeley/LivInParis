@@ -16,6 +16,12 @@ using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using System.ComponentModel.DataAnnotations;
 using static System.Collections.Specialized.BitVector32;
+using System.Xml;
+using System.Xml.XPath;
+using System.IO;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
+
 
 namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
@@ -1789,12 +1795,24 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             GrapheRelations.DessinerGrapheCuisiniersClients("Graphe_Cuisiniers_Clients.png");
 
+            GrapheRelations.ColorierWelshPowell();
+            GrapheRelations.DessinerGrapheColorie("Graphe_coloré.png");
 
-        #endregion
 
-        // ----------------------- COLORATION DU GRAPHE ---------------------------------------------------------------------------------------------------------------------------------------------
-        #region
-        var couleurs = metro.ColorierWelshPowell();
+            List<Lien<string>> arbreCouvrant = metro.Kruskal();
+
+            // Afficher l'arbre couvrant minimum
+            Console.WriteLine("Arbre couvrant minimum (par Kruskal) :");
+            foreach (var lien in arbreCouvrant)
+            {
+                Console.WriteLine($"{lien.Noeud1.Valeur} <-> {lien.Noeud2.Valeur}, Poids: {lien.Poids}");
+            }
+            metro.DessinerArbreKruskal("arbre.png");
+            #endregion
+
+            // ----------------------- COLORATION DU GRAPHE ---------------------------------------------------------------------------------------------------------------------------------------------
+            #region
+            var couleurs = GrapheRelations.ColorierWelshPowell();
 
             // Affichage des résultats
             Console.WriteLine("\nColoration du graphe :");
@@ -1823,6 +1841,51 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
 
             #endregion
+
+
+
+
+            #region
+            //----------Json--------
+            string fileToWrite = "client.json";
+            List <Client> client = new List<Client>();
+            client.Add(new Client(1, 1234567890, "client1@gmail.com", "Paris", 10, "Rue Lafayette", 75010, "Gare du Nord"));
+            client.Add(new Client(2, 1234567891, "client2@gmail.com", "Paris", 15, "Boulevard Haussmann", 75009, "Chaussée d'Antin"));
+            client.Add(new Client(3, 1234567892, "client3@gmail.com", "Paris", 22, "Rue de Rennes", 75006, "Montparnasse"));
+            StreamWriter fileWriter = new StreamWriter(fileToWrite);
+            JsonTextWriter jsonWriter = new JsonTextWriter(fileWriter);
+            JsonSerializer serializer = new JsonSerializer();
+            foreach(var c in client)
+            {
+                serializer.Serialize(jsonWriter, c);
+                fileWriter.WriteLine();
+            }
+            
+            jsonWriter.Close();
+            fileWriter.Close();
+            #endregion
+
+
+
+            #region
+
+            //----------XML--------
+            List<Client> clients = new List<Client>
+            {
+            new Client(1, 1234567890, "client1@gmail.com", "Paris", 10, "Rue Lafayette", 75010, "Gare du Nord"),
+            new Client(2, 1234567891, "client2@gmail.com", "Paris", 15, "Boulevard Haussmann", 75009, "Chaussée d'Antin"),
+            new Client(3, 1234567892, "client3@gmail.com", "Paris", 22, "Rue de Rennes", 75006, "Montparnasse")
+            };
+            XmlSerializer xs = new XmlSerializer(typeof(List<Client>));
+            StreamWriter wr = new StreamWriter("client.xml");
+            xs.Serialize(wr,clients);
+            
+
+            wr.Close();
+            Console.WriteLine("Sérialization du fichier");
+
+            #endregion
+
         }
     }
 }

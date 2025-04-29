@@ -55,6 +55,222 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// </summary>
         /// <param name="outputPath"></param>
         /// 
+
+        public List<Lien<T>> Kruskal()
+        {
+            var arbre = new List<Lien<T>>();
+            var ensemble = new Dictionary<Noeud<T>, Noeud<T>>();
+
+            // Initialiser chaque nœud comme son propre parent
+            foreach (var noeud in Sommets)
+                ensemble[noeud] = noeud;
+
+            // Fonction pour trouver la racine d’un nœud
+            Noeud<T> Find(Noeud<T> n)
+            {
+                if (!ensemble.ContainsKey(n)) return n;
+                if (!ReferenceEquals(ensemble[n], n))
+                    ensemble[n] = Find(ensemble[n]);
+                return ensemble[n];
+            }
+
+            // Union de deux ensembles
+            void Union(Noeud<T> a, Noeud<T> b)
+            {
+                var rootA = Find(a);
+                var rootB = Find(b);
+                if (!ReferenceEquals(rootA, rootB))
+                    ensemble[rootA] = rootB;
+            }
+
+            // Obtenir toutes les arêtes, en évitant les doublons
+            var liens = new List<Lien<T>>();
+            var dejaVu = new HashSet<(Noeud<T>, Noeud<T>)>();
+
+            foreach (var noeud in Sommets)
+            {
+                foreach (var lien in noeud.Voisins)
+                {
+                    var key = (lien.Noeud1, lien.Noeud2);
+                    var keyInverse = (lien.Noeud2, lien.Noeud1);
+
+                    if (!dejaVu.Contains(key) && !dejaVu.Contains(keyInverse))
+                    {
+                        liens.Add(lien);
+                        dejaVu.Add(key);
+                    }
+                }
+            }
+
+            // Trier les arêtes par poids
+            var liensTries = liens.OrderBy(l => l.Poids).ToList();
+
+            foreach (var lien in liensTries)
+            {
+                var racine1 = Find(lien.Noeud1);
+                var racine2 = Find(lien.Noeud2);
+
+                if (!ReferenceEquals(racine1, racine2))
+                {
+                    arbre.Add(lien);
+                    Union(racine1, racine2);
+                }
+            }
+
+            return arbre;
+        }
+
+
+
+
+
+
+
+
+        public void DessinerArbreKruskal2(string outputPath)
+        {
+            int width = 6000, height = 4000;
+            var bitmap = new SKBitmap(width, height);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.White);
+
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 };
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
+            var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
+
+            var arbre = Kruskal();
+
+            // Extraire les nœuds de l’arbre
+            var noeuds = arbre.SelectMany(l => new[] { l.Noeud1, l.Noeud2 }).Distinct().ToList();
+
+            // Positionner les nœuds en cercle
+            var positions = new Dictionary<Noeud<T>, SKPoint>();
+            float centerX = width / 2f, centerY = height / 2f;
+            float radius = Math.Min(width, height) / 2f - 300;
+            int n = noeuds.Count;
+
+            for (int i = 0; i < n; i++)
+            {
+                double angle = 2 * Math.PI * i / n;
+                float x = centerX + (float)(radius * Math.Cos(angle));
+                float y = centerY + (float)(radius * Math.Sin(angle));
+                positions[noeuds[i]] = new SKPoint(x, y);
+            }
+
+            // Dessiner les arêtes de l’arbre
+            foreach (var lien in arbre)
+            {
+                var p1 = positions[lien.Noeud1];
+                var p2 = positions[lien.Noeud2];
+                canvas.DrawLine(p1, p2, paintEdge);
+
+                var middle = new SKPoint((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
+                canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
+            }
+
+            // Dessiner les sommets
+            foreach (var (noeud, point) in positions)
+            {
+                canvas.DrawCircle(point, 20, paintNode);
+                canvas.DrawText(noeud.ToString(), point.X + 25, point.Y + 25, fontPaint);
+            }
+
+            using (var image = SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+            using (var stream = File.OpenWrite(outputPath))
+            {
+                data.SaveTo(stream);
+            }
+        }
+
+        public void ChargerCoordonneesDepuisExcel(string excelPath)
+        {
+            int k = 0;
+            using (var workbook = new XLWorkbook(excelPath))
+            {
+                var sheetNoeuds = workbook.Worksheet("Noeuds");
+
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1))
+                {
+                    double latitude = 0;
+                    double longitude = 0;
+
+                    if (!double.TryParse(row.Cell(5).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out latitude))
+                        continue;
+
+                    if (!double.TryParse(row.Cell(4).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out longitude))
+                        continue;
+
+                    if (k < Sommets.Count)
+                    {
+                        Sommets[k].Latitude = latitude;
+                        Sommets[k].Longitude = longitude;
+                        k++;
+                    }
+                }
+            }
+        }
+        public void DessinerArbreKruskal(string outputPath)
+        {
+            // Charger les coordonnées des nœuds
+            ChargerCoordonneesDepuisExcel("MetroParis.xlsx");
+
+            int width = 6000, height = 4000;
+            var bitmap = new SKBitmap(width, height);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.White);
+
+            var paintEdge = new SKPaint { Color = SKColors.Blue, StrokeWidth = 6 };
+            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 50, IsAntialias = true };
+            var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
+
+            var arbre = Kruskal();
+
+            double minLat = 48.819106595610265;
+            double maxLat = 48.897802691407826;
+            double minLong = 2.2570461929221497;
+            double maxLong = 2.4405400954061127;
+
+            var positions = new Dictionary<Noeud<T>, SKPoint>();
+
+            foreach (var lien in arbre)
+            {
+                foreach (var noeud in new[] { lien.Noeud1, lien.Noeud2 })
+                {
+                    if (!positions.ContainsKey(noeud))
+                    {
+                        float x = (float)((noeud.Longitude - minLong) / (maxLong - minLong) * width);
+                        float y = (float)((noeud.Latitude - minLat) / (maxLat - minLat) * height);
+                        positions[noeud] = new SKPoint(x, y);
+                    }
+                }
+            }
+
+            foreach (var lien in arbre)
+            {
+                var p1 = positions[lien.Noeud1];
+                var p2 = positions[lien.Noeud2];
+                canvas.DrawLine(p1, p2, paintEdge);
+
+                var middle = new SKPoint((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2 - 20);
+                canvas.DrawText(lien.Poids.ToString(), middle, fontPaint);
+            }
+
+            foreach (var (noeud, point) in positions)
+            {
+                canvas.DrawCircle(point, 20, paintNode);
+                canvas.DrawText(noeud.Valeur.ToString(), point.X + 10, point.Y - 30, fontPaint);
+            }
+
+            using (var image = SKImage.FromBitmap(bitmap))
+            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+            using (var stream = File.OpenWrite(outputPath))
+            {
+                data.SaveTo(stream);
+            }
+        }
+
+
         public void DessinerGraphe(string outputPath)
         {
             int width = 6000, height = 4000; // Taille de l'image
@@ -159,6 +375,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
         public void DessinerGraphe2(string outputPath)
         {
+
             int width = 6000, height = 4000;
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
@@ -754,6 +971,91 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             return couleurs;
         }
+
+        public void DessinerGrapheColorie(string cheminFichier)
+        {
+            var couleurs = ColorierWelshPowell();
+
+            int largeur = 1000;
+            int hauteur = 800;
+            int rayon = 15;
+
+            // Palette de couleurs prédéfinies
+            SKColor[] palette = new SKColor[]
+            {
+        SKColors.Red, SKColors.Green, SKColors.Blue, SKColors.Orange,
+        SKColors.Purple, SKColors.Teal, SKColors.Brown, SKColors.Magenta,
+        SKColors.Cyan, SKColors.Yellow, SKColors.Lime, SKColors.Pink
+            };
+
+            // Positionnement circulaire des sommets
+            Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
+            int n = Sommets.Count;
+            float angleStep = 2 * (float)Math.PI / n;
+            float rayonGraphe = Math.Min(largeur, hauteur) / 2.5f;
+            float centreX = largeur / 2;
+            float centreY = hauteur / 2;
+
+            for (int i = 0; i < Sommets.Count; i++)
+            {
+                var angle = i * angleStep;
+                float x = centreX + rayonGraphe * (float)Math.Cos(angle);
+                float y = centreY + rayonGraphe * (float)Math.Sin(angle);
+                positions[Sommets[i]] = new SKPoint(x, y);
+            }
+
+            using (var bitmap = new SKBitmap(largeur, hauteur))
+            using (var canvas = new SKCanvas(bitmap))
+            using (var paint = new SKPaint())
+            {
+                canvas.Clear(SKColors.White);
+
+                paint.IsAntialias = true;
+                paint.StrokeWidth = 2;
+
+                // Dessiner les arêtes
+                foreach (var sommet in Sommets)
+                {
+                    foreach (var lien in sommet.Voisins)
+                    {
+                        var autre = lien.AutreSommet(sommet);
+
+                        if (positions.TryGetValue(sommet, out SKPoint p1) &&
+                            positions.TryGetValue(autre, out SKPoint p2))
+                        {
+                            canvas.DrawLine(p1, p2, paint);
+                        }
+                    }
+                }
+
+                // Dessiner les sommets avec leur couleur
+                foreach (var sommet in Sommets)
+                {
+                    var couleurIndice = couleurs.ContainsKey(sommet) ? couleurs[sommet] % palette.Length : 0;
+                    paint.Color = palette[couleurIndice];
+
+                    var position = positions[sommet];
+                    canvas.DrawCircle(position, rayon, paint);
+
+                    // Dessiner le texte (valeur du sommet)
+                    paint.Color = SKColors.Black;
+                    paint.TextSize = 12;
+                    var texte = sommet.Valeur.ToString();
+                    canvas.DrawText(texte, position.X + 10, position.Y, paint);
+                }
+
+                // Enregistrer l’image
+                using (var image = SKImage.FromBitmap(bitmap))
+                using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+                using (var stream = File.OpenWrite(cheminFichier))
+                {
+                    data.SaveTo(stream);
+                }
+            }
+
+            Console.WriteLine($"Graphe colorié sauvegardé dans : {cheminFichier}");
+        }
+
 
 
 

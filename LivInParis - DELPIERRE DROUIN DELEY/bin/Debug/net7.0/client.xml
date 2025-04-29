@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfClient xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Client>
+    <id_client>1</id_client>
+    <telephone>1234567890</telephone>
+    <adresse_mail>client1@gmail.com</adresse_mail>
+    <ville>Paris</ville>
+    <numero_de_rue>10</numero_de_rue>
+    <rue>Rue Lafayette</rue>
+    <code_postal>75010</code_postal>
+    <metro_le_plus_proche>Gare du Nord</metro_le_plus_proche>
+  </Client>
+  <Client>
+    <id_client>2</id_client>
+    <telephone>1234567891</telephone>
+    <adresse_mail>client2@gmail.com</adresse_mail>
+    <ville>Paris</ville>
+    <numero_de_rue>15</numero_de_rue>
+    <rue>Boulevard Haussmann</rue>
+    <code_postal>75009</code_postal>
+    <metro_le_plus_proche>Chaussée d'Antin</metro_le_plus_proche>
+  </Client>
+  <Client>
+    <id_client>3</id_client>
+    <telephone>1234567892</telephone>
+    <adresse_mail>client3@gmail.com</adresse_mail>
+    <ville>Paris</ville>
+    <numero_de_rue>22</numero_de_rue>
+    <rue>Rue de Rennes</rue>
+    <code_postal>75006</code_postal>
+    <metro_le_plus_proche>Montparnasse</metro_le_plus_proche>
+  </Client>
+</ArrayOfClient>

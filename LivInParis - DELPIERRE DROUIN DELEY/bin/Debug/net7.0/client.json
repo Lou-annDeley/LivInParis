@@ -1,0 +1,3 @@
+{"id_client":1,"telephone":1234567890,"adresse_mail":"client1@gmail.com","ville":"Paris","numero_de_rue":10,"rue":"Rue Lafayette","code_postal":75010,"metro_le_plus_proche":"Gare du Nord"}
+{"id_client":2,"telephone":1234567891,"adresse_mail":"client2@gmail.com","ville":"Paris","numero_de_rue":15,"rue":"Boulevard Haussmann","code_postal":75009,"metro_le_plus_proche":"Chaussée d'Antin"}
+{"id_client":3,"telephone":1234567892,"adresse_mail":"client3@gmail.com","ville":"Paris","numero_de_rue":22,"rue":"Rue de Rennes","code_postal":75006,"metro_le_plus_proche":"Montparnasse"}

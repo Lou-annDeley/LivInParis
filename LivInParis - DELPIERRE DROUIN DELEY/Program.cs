@@ -1715,9 +1715,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             #region
             Graphe<string> GrapheRelations = new Graphe<string>();
+            Dictionary<long, Noeud<string>> noeuds = new Dictionary<long, Noeud<string>>();
 
-                // 1. Ajouter les clients comme noeuds
-                string recuperationClients = "SELECT Client.id_client, CONCAT(prenom, ' ', nom) AS nom_complet FROM particulier JOIN Client ON particulier.id_particulier = Client.id_client;";
+            // 1. Ajouter les clients comme noeuds
+            string recuperationClients = "SELECT Client.id_client, CONCAT(prenom, ' ', nom) AS nom_complet FROM particulier JOIN Client ON particulier.id_particulier = Client.id_client;";
                 MySqlCommand commandeClients = new MySqlCommand(recuperationClients, maConnexion);
                 MySqlDataReader readerClients = commandeClients.ExecuteReader();
 

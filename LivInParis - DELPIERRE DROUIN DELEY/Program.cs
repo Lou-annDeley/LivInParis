@@ -1715,10 +1715,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             #region
             Graphe<string> GrapheRelations = new Graphe<string>();
-            Dictionary<long, Noeud<string>> noeuds = new Dictionary<long, Noeud<string>>();
+            Dictionary<long, Noeud<string>> noeudsClients = new Dictionary<long, Noeud<string>>();
+            Dictionary<long, Noeud<string>> noeudsCuisiniers = new Dictionary<long, Noeud<string>>();
 
             // 1. Ajouter les clients comme noeuds
-            string recuperationClients = "SELECT Client.id_client, CONCAT(prenom, ' ', nom) AS nom_complet FROM particulier JOIN Client ON particulier.id_particulier = Client.id_client;";
+            string recuperationClients = "SELECT Client.id_client, CONCAT(prenom, ' ', nom) AS nom_complet FROM particulier JOIN Client ON particulier.id_client = Client.id_client;";
                 MySqlCommand commandeClients = new MySqlCommand(recuperationClients, maConnexion);
                 MySqlDataReader readerClients = commandeClients.ExecuteReader();
 
@@ -1728,7 +1729,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     string nomClient = readerClients.GetString("nom_complet");
 
                     Noeud<string> noeudClient = GrapheRelations.AjouterSommet(nomClient);
-                    noeuds[idClient] = noeudClient;
+                    noeudsClients[idClient] = noeudClient;
                 }
 
                 readerClients.Close();
@@ -1746,7 +1747,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     string nomCuisinier = readerCuisiniers.GetString("nom_complet");
 
                     Noeud<string> noeudCuisinier = GrapheRelations.AjouterSommet(nomCuisinier);
-                    noeuds[idCuisinier] = noeudCuisinier;
+                    noeudsCuisiniers[idCuisinier] = noeudCuisinier;
                 }
 
                 readerCuisiniers.Close();
@@ -1755,11 +1756,15 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
                 // 3. Ajouter les arcs entre cuisiniers et clients via les commandes
                 string recuperationRelations = @"
-            SELECT Commande.id_client, Cuisinier.id_Cuisinier, COUNT(*) AS poids
-            FROM Commande
-            JOIN Client ON Commande.id_client = Client.id_client
-            JOIN Cuisinier ON Client.id_client = Cuisinier.id_client
-            GROUP BY Commande.id_client, Cuisinier.id_Cuisinier;";
+                SELECT 
+                Commande.id_client, 
+                Plat.id_Cuisinier, 
+                COUNT(*) AS poids
+                FROM Commande
+                JOIN ligne_de_commande ON Commande.id_commande = ligne_de_commande.id_commande
+                JOIN Plat ON ligne_de_commande.id_Plat = Plat.id_Plat
+                GROUP BY Commande.id_client, Plat.id_Cuisinier
+                ;";
 
                 MySqlCommand commandeRelations = new MySqlCommand(recuperationRelations, maConnexion);
                 MySqlDataReader readerRelations = commandeRelations.ExecuteReader();
@@ -1770,9 +1775,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     int idCuisinier = readerRelations.GetInt32("id_Cuisinier");
                     int poids = readerRelations.GetInt32("poids"); // Le poids pourrait représenter ici le nombre de commandes
 
-                    if (noeuds.ContainsKey(idCuisinier) && noeuds.ContainsKey(idClient))
+                    if (noeudsCuisiniers.ContainsKey(idCuisinier) && noeudsClients.ContainsKey(idClient))
                     {
-                    GrapheRelations.AjouterLien(noeuds[idCuisinier], noeuds[idClient], poids);
+                    GrapheRelations.AjouterLien(noeudsCuisiniers[idCuisinier], noeudsClients[idClient], poids);
                     }
                 }
 

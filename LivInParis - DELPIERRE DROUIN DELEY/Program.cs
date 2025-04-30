@@ -137,6 +137,34 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                                 Console.WriteLine("Quel est votre identifiant client?");
                                 int idClient = Convert.ToInt32(Console.ReadLine());
 
+                                //bool existe = false;
+
+
+                                //while(existe == false)
+                                //{
+
+                                //    string requete = "SELECT id_client FROM Client WHERE id_client = " + idClient + ";";
+                                //    MySqlCommand commande = maConnexion.CreateCommand();
+                                //    commande.CommandText = requete;
+
+                                //    try
+                                //    {
+                                //        MySqlDataReader readerID = commande.ExecuteReader();
+
+                                //        if (readerID.Read())
+                                //        {
+                                //            existe = true;
+                                //        }
+
+                                //        readerID.Close();
+                                //    }
+                                //    catch (MySqlException ex)
+                                //    {
+                                //        Console.WriteLine("Erreur lors de la vérification du client : " + ex.ToString());
+                                //    }
+                                //    Console.WriteLine("Quel est votre identifiant client?");
+                                //    idClient = Convert.ToInt32(Console.ReadLine());
+                                //}
 
                                 Console.WriteLine("Quel est votre numéro de téléphone?");
                                 int telClient = Convert.ToInt32(Console.ReadLine());

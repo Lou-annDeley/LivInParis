@@ -18,6 +18,17 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         public int code_postal { get; set; }
         public string metro_le_plus_proche { get; set; }
 
+        /// <summary>
+        /// Constructeur de Client 
+        /// </summary>
+        /// <param name="id_client"></param>
+        /// <param name="telephone"></param>
+        /// <param name="adresse_mail"></param>
+        /// <param name="ville"></param>
+        /// <param name="numero_de_rue"></param>
+        /// <param name="rue"></param>
+        /// <param name="code_postal"></param>
+        /// <param name="metro_le_plus_proche"></param>
         public Client(int id_client, int telephone, string adresse_mail, string ville, int numero_de_rue, string rue,  int code_postal, string metro_le_plus_proche)
         {
             this.id_client = id_client;

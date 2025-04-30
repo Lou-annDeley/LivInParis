@@ -24,7 +24,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             Noeud2 = noeud2;
             Poids = poids;
         }
-
+        /// <summary>
+        /// Fonction qui donne l'autre sommet d'un lien
+        /// </summary>
+        /// <param name="noeud"></param>
+        /// <returns></returns>
         public Noeud<T> AutreSommet(Noeud<T> noeud)
         {
             return noeud.Equals(Noeud1) ? Noeud2 : Noeud1;

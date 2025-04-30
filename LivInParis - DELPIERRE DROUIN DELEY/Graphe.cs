@@ -51,11 +51,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
         /// <summary>
-        /// Dessin du graphe
+        /// Fonction de couverture du graphe Kruskal
         /// </summary>
         /// <param name="outputPath"></param>
         /// 
-
         public List<Lien<T>> Kruskal()
         {
             var arbre = new List<Lien<T>>();
@@ -121,13 +120,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
 
-
-
-
-
-
-        
-
+        /// <summary>
+        /// Fonction qui récupère les longitudes et latitudes 
+        /// </summary>
+        /// <param name="excelPath"></param>
         public void ChargerCoordonneesDepuisExcel(string excelPath)
         {
             int k = 0;
@@ -155,6 +151,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
         }
+
+        /// <summary>
+        /// Fonction qui dessine l'arbre de couverture de graphe (Kruskal)
+        /// </summary>
+        /// <param name="outputPath"></param>
         public void DessinerArbreKruskal(string outputPath)
         {
            
@@ -215,7 +216,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
-
+        /// <summary>
+        /// Fonction qui dessine le graphe des métros 
+        /// </summary>
+        /// <param name="outputPath"></param>
         public void DessinerGraphe(string outputPath)
         {
             int width = 6000, height = 4000; 
@@ -318,6 +322,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        /// <summary>
+        /// 2ème fonction qui dessine le graphe des métros 
+        /// </summary>
+        /// <param name="outputPath"></param>
         public void DessinerGraphe2(string outputPath)
         {
 
@@ -438,6 +446,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
+        /// <summary>
+        /// Fonction qui dessine le graphe entre les cuisiniers et les clients 
+        /// </summary>
+        /// <param name="outputPath"></param>
         public void DessinerGrapheCuisiniersClients(string outputPath)
         {
             int width = 6000, height = 4000; 
@@ -493,13 +505,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 data.SaveTo(stream);
             }
         }
-
-
-
-
-
-
-
 
         /// <summary>
         /// Fonction qui met en évidence le plus court chemin à emprunter
@@ -844,7 +849,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             }
         }
 
-
+        /// <summary>
+        /// Fonction de coloration de graphe Welsh-Powell 
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<Noeud<T>, int> ColorierWelshPowell()
         {
             var couleurs = new Dictionary<Noeud<T>, int>();
@@ -917,6 +925,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             return couleurs;
         }
 
+        /// <summary>
+        /// Fonction qui dessine le graphe coloré
+        /// </summary>
+        /// <param name="cheminFichier"></param>
         public void DessinerGrapheColorie(string cheminFichier)
         {
             var couleurs = ColorierWelshPowell();
@@ -1000,9 +1012,5 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             Console.WriteLine($"Graphe colorié sauvegardé dans : {cheminFichier}");
         }
-
-
-
-
     }
 }

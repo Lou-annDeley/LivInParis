@@ -14,7 +14,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
     public class Graphe<T>
     {
-        public List<Noeud<T>> Sommets { get; }  // Liste des nœuds du graphe
+        public List<Noeud<T>> Sommets { get; } 
 
         /// <summary>
         /// Constructeur Graphe
@@ -61,11 +61,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             var arbre = new List<Lien<T>>();
             var ensemble = new Dictionary<Noeud<T>, Noeud<T>>();
 
-            // Initialiser chaque nœud comme son propre parent
+            
             foreach (var noeud in Sommets)
                 ensemble[noeud] = noeud;
 
-            // Fonction pour trouver la racine d’un nœud
+            
             Noeud<T> Find(Noeud<T> n)
             {
                 if (!ensemble.ContainsKey(n)) return n;
@@ -74,7 +74,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 return ensemble[n];
             }
 
-            // Union de deux ensembles
+            
             void Union(Noeud<T> a, Noeud<T> b)
             {
                 var rootA = Find(a);
@@ -83,7 +83,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     ensemble[rootA] = rootB;
             }
 
-            // Obtenir toutes les arêtes, en évitant les doublons
+            
             var liens = new List<Lien<T>>();
             var dejaVu = new HashSet<(Noeud<T>, Noeud<T>)>();
 
@@ -102,7 +102,6 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            // Trier les arêtes par poids
             var liensTries = liens.OrderBy(l => l.Poids).ToList();
 
             foreach (var lien in liensTries)
@@ -140,10 +139,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             var arbre = Kruskal();
 
-            // Extraire les nœuds de l’arbre
+            
             var noeuds = arbre.SelectMany(l => new[] { l.Noeud1, l.Noeud2 }).Distinct().ToList();
 
-            // Positionner les nœuds en cercle
+          
             var positions = new Dictionary<Noeud<T>, SKPoint>();
             float centerX = width / 2f, centerY = height / 2f;
             float radius = Math.Min(width, height) / 2f - 300;
@@ -157,7 +156,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 positions[noeuds[i]] = new SKPoint(x, y);
             }
 
-            // Dessiner les arêtes de l’arbre
+          
             foreach (var lien in arbre)
             {
                 var p1 = positions[lien.Noeud1];
@@ -168,7 +167,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
             }
 
-            // Dessiner les sommets
+           
             foreach (var (noeud, point) in positions)
             {
                 canvas.DrawCircle(point, 20, paintNode);
@@ -212,7 +211,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         }
         public void DessinerArbreKruskal(string outputPath)
         {
-            // Charger les coordonnées des nœuds
+           
             ChargerCoordonneesDepuisExcel("MetroParis.xlsx");
 
             int width = 6000, height = 4000;
@@ -273,7 +272,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
         public void DessinerGraphe(string outputPath)
         {
-            int width = 6000, height = 4000; // Taille de l'image
+            int width = 6000, height = 4000; 
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
@@ -283,33 +282,33 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            // Charger les données depuis le fichier Excel
+            
             int k = 0;
             using (var workbook = new XLWorkbook("MetroParis.xlsx"))
             {
                 var sheetNoeuds = workbook.Worksheet("Noeuds");
 
-                // Lecture des stations (Noeuds) à partir de la feuille Excel
-                foreach (var row in sheetNoeuds.RowsUsed().Skip(1)) // Ignore la première ligne (titres)
+                
+                foreach (var row in sheetNoeuds.RowsUsed().Skip(1))
                 {
                     double latitude = 0;
                     double longitude = 0;
 
-                    // Essayer de récupérer la latitude
+                  
                     if (!double.TryParse(row.Cell(5).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out latitude))
                     {
                         Console.WriteLine($"Erreur de conversion de la latitude pour la station {row.Cell(2).GetString()}");
-                        continue; // Si la conversion échoue, passer à la ligne suivante
+                        continue; 
                     }
 
-                    // Essayer de récupérer la longitude
+                   
                     if (!double.TryParse(row.Cell(4).GetString().Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out longitude))
                     {
                         Console.WriteLine($"Erreur de conversion de la longitude pour la station {row.Cell(2).GetString()}");
-                        continue; // Si la conversion échoue, passer à la ligne suivante
+                        continue;
                     }
 
-                    // Assigner la latitude et la longitude aux nœuds
+                    
                     Sommets[k].Latitude = latitude;
                     Sommets[k].Longitude = longitude;
                     k++;
@@ -386,10 +385,10 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            // --- Welsh-Powell pour récupérer les couleurs des noeuds ---
+           
             var couleursWelshPowell = ColorierWelshPowell();
 
-            // Palette des couleurs
+          
             List<SKColor> palette = new List<SKColor>
     {
         SKColors.Blue,
@@ -402,7 +401,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         SKColors.Magenta
     };
 
-            // Chargement des données depuis Excel
+           
             int k = 0;
             using (var workbook = new XLWorkbook("MetroParis.xlsx"))
             {
@@ -476,9 +475,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             {
                 SKPoint pos = positions[noeud];
 
-                // --- Ici on applique la bonne couleur depuis Welsh-Powell ---
-                int numeroCouleur = couleursWelshPowell[noeud]; // 1, 2, 3, etc.
-                SKColor couleur = palette[(numeroCouleur - 1) % palette.Count]; // Choisir couleur
+                
+                int numeroCouleur = couleursWelshPowell[noeud];
+                SKColor couleur = palette[(numeroCouleur - 1) % palette.Count]; 
 
                 var paintNode = new SKPaint { Color = couleur, Style = SKPaintStyle.Fill };
 
@@ -495,7 +494,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
         public void DessinerGrapheCuisiniersClients(string outputPath)
         {
-            int width = 6000, height = 4000; // Taille de l'image
+            int width = 6000, height = 4000; 
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
@@ -505,16 +504,16 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            // Générer des positions aléatoires pour chaque nœud
+            
             Random rand = new Random();
             foreach (var noeud in Sommets)
             {
-                float x = (float)(rand.NextDouble() * (width - 200) + 100); // marges de 100px
+                float x = (float)(rand.NextDouble() * (width - 200) + 100); 
                 float y = (float)(rand.NextDouble() * (height - 200) + 100);
                 positions[noeud] = new SKPoint(x, y);
             }
 
-            // Dessiner les arêtes (lignes entre voisins)
+           
             foreach (var noeud in Sommets)
             {
                 foreach (var lien in noeud.Voisins)
@@ -530,7 +529,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            // Dessiner les nœuds (cercles rouges)
+            
             foreach (var noeud in Sommets)
             {
                 if (!positions.ContainsKey(noeud)) continue;
@@ -540,7 +539,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 canvas.DrawCircle(pos, 15, paintNode);
             }
 
-            // Sauvegarder l'image
+           
             using (var image = SKImage.FromBitmap(bitmap))
             using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
             using (var stream = File.OpenWrite(outputPath))
@@ -563,18 +562,18 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         /// <param name="outputPath"></param>
         public void MettreEnEvidenceChemin(List<Noeud<T>> chemin, string outputPath)
         {
-            int width = 6000, height = 4000; // Taille de l'image
+            int width = 6000, height = 4000;
             var bitmap = new SKBitmap(width, height);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
 
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 }; // Liens normaux
-            var paintEdgeHighlighted = new SKPaint { Color = SKColors.Blue, StrokeWidth = 10 }; // Liens en gras pour le chemin
+            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 }; 
+            var paintEdgeHighlighted = new SKPaint { Color = SKColors.Blue, StrokeWidth = 10 };
             var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
 
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
 
-            // Calcul des positions des nœuds
+            
             double minLat = 48.819106595610265;
             double maxLat = 48.897802691407826;
             double minLong = 2.2570461929221497;
@@ -587,7 +586,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 positions[noeud] = new SKPoint(x, y);
             }
 
-            // Dessiner tous les liens normaux
+           
             foreach (var noeud in Sommets)
             {
 
@@ -618,7 +617,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 }
             }
 
-            // Mettre en évidence les liens du plus court chemin
+            
             for (int i = 0; i < chemin.Count - 1; i++)
             {
                 Noeud<T> noeud1 = chemin[i];
@@ -627,18 +626,18 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 SKPoint point1 = positions[noeud1];
                 SKPoint point2 = positions[noeud2];
 
-                canvas.DrawLine(point1, point2, paintEdgeHighlighted); // Dessiner les liens du chemin en bleu épais
+                canvas.DrawLine(point1, point2, paintEdgeHighlighted); 
             }
 
-            // Dessiner les nœuds (stations)
+            
             foreach (var noeud in Sommets)
             {
                 SKPoint pos = positions[noeud];
                 var paintNode = new SKPaint { Color = chemin.Contains(noeud) ? SKColors.Blue : SKColors.Red, Style = SKPaintStyle.Fill };
-                canvas.DrawCircle(pos, 15, paintNode); // Cercle représentant la station
+                canvas.DrawCircle(pos, 15, paintNode); 
             }
 
-            // Sauvegarder l'image
+         
             using (var image = SKImage.FromBitmap(bitmap))
             using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
             using (var stream = File.OpenWrite(outputPath))
@@ -905,19 +904,19 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             var couleurs = new Dictionary<Noeud<T>, int>();
             var degres = new Dictionary<Noeud<T>, int>();
 
-            // 1. Calculer le degré de chaque sommet
+            
             foreach (var sommet in Sommets)
             {
                 degres[sommet] = sommet.Voisins.Count;
             }
 
-            // 2. Trier par degré décroissant
+            
             var sommetsTries = new List<Noeud<T>>(Sommets);
             sommetsTries.Sort((a, b) => degres[b].CompareTo(degres[a]));
 
             int couleurActuelle = 0;
 
-            // 3. Tant qu'il reste des sommets non coloriés
+            
             while (sommetsTries.Count > 0)
             {
                 couleurActuelle++;
@@ -928,7 +927,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 {
                     bool conflit = false;
 
-                    // Vérifier s'il est adjacent à un sommet déjà colorié avec couleurActuelle
+                    
                     foreach (var voisin in sommet.Voisins)
                     {
                         var autre = voisin.AutreSommet(sommet);
@@ -939,7 +938,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                         }
                     }
 
-                    // Vérifier s'il est adjacent à un sommet qu'on vient de colorier dans ce tour
+                    
                     foreach (var dejaColorie in aColorier)
                     {
                         foreach (var lien in dejaColorie.Voisins)
@@ -962,7 +961,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     }
                 }
 
-                // Retirer les sommets coloriés du tri
+              
                 foreach (var sommet in aColorier)
                 {
                     sommetsTries.Remove(sommet);
@@ -980,7 +979,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
             int hauteur = 800;
             int rayon = 15;
 
-            // Palette de couleurs prédéfinies
+            
             SKColor[] palette = new SKColor[]
             {
         SKColors.Red, SKColors.Green, SKColors.Blue, SKColors.Orange,
@@ -988,7 +987,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
         SKColors.Cyan, SKColors.Yellow, SKColors.Lime, SKColors.Pink
             };
 
-            // Positionnement circulaire des sommets
+            
             Dictionary<Noeud<T>, SKPoint> positions = new Dictionary<Noeud<T>, SKPoint>();
             int n = Sommets.Count;
             float angleStep = 2 * (float)Math.PI / n;
@@ -1013,7 +1012,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                 paint.IsAntialias = true;
                 paint.StrokeWidth = 2;
 
-                // Dessiner les arêtes
+                
                 foreach (var sommet in Sommets)
                 {
                     foreach (var lien in sommet.Voisins)
@@ -1028,7 +1027,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     }
                 }
 
-                // Dessiner les sommets avec leur couleur
+                
                 foreach (var sommet in Sommets)
                 {
                     var couleurIndice = couleurs.ContainsKey(sommet) ? couleurs[sommet] % palette.Length : 0;
@@ -1037,14 +1036,14 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
                     var position = positions[sommet];
                     canvas.DrawCircle(position, rayon, paint);
 
-                    // Dessiner le texte (valeur du sommet)
+                    
                     paint.Color = SKColors.Black;
                     paint.TextSize = 12;
                     var texte = sommet.Valeur.ToString();
                     canvas.DrawText(texte, position.X + 10, position.Y, paint);
                 }
 
-                // Enregistrer l’image
+                
                 using (var image = SKImage.FromBitmap(bitmap))
                 using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
                 using (var stream = File.OpenWrite(cheminFichier))

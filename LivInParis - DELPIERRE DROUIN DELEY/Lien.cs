@@ -8,9 +8,9 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 {
     public class Lien<T>
     {
-        public Noeud<T> Noeud1 { get; }  // Premier nœud (station)
-        public Noeud<T> Noeud2 { get; }  // Second nœud (station connectée)
-        public double Poids { get; }  // Distance ou temps entre les deux nœuds
+        public Noeud<T> Noeud1 { get; }  
+        public Noeud<T> Noeud2 { get; }  
+        public double Poids { get; }  
 
         /// <summary>
         /// Constructeur Lien

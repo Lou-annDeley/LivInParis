@@ -1793,11 +1793,11 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
            
             Console.WriteLine("\nLe graphe est-il biparti ?");
-            Console.WriteLine(nbCouleurs == 2 ? "✅ Oui" : "❌ Non");
+            Console.WriteLine(nbCouleurs == 2 ? "Oui" : "Non");
 
             
             Console.WriteLine("\nLe graphe est-il planaire ?");
-            Console.WriteLine(nbCouleurs <= 4 ? "✅ Oui (≤ 4 couleurs)" : "❌ Non (plus de 4 couleurs)");
+            Console.WriteLine(nbCouleurs <= 4 ? "Oui (≤ 4 couleurs)" : "Non (plus de 4 couleurs)");
 
             
             Console.WriteLine("\nGroupes indépendants :");

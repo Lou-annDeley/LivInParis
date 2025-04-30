@@ -126,61 +126,7 @@ namespace LivInParis___DELPIERRE_DROUIN_DELEY
 
 
 
-        public void DessinerArbreKruskal2(string outputPath)
-        {
-            int width = 6000, height = 4000;
-            var bitmap = new SKBitmap(width, height);
-            var canvas = new SKCanvas(bitmap);
-            canvas.Clear(SKColors.White);
-
-            var paintEdge = new SKPaint { Color = SKColors.Black, StrokeWidth = 6 };
-            var fontPaint = new SKPaint { Color = SKColors.Black, TextSize = 60, IsAntialias = true };
-            var paintNode = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Fill };
-
-            var arbre = Kruskal();
-
-            
-            var noeuds = arbre.SelectMany(l => new[] { l.Noeud1, l.Noeud2 }).Distinct().ToList();
-
-          
-            var positions = new Dictionary<Noeud<T>, SKPoint>();
-            float centerX = width / 2f, centerY = height / 2f;
-            float radius = Math.Min(width, height) / 2f - 300;
-            int n = noeuds.Count;
-
-            for (int i = 0; i < n; i++)
-            {
-                double angle = 2 * Math.PI * i / n;
-                float x = centerX + (float)(radius * Math.Cos(angle));
-                float y = centerY + (float)(radius * Math.Sin(angle));
-                positions[noeuds[i]] = new SKPoint(x, y);
-            }
-
-          
-            foreach (var lien in arbre)
-            {
-                var p1 = positions[lien.Noeud1];
-                var p2 = positions[lien.Noeud2];
-                canvas.DrawLine(p1, p2, paintEdge);
-
-                var middle = new SKPoint((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
-                canvas.DrawText(lien.Poids.ToString(), middle.X, middle.Y, fontPaint);
-            }
-
-           
-            foreach (var (noeud, point) in positions)
-            {
-                canvas.DrawCircle(point, 20, paintNode);
-                canvas.DrawText(noeud.ToString(), point.X + 25, point.Y + 25, fontPaint);
-            }
-
-            using (var image = SKImage.FromBitmap(bitmap))
-            using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
-            using (var stream = File.OpenWrite(outputPath))
-            {
-                data.SaveTo(stream);
-            }
-        }
+        
 
         public void ChargerCoordonneesDepuisExcel(string excelPath)
         {
